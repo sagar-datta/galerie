@@ -26,20 +26,25 @@
   animation-name: scrollRight;
 }
 
+/* Pause all animations when container is paused */
+.paused .ticker-content {
+  animation-play-state: paused !important;
+}
+
 @keyframes scrollLeft {
-  from {
+  0% {
     transform: translate3d(0, 0, 0);
   }
-  to {
+  100% {
     transform: translate3d(-50%, 0, 0);
   }
 }
 
 @keyframes scrollRight {
-  from {
+  0% {
     transform: translate3d(-50%, 0, 0);
   }
-  to {
+  100% {
     transform: translate3d(0, 0, 0);
   }
 }
@@ -48,10 +53,55 @@
   white-space: nowrap;
   flex-shrink: 0;
   transition: color 0.3s ease;
+  cursor: pointer;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
 .ticker-item:hover {
   color: #ff685b !important;
+}
+
+.selected-city {
+  animation: slideToLeft 1s forwards cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  position: fixed;
+  z-index: 60;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.selected-city.returning {
+  animation: slideBack 1s forwards cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideToLeft {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(2rem, -50%, 0);
+    top: 50% !important;
+  }
+}
+
+@keyframes slideBack {
+  0% {
+    transform: translate3d(2rem, -50%, 0);
+    top: 50% !important;
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+button {
+  transition: all 0.3s ease;
+  z-index: 70;
+}
+
+button:hover {
+  background-color: #ff685b !important;
 }
 
 @media (hover: none) {

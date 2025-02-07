@@ -1,6 +1,15 @@
 import { COLORS } from "./constants/colors";
+import { useState, useRef, useEffect } from "react";
 
 function App() {
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
+  const [selectedPosition, setSelectedPosition] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
+  const [isReturning, setIsReturning] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const cities = [
     "NEW YORK",
     "PARIS",
@@ -24,19 +33,82 @@ function App() {
   const topDuplicates = createDuplicates(topCities);
   const bottomDuplicates = createDuplicates(bottomCities);
 
+  const handleCityClick = (
+    city: string,
+    e: React.MouseEvent<HTMLSpanElement>
+  ) => {
+    if (containerRef.current) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      setSelectedPosition({
+        top: rect.top,
+        left: rect.left,
+      });
+      setSelectedCity(city);
+      setIsReturning(false);
+
+      // Pause animations by adding class
+      containerRef.current.classList.add("paused");
+    }
+  };
+
+  const handleReturn = () => {
+    setIsReturning(true);
+    setTimeout(() => {
+      if (containerRef.current) {
+        // Remove pause class to resume animations
+        containerRef.current.classList.remove("paused");
+      }
+      setSelectedCity(null);
+      setSelectedPosition(null);
+      setIsReturning(false);
+    }, 1000);
+  };
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: COLORS.beige }}>
-      <div className="max-w-full mx-auto py-20">
+      {selectedCity ? (
+        <div
+          className="fixed top-0 left-0 w-full h-full z-50"
+          style={{ backgroundColor: COLORS.beige }}
+        >
+          <button
+            onClick={handleReturn}
+            className="fixed top-4 left-4 px-6 py-3 text-xl font-bold transition-colors"
+            style={{
+              backgroundColor: COLORS.dark,
+              color: COLORS.beige,
+            }}
+          >
+            Return
+          </button>
+          <div
+            className={`selected-city text-6xl tracking-widest font-bold ${
+              isReturning ? "returning" : ""
+            }`}
+            style={{
+              position: "absolute",
+              top: selectedPosition?.top,
+              left: selectedPosition?.left,
+              color: COLORS.dark,
+              fontFamily: "Helvetica, Arial, sans-serif",
+            }}
+          >
+            {selectedCity}
+          </div>
+        </div>
+      ) : null}
+      <div ref={containerRef} className="max-w-full mx-auto py-20">
         <div className="ticker-row mb-8 scroll-left">
           <div className="ticker-content">
             {topDuplicates.map((city, index) => (
               <span
                 key={`${city}-${index}`}
-                className="ticker-item text-6xl tracking-widest font-bold"
+                className="ticker-item text-6xl tracking-widest font-bold cursor-pointer"
                 style={{
                   color: COLORS.dark,
                   fontFamily: "Helvetica, Arial, sans-serif",
                 }}
+                onClick={(e) => handleCityClick(city, e)}
               >
                 {city}
               </span>
@@ -48,11 +120,12 @@ function App() {
             {bottomDuplicates.map((city, index) => (
               <span
                 key={`${city}-${index}`}
-                className="ticker-item text-6xl tracking-widest font-bold"
+                className="ticker-item text-6xl tracking-widest font-bold cursor-pointer"
                 style={{
                   color: COLORS.dark,
                   fontFamily: "Helvetica, Arial, sans-serif",
                 }}
+                onClick={(e) => handleCityClick(city, e)}
               >
                 {city}
               </span>
