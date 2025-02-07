@@ -3,6 +3,57 @@
   min-height: 100vh;
 }
 
+.ticker-row {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.ticker-content {
+  display: inline-flex;
+  animation-duration: 60s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  gap: 4rem;
+  will-change: transform;
+}
+
+.scroll-left .ticker-content {
+  animation-name: scrollLeft;
+}
+
+.scroll-right .ticker-content {
+  animation-name: scrollRight;
+}
+
+@keyframes scrollLeft {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes scrollRight {
+  from {
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.ticker-item {
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: color 0.3s ease;
+}
+
+.ticker-item:hover {
+  color: #ff685b !important;
+}
+
 @media (hover: none) {
   .group:hover .group-hover\:opacity-100 {
     opacity: 1;

@@ -14,37 +14,50 @@ function App() {
     "TOKYO",
   ];
 
+  // Split cities into two groups
+  const midPoint = Math.ceil(cities.length / 2);
+  const topCities = cities.slice(0, midPoint);
+  const bottomCities = cities.slice(midPoint);
+
+  // Create duplicated arrays for smooth infinite scroll
+  const createDuplicates = (arr: string[]) => [...arr, ...arr, ...arr, ...arr];
+  const topDuplicates = createDuplicates(topCities);
+  const bottomDuplicates = createDuplicates(bottomCities);
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: COLORS.beige }}>
-      <div className="max-w-2xl mx-auto py-20 px-4">
-        <div className="space-y-6">
-          {cities.map((city, index) => (
-            <div
-              key={city}
-              className="relative overflow-hidden group"
-              style={{
-                backgroundColor: index % 2 === 0 ? COLORS.dark : COLORS.black,
-              }}
-            >
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{ backgroundColor: COLORS.red }}
-              />
-              <h2
-                className="py-8 px-6 text-6xl tracking-widest font-bold relative z-10"
+      <div className="max-w-full mx-auto py-20">
+        <div className="ticker-row mb-8 scroll-left">
+          <div className="ticker-content">
+            {topDuplicates.map((city, index) => (
+              <span
+                key={`${city}-${index}`}
+                className="ticker-item text-6xl tracking-widest font-bold"
                 style={{
-                  color: COLORS.white,
+                  color: COLORS.dark,
                   fontFamily: "Helvetica, Arial, sans-serif",
                 }}
               >
                 {city}
-              </h2>
-              <div
-                className="absolute top-1/2 -right-4 w-16 h-16 -translate-y-1/2"
-                style={{ backgroundColor: COLORS.coral }}
-              />
-            </div>
-          ))}
+              </span>
+            ))}
+          </div>
+        </div>
+        <div className="ticker-row scroll-right">
+          <div className="ticker-content">
+            {bottomDuplicates.map((city, index) => (
+              <span
+                key={`${city}-${index}`}
+                className="ticker-item text-6xl tracking-widest font-bold"
+                style={{
+                  color: COLORS.dark,
+                  fontFamily: "Helvetica, Arial, sans-serif",
+                }}
+              >
+                {city}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </div>
