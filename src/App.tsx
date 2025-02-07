@@ -1,5 +1,5 @@
 import { COLORS } from "./constants/colors";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 
 function App() {
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
@@ -28,8 +28,8 @@ function App() {
   const topCities = cities.slice(0, midPoint);
   const bottomCities = cities.slice(midPoint);
 
-  // Create duplicated arrays for smooth infinite scroll
-  const createDuplicates = (arr: string[]) => [...arr, ...arr, ...arr, ...arr];
+  // Create duplicated arrays - using only 2 copies for better performance
+  const createDuplicates = (arr: string[]) => [...arr, ...arr];
   const topDuplicates = createDuplicates(topCities);
   const bottomDuplicates = createDuplicates(bottomCities);
 
@@ -46,7 +46,6 @@ function App() {
       setSelectedCity(city);
       setIsReturning(false);
 
-      // Pause animations by adding class
       containerRef.current.classList.add("paused");
     }
   };
@@ -55,7 +54,6 @@ function App() {
     setIsReturning(true);
     setTimeout(() => {
       if (containerRef.current) {
-        // Remove pause class to resume animations
         containerRef.current.classList.remove("paused");
       }
       setSelectedCity(null);
@@ -66,7 +64,7 @@ function App() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: COLORS.beige }}>
-      {selectedCity ? (
+      {selectedCity && (
         <div
           className="fixed top-0 left-0 w-full h-full z-50"
           style={{ backgroundColor: COLORS.beige }}
@@ -96,8 +94,11 @@ function App() {
             {selectedCity}
           </div>
         </div>
-      ) : null}
-      <div ref={containerRef} className="max-w-full mx-auto py-20">
+      )}
+      <div
+        ref={containerRef}
+        className="max-w-full mx-auto py-20 content-visibility-auto"
+      >
         <div className="ticker-row mb-8 scroll-left">
           <div className="ticker-content">
             {topDuplicates.map((city, index) => (

@@ -7,6 +7,7 @@
   position: relative;
   width: 100%;
   overflow: hidden;
+  contain: layout style;
 }
 
 .ticker-content {
@@ -16,6 +17,9 @@
   animation-iteration-count: infinite;
   gap: 4rem;
   will-change: transform;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  contain: layout style;
 }
 
 .scroll-left .ticker-content {
@@ -26,7 +30,6 @@
   animation-name: scrollRight;
 }
 
-/* Pause all animations when container is paused */
 .paused .ticker-content {
   animation-play-state: paused !important;
 }
@@ -56,6 +59,8 @@
   cursor: pointer;
   backface-visibility: hidden;
   -webkit-font-smoothing: antialiased;
+  transform: translateZ(0);
+  contain: layout style paint;
 }
 
 .ticker-item:hover {
@@ -69,6 +74,8 @@
   z-index: 60;
   backface-visibility: hidden;
   -webkit-font-smoothing: antialiased;
+  transform: translateZ(0);
+  contain: layout style;
 }
 
 .selected-city.returning {
@@ -98,6 +105,7 @@
 button {
   transition: all 0.3s ease;
   z-index: 70;
+  contain: layout style;
 }
 
 button:hover {
