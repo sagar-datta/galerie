@@ -11,7 +11,7 @@
 
 .ticker-content {
   display: inline-flex;
-  animation-duration: 60s;
+  animation-duration: 120s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   gap: 4rem;
