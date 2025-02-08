@@ -41,21 +41,12 @@ button {
   transform: translateY(0); /* Return to original vertical position */
 }
 
-@keyframes ticker-left-to-right {
+@keyframes ticker-animation { /* Renamed to ticker-animation and simplified */
   0% {
-    transform: translateX(100%); /* Start offscreen to the right */
+    transform: translateX(0%); /* Start at original position */
   }
   100% {
     transform: translateX(-100%); /* Move offscreen to the left */
-  }
-}
-
-@keyframes ticker-right-to-left {
-  0% {
-    transform: translateX(-100%); /* Start offscreen to the left */
-  }
-  100% {
-    transform: translateX(100%); /* Move offscreen to the right */
   }
 }
 
@@ -68,11 +59,5 @@ button {
   min-width: 100%; /* Ensure it at least covers the container width for looping */
 }
 
-.ticker-row.even {
-  animation-name: ticker-right-to-left;
-}
-
-.ticker-row.odd {
-  animation-name: ticker-left-to-right;
-  flex-direction: row-reverse; /* Re-add row-reverse for odd rows */
-}
+/* Removed .ticker-row.even and .ticker-row.odd animation-name and flex-direction */
+/* We will control animation direction and initial position via inline styles in JSX */
