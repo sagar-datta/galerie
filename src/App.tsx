@@ -53,7 +53,7 @@ function App() {
 
   return (
     <div
-      className="grid h-screen grid-rows-[3fr_1fr] overflow-hidden"
+      className="grid h-screen grid-rows-2 overflow-hidden"
       style={{ backgroundColor: COLORS.beige }}
     >
       {selectedCity && selectedPosition && (
