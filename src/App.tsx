@@ -10,14 +10,7 @@ function App() {
   } | null>(null);
   const [isReturning, setIsReturning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const [hasReturned, setHasReturned] = useState(false);
-  const [tickerPositions, setTickerPositions] = useState<
-    Array<{
-      current: number;
-      target: number;
-    }>
-  >([]);
-
+  const [hasReturned, setHasReturned] = useState(false);;
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
   const tickerRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -55,36 +48,10 @@ function App() {
   }, []);
   const rowDuplicates = rows.map(createDuplicates);
 
-  const updateTickerPositions = useCallback(
-    (shouldPause: boolean = false) => {
-      const containerWidth = containerRef.current?.offsetWidth || 1000;
-      const newPositions = rows
-        .map((_, index) => {
-          const currentPos = tickerPositions[index]?.current || 0; // Use existing current position
-          return {
-            current: currentPos,
-            target:
-              index % 2 === 0
-                ? currentPos - containerWidth * 2 // Modified target position
-                : currentPos + containerWidth * 2, // Modified target position
-          };
-        })
-        .map((pos) => ({
-          current: pos.current,
-          target: Math.round(pos.target),
-        })); // Round target
-      setTickerPositions(newPositions);
+  const updateTickerPositions = useCallback((shouldPause: boolean = false) => {
       setIsPaused(shouldPause);
     },
-    [rows, tickerPositions]
-  );
-
-  // Initialize refs and positions
-  useEffect(() => {
-    tickerRefs.current = Array(rows.length).fill(null);
-  }, [rows.length]);
-
-  useEffect(() => {
+    []);
     if (!selectedCity && rows.length > 0) {
       const containerWidth = containerRef.current?.offsetWidth || 1000;
       const positions = rows.map((_, index) => ({
@@ -92,17 +59,15 @@ function App() {
         target: index % 2 === 0 ? -containerWidth * 2 : containerWidth * 2,
       }));
       setTickerPositions(positions);
-      setIsPaused(false);
     }
-  }, [rows.length, selectedCity]);
-
-    const animateSelectedCityIn = useCallback(() => {
+  const animateSelectedCityIn = useCallback(() => {
     const selectedCityElement = document.getElementById("selected-city-element");
     if (selectedCityElement && selectedPosition) {
-      selectedCityElement.style.transition = 'top 0.5s ease-in-out, left 0.5s ease-in-out, transform 0.5s ease-in-out, opacity 0.5s ease-in-out';
-      selectedCityElement.style.top = '50%';
-      selectedCityElement.style.left = '2rem';
-      selectedCityElement.style.transform = 'translateY(-50%)';
+      selectedCityElement.style.transition =
+        "top 0.5s ease-in-out, left 0.5s ease-in-out, transform 0.5s ease-in-out, opacity 0.5s ease-in-out";
+      selectedCityElement.style.top = "50%";
+      selectedCityElement.style.left = "2rem";
+      selectedCityElement.style.transform = "translateY(-50%)";
     }
   }, [selectedPosition]);
 
@@ -156,16 +121,16 @@ function App() {
       const timer1 = setTimeout(() => {
         setHasReturned(true);
         setSelectedCity(null);
-        animateSelectedCityOut(selectedPosition); // Animate out
-        setSelectedPosition(null);
-        setIsReturning(false);
+          animateSelectedCityOut(selectedPosition); // Animate out
+          setSelectedPosition(null);
+          setIsReturning(false);
 
-        const timer2 = setTimeout(() => {
-          updateTickerPositions(false);
-        }, 200);
+          const timer2 = setTimeout(() => {
+            updateTickerPositions(false);
+          }, 200);
 
-        return () => clearTimeout(timer2);
-      }, 300);
+          return () => clearTimeout(timer2);
+        }, 300);
 
       return () => clearTimeout(timer1);
     }
@@ -212,15 +177,11 @@ function App() {
               rowIndex !== rowDuplicates.length - 1 ? "mb-8" : ""
             }`}
           >
-            <div
+            <div // Ticker Row Container
               ref={(el) => {
                   tickerRefs.current[rowIndex] = el;
               }}
-              className="inline-flex gap-16"
-              style={{ // ADD STYLE HERE TO CONTROL ANIMATION
-                transform: `translateX(${tickerPositions[rowIndex]?.current || 0}px)`,
-                transition: isPaused ? 'none' : 'transform 150s linear',
-              }}
+              className={`ticker-row inline-flex gap-16 ${rowIndex % 2 === 0 ? 'even' : 'odd'} ${isPaused ? 'paused' : ''}`}
             >
               {rowDuplicate.map((city: string, index: number) => (
                 <span

@@ -40,3 +40,39 @@ button {
   /* top and left will be set dynamically by JS to return to the original position */
   transform: translateY(0); /* Return to original vertical position */
 }
+
+@keyframes ticker-left-to-right {
+  0% {
+    transform: translateX(-100%); /* Start offscreen to the left */
+  }
+  100% {
+    transform: translateX(0%); /* Move to original position */
+  }
+}
+
+@keyframes ticker-right-to-left {
+  0% {
+    transform: translateX(0%); /* Start at original position */
+  }
+  100% {
+    transform: translateX(-100%); /* Move offscreen to the left */
+  }
+}
+
+.ticker-row {
+  display: flex;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-duration: 150s; /* Adjust duration for speed */
+  width: fit-content; /* Make sure the container only takes the width of its content */
+  min-width: 100%; /* Ensure it at least covers the container width for looping */
+}
+
+.ticker-row.even {
+  animation-name: ticker-right-to-left;
+}
+
+.ticker-row.odd {
+  animation-name: ticker-left-to-right;
+  flex-direction: row-reverse; /* Reverse direction for odd rows */
+}
