@@ -178,7 +178,7 @@ function App() {
               {rowDuplicate.map((city: string, index: number) => (
                 <span
                   key={`${city}-${index}`}
-                  className="text-6xl tracking-widest font-bold cursor-pointer flex-shrink-0"
+                  className="city-text text-6xl tracking-widest font-bold cursor-pointer flex-shrink-0"
                   style={{
                     color: COLORS.dark,
                     fontFamily: "Helvetica, Arial, sans-serif",
