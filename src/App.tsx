@@ -1,5 +1,6 @@
 import { COLORS } from "./constants/colors";
-import { useState, useRef, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { CitiesTicker } from "./components/CitiesTicker";
 
 function App() {
   // State
@@ -11,49 +12,6 @@ function App() {
   const [isReturning, setIsReturning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [hasReturned, setHasReturned] = useState(false);
-  // Refs
-  const containerRef = useRef<HTMLDivElement>(null);
-  const tickerRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  // Constants
-  const cities = [
-    "NEW YORK",
-    "PARIS",
-    "LONDON",
-    "CHICAGO",
-    "MIAMI",
-    "SHANGHAI",
-    "BERLIN",
-    "VIENNA",
-    "MELBOURNE",
-    "TOKYO",
-  ];
-
-  const rowSize = 4;
-  const rows: string[][] = useMemo(() => {
-    // Memoize rows
-    const calculatedRows: string[][] = [];
-    for (let i = 0; i < cities.length; i += rowSize) {
-      calculatedRows.push(cities.slice(i, i + rowSize));
-    }
-    return calculatedRows;
-  }, [cities, rowSize]); // Dependencies: cities, rowSize (though these are constants here)
-
-  // Duplicates 3 times.
-  // For even rows (right to left), duplicate to the right (append).
-  // For odd rows (left to right), duplicate to the left (prepend).
-  const createDuplicates = useCallback((arr: string[], rowIndex: number) => {
-    let duplicatedArr = [...arr];
-    for (let i = 0; i < 4; i++) {
-      // Only need ~5 copies for smooth infinite scroll
-      duplicatedArr = [...duplicatedArr, ...arr];
-    }
-    return duplicatedArr;
-  }, []);
-  const rowDuplicates = useMemo(() => {
-    // Memoize rowDuplicates
-    return rows.map(createDuplicates);
-  }, [rows, createDuplicates]); // Dependencies: rows, createDuplicates
 
   const updateTickerPositions = useCallback((shouldPause: boolean = false) => {
     setIsPaused(shouldPause);
@@ -103,8 +61,7 @@ function App() {
 
   // Event handlers
   const handleCityClick = useCallback(
-    (city: string, e: React.MouseEvent<HTMLSpanElement>, rowIndex: number) => {
-      const rect = e.currentTarget.getBoundingClientRect();
+    (city: string, rect: DOMRect) => {
       setSelectedPosition({
         top: rect.top,
         left: rect.left,
@@ -128,7 +85,7 @@ function App() {
       const timer1 = setTimeout(() => {
         setHasReturned(true);
         setSelectedCity(null);
-        animateSelectedCityOut(selectedPosition); // Animate out
+        animateSelectedCityOut(selectedPosition);
         setSelectedPosition(null);
         setIsReturning(false);
 
@@ -141,9 +98,14 @@ function App() {
 
       return () => clearTimeout(timer1);
     }
-  }, [isReturning, hasReturned, updateTickerPositions]);
+  }, [
+    isReturning,
+    hasReturned,
+    selectedPosition,
+    animateSelectedCityOut,
+    updateTickerPositions,
+  ]);
 
-  // Render
   return (
     <div className="min-h-screen" style={{ backgroundColor: COLORS.beige }}>
       {selectedCity && (
@@ -165,62 +127,18 @@ function App() {
             className="text-6xl tracking-widest font-bold"
             style={{
               position: "absolute",
-              top: `${selectedPosition?.top}px`, // SET INITIAL TOP
-              left: `${selectedPosition?.left}px`, // SET INITIAL LEFT
+              top: `${selectedPosition?.top}px`,
+              left: `${selectedPosition?.left}px`,
               color: COLORS.dark,
               fontFamily: "Helvetica, Arial, sans-serif",
             }}
-            id="selected-city-element" // ADD ID FOR JS MANIPULATION
+            id="selected-city-element"
           >
             {selectedCity}
           </div>
         </div>
       )}
-      <div ref={containerRef} className="max-w-full mx-auto py-20">
-        {rowDuplicates.map((rowDuplicate: string[], rowIndex: number) => (
-          <div
-            key={rowIndex}
-            className={`relative w-full overflow-hidden ${
-              rowIndex !== rowDuplicates.length - 1 ? "mb-8" : ""
-            }`}
-          >
-            <div // Ticker Row Container
-              ref={(el) => {
-                tickerRefs.current[rowIndex] = el;
-              }}
-              className={`ticker-row inline-flex gap-16 ${
-                isPaused ? "paused" : ""
-              }`}
-              style={{
-                // ADD INLINE STYLE HERE
-                transform: `translateX(${rowIndex % 2 === 0 ? "0%" : "-80%"})`, // Even rows start at 0%, odd rows start at -80%
-                animationName:
-                  rowIndex % 2 === 0
-                    ? "ticker-right-to-left"
-                    : "ticker-left-to-right", // Different animations for each direction
-                animationDirection: rowIndex % 2 === 0 ? "normal" : "reverse", // Only reverse for odd rows
-              }}
-            >
-              {/* REMOVE even and odd classes from className
-                 className={`ticker-row inline-flex gap-16 ${
-                rowIndex % 2 === 0 ? "even" : "odd" */}
-              {rowDuplicate.map((city: string, index: number) => (
-                <span
-                  key={`${city}-${index}`}
-                  className="city-text text-6xl tracking-widest font-bold cursor-pointer flex-shrink-0"
-                  style={{
-                    color: COLORS.dark,
-                    fontFamily: "Helvetica, Arial, sans-serif",
-                  }}
-                  onClick={(e) => handleCityClick(city, e, rowIndex)}
-                >
-                  {city}
-                </span>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+      <CitiesTicker onCityClick={handleCityClick} isPaused={isPaused} />
     </div>
   );
 }
