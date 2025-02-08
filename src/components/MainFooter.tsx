@@ -4,7 +4,7 @@ interface MainFooterProps {
   isCitySelected: boolean;
 }
 
-export function MainFooter({ isCitySelected }: MainFooterProps) {
+export function MainFooter({}: MainFooterProps) {
   return (
     <div className="w-full flex flex-col overflow-hidden">
       <div

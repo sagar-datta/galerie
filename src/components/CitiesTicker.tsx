@@ -36,7 +36,7 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
   }, [cities, rowSize]); // Dependencies: cities, rowSize (though these are constants here)
 
   // Create duplicates for infinite scroll
-  const createDuplicates = useCallback((arr: string[], rowIndex: number) => {
+  const createDuplicates = useCallback((arr: string[], _rowIndex: number) => {
     let duplicatedArr = [...arr];
     for (let i = 0; i < 24; i++) {
       // Create 24 duplicates (25 total copies) to fill 15-minute animation
@@ -52,7 +52,7 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
 
   // Event handlers
   const handleCityClick = useCallback(
-    (city: string, e: React.MouseEvent<HTMLSpanElement>, rowIndex: number) => {
+    (city: string, e: React.MouseEvent<HTMLSpanElement>, _rowIndex: number) => {
       const rect = e.currentTarget.getBoundingClientRect();
       onCityClick(city, rect);
     },

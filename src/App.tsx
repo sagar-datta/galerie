@@ -13,8 +13,6 @@ function App() {
   } | null>(null);
   const [isReturning, setIsReturning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const [hasReturned, setHasReturned] = useState(false);
-
   const updateTickerPositions = useCallback((shouldPause: boolean = false) => {
     setIsPaused(shouldPause);
   }, []);
@@ -28,7 +26,6 @@ function App() {
       });
 
       updateTickerPositions(true);
-      setHasReturned(false);
       setSelectedCity(city);
       setIsReturning(false);
     },
@@ -40,7 +37,6 @@ function App() {
 
     // Wait for the return animation to complete
     setTimeout(() => {
-      setHasReturned(true);
       setSelectedCity(null);
       setSelectedPosition(null);
       setIsReturning(false);
