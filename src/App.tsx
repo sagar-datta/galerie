@@ -63,8 +63,8 @@ function App() {
           current: currentPos,
           target:
             index % 2 === 0
-              ? currentPos - containerWidth
-              : currentPos + containerWidth,
+              ? currentPos - containerWidth * 2 // Modified target position
+              : currentPos + containerWidth * 2, // Modified target position
         };
       });
       setTickerPositions(newPositions);
