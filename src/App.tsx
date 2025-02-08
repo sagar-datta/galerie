@@ -11,7 +11,13 @@ function App() {
   const [isReturning, setIsReturning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [hasReturned, setHasReturned] = useState(false);
-  const [tickerPositions, setTickerPositions] = useState({ top: 0, bottom: 0 });
+  const [tickerPositions, setTickerPositions] = useState<{
+    top: { current: number; target: number };
+    bottom: { current: number; target: number };
+  }>({
+    top: { current: 0, target: 0 },
+    bottom: { current: 0, target: 0 },
+  });
   const containerRef = useRef<HTMLDivElement>(null);
   const topTickerRef = useRef<HTMLDivElement>(null);
   const bottomTickerRef = useRef<HTMLDivElement>(null);
@@ -48,10 +54,20 @@ function App() {
       top: rect.top,
       left: rect.left,
     });
-    // Store current ticker positions before pausing
+    // Store current ticker positions and calculate targets
+    const topPos = getTickerPosition(topTickerRef.current);
+    const bottomPos = getTickerPosition(bottomTickerRef.current);
+    const containerWidth = containerRef.current?.offsetWidth || 1000;
+
     setTickerPositions({
-      top: getTickerPosition(topTickerRef.current),
-      bottom: getTickerPosition(bottomTickerRef.current),
+      top: {
+        current: topPos,
+        target: topPos - containerWidth / 2,
+      },
+      bottom: {
+        current: bottomPos,
+        target: bottomPos + containerWidth / 2,
+      },
     });
     setIsPaused(true);
     setHasReturned(false);
@@ -74,6 +90,21 @@ function App() {
         setIsReturning(false);
         // Wait a bit longer before resuming ticker to ensure perfect alignment
         setTimeout(() => {
+          // Get fresh positions and calculate targets
+          const topPos = getTickerPosition(topTickerRef.current);
+          const bottomPos = getTickerPosition(bottomTickerRef.current);
+          const containerWidth = containerRef.current?.offsetWidth || 1000;
+
+          setTickerPositions({
+            top: {
+              current: topPos,
+              target: topPos - containerWidth / 2,
+            },
+            bottom: {
+              current: bottomPos,
+              target: bottomPos + containerWidth / 2,
+            },
+          });
           setIsPaused(false);
         }, 200);
       }, 300);
@@ -87,25 +118,23 @@ function App() {
       paused,
     }: {
       direction: number;
-      position: number;
+      position: { current: number; target: number };
       paused: boolean;
-    }) => ({
-      x: paused
-        ? `${position}px`
-        : direction > 0
-        ? ["0%", "-50%"]
-        : ["-50%", "0%"],
-      transition: {
-        x: paused
-          ? { duration: 0 }
-          : {
-              repeat: Infinity,
-              repeatType: "loop",
-              duration: 60,
-              ease: "linear",
-            },
-      },
-    }),
+    }) => {
+      return {
+        x: paused ? position.current : [position.current, position.target],
+        transition: {
+          x: paused
+            ? { duration: 0 }
+            : {
+                repeat: Infinity,
+                repeatType: "loop",
+                duration: 60,
+                ease: "linear",
+              },
+        },
+      };
+    },
   };
 
   const getTickerPosition = useCallback((element: HTMLDivElement | null) => {
@@ -190,7 +219,10 @@ function App() {
             animate="animate"
             custom={{
               direction: 1,
-              position: tickerPositions.top,
+              position: {
+                current: tickerPositions.top.current,
+                target: tickerPositions.top.target,
+              },
               paused: isPaused,
             }}
           >
@@ -218,7 +250,10 @@ function App() {
             animate="animate"
             custom={{
               direction: -1,
-              position: tickerPositions.bottom,
+              position: {
+                current: tickerPositions.bottom.current,
+                target: tickerPositions.bottom.target,
+              },
               paused: isPaused,
             }}
           >
