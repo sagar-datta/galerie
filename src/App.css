@@ -46,7 +46,7 @@ button {
     transform: translateX(0%); /* Start at original position */
   }
   100% {
-    transform: translateX(-100%); /* Move offscreen to the left */
+    transform: translateX(100%); /* Move offscreen to the right */
   }
 }
 
