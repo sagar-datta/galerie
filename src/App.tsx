@@ -43,7 +43,8 @@ function App() {
     rows.push(cities.slice(i, i + rowSize));
   }
 
-  const createDuplicates = useCallback((arr: string[]) => [...arr, ...arr], []);
+  // Increased duplicates to 3 times for longer ticker
+  const createDuplicates = useCallback((arr: string[]) => [...arr, ...arr, ...arr], []);
   const rowDuplicates = rows.map(createDuplicates);
 
   // Utility functions
