@@ -55,19 +55,11 @@ function App() {
   }, []);
   const rowDuplicates = rows.map(createDuplicates);
 
-  // Utility functions
-  const getTickerPosition = useCallback((element: HTMLDivElement | null) => {
-    if (!element) return 0;
-    const transform = window.getComputedStyle(element).transform;
-    const matrix = new DOMMatrix(transform);
-    return matrix.m41;
-  }, []);
-
   const updateTickerPositions = useCallback(
     (shouldPause: boolean = false) => {
       const containerWidth = containerRef.current?.offsetWidth || 1000;
       const newPositions = rows.map((_, index) => {
-        const currentPos = getTickerPosition(tickerRefs.current[index]);
+        const currentPos = tickerPositions[index]?.current || 0; // Use existing current position
         return {
           current: currentPos,
           target:
@@ -75,11 +67,11 @@ function App() {
               ? currentPos - containerWidth * 2 // Modified target position
               : currentPos + containerWidth * 2, // Modified target position
         };
-      });
+      }).map(pos => ({ current: pos.current, target: Math.round(pos.target) })); // Round target
       setTickerPositions(newPositions);
       setIsPaused(shouldPause);
     },
-    [getTickerPosition, rows]
+    [rows, tickerPositions]
   );
 
   // Initialize refs and positions
@@ -157,7 +149,7 @@ function App() {
       transition: {
         x: {
           duration: paused ? 0.3 : 240,
-          delay: paused ? 0 : 0.3,
+          ease: "linear", // Ensure linear easing for consistent speed
         },
       },
     }),
