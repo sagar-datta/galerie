@@ -153,8 +153,7 @@ function App() {
       x: paused ? position.current : [position.current, position.target],
       transition: {
         x: {
-          duration: paused ? 0.3 : 60,
-          ease: paused ? "easeInOut" : "linear",
+          duration: paused ? 0.3 : 120,
           repeat: paused ? 0 : Infinity,
           repeatType: "loop",
           delay: paused ? 0 : 0.3,
