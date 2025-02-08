@@ -44,8 +44,8 @@ function App() {
   // For odd rows (left to right), duplicate to the left (prepend).
   const createDuplicates = useCallback((arr: string[], rowIndex: number) => {
     let duplicatedArr = [...arr];
-    for (let i = 0; i < 99; i++) {
-      // repeat 99 more times, for a total of 100
+    for (let i = 0; i < 4; i++) {
+      // Only need ~5 copies for smooth infinite scroll
       duplicatedArr = [...duplicatedArr, ...arr];
     }
     return duplicatedArr;
