@@ -29,11 +29,14 @@ function App() {
     "TOKYO",
   ];
 
-  const rowSize = 4;
-  const rows: string[][] = [];
-  for (let i = 0; i < cities.length; i += rowSize) {
-    rows.push(cities.slice(i, i + rowSize));
-  }
+    const rowSize = 4;
+    const rows: string[][] = useMemo(() => { // Memoize rows
+        const calculatedRows: string[][] = [];
+        for (let i = 0; i < cities.length; i += rowSize) {
+            calculatedRows.push(cities.slice(i, i + rowSize));
+        }
+        return calculatedRows;
+    }, [cities, rowSize]); // Dependencies: cities, rowSize (though these are constants here)
 
   // Duplicates 3 times.
   // For even rows (right to left), duplicate to the right (append).
@@ -46,7 +49,9 @@ function App() {
     }
     return duplicatedArr;
   }, []);
-  const rowDuplicates = rows.map(createDuplicates);
+  const rowDuplicates = useMemo(() => { // Memoize rowDuplicates
+      return rows.map(createDuplicates);
+  }, [rows, createDuplicates]); // Dependencies: rows, createDuplicates
 
   const updateTickerPositions = useCallback((shouldPause: boolean = false) => {
     setIsPaused(shouldPause);
