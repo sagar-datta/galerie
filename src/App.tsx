@@ -43,8 +43,13 @@ function App() {
     rows.push(cities.slice(i, i + rowSize));
   }
 
-  // Increased duplicates to 3 times for longer ticker
-  const createDuplicates = useCallback((arr: string[]) => [...arr, ...arr, ...arr], []);
+  // Duplicates 3 times.
+  // For even rows (right to left), duplicate to the right (append).
+  // For odd rows (left to right), duplicate to the left (prepend).
+  const createDuplicates = useCallback((arr: string[], rowIndex: number) => {
+    const duplicatedArr = [...arr, ...arr, ...arr];
+    return rowIndex % 2 === 0 ? duplicatedArr : [...duplicatedArr.slice(arr.length), ...arr];
+  }, []);
   const rowDuplicates = rows.map(createDuplicates);
 
   // Utility functions
