@@ -1,5 +1,5 @@
 import { COLORS } from "./constants/colors";
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 function App() {
@@ -9,7 +9,12 @@ function App() {
     left: number;
   } | null>(null);
   const [isReturning, setIsReturning] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [hasReturned, setHasReturned] = useState(false);
+  const [tickerPositions, setTickerPositions] = useState({ top: 0, bottom: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
+  const topTickerRef = useRef<HTMLDivElement>(null);
+  const bottomTickerRef = useRef<HTMLDivElement>(null);
 
   const cities = [
     "NEW YORK",
@@ -43,32 +48,72 @@ function App() {
       top: rect.top,
       left: rect.left,
     });
+    // Store current ticker positions before pausing
+    setTickerPositions({
+      top: getTickerPosition(topTickerRef.current),
+      bottom: getTickerPosition(bottomTickerRef.current),
+    });
+    setIsPaused(true);
+    setHasReturned(false);
     setSelectedCity(city);
     setIsReturning(false);
   };
 
   const handleReturn = () => {
     setIsReturning(true);
-    setTimeout(() => {
-      setSelectedCity(null);
-      setSelectedPosition(null);
-      setIsReturning(false);
-    }, 1000);
   };
 
+  // Effect to handle the completion of return animation
+  useEffect(() => {
+    if (isReturning && !hasReturned) {
+      // Wait for city to complete return animation
+      setTimeout(() => {
+        setHasReturned(true);
+        setSelectedCity(null);
+        setSelectedPosition(null);
+        setIsReturning(false);
+        // Wait a bit longer before resuming ticker to ensure perfect alignment
+        setTimeout(() => {
+          setIsPaused(false);
+        }, 200);
+      }, 300);
+    }
+  }, [isReturning, hasReturned]);
+
   const marqueeVariants = {
-    animate: (direction: number) => ({
-      x: direction > 0 ? ["0%", "-50%"] : ["-50%", "0%"],
+    animate: ({
+      direction,
+      position,
+      paused,
+    }: {
+      direction: number;
+      position: number;
+      paused: boolean;
+    }) => ({
+      x: paused
+        ? `${position}px`
+        : direction > 0
+        ? ["0%", "-50%"]
+        : ["-50%", "0%"],
       transition: {
-        x: {
-          repeat: Infinity,
-          repeatType: "loop",
-          duration: 120,
-          ease: "linear",
-        },
+        x: paused
+          ? { duration: 0 }
+          : {
+              repeat: Infinity,
+              repeatType: "loop",
+              duration: 60,
+              ease: "linear",
+            },
       },
     }),
   };
+
+  const getTickerPosition = useCallback((element: HTMLDivElement | null) => {
+    if (!element) return 0;
+    const transform = window.getComputedStyle(element).transform;
+    const matrix = new DOMMatrix(transform);
+    return matrix.m41; // Get X transform value
+  }, []);
 
   const selectedCityVariants = {
     initial: (position: { top: number; left: number } | null) => ({
@@ -83,10 +128,15 @@ function App() {
       y: "-50%",
     },
     exit: (position: { top: number; left: number } | null) => ({
+      opacity: 1,
       top: position?.top || 0,
       left: position?.left || 0,
       x: 0,
       y: 0,
+      transition: {
+        duration: 0.3,
+        ease: "easeInOut",
+      },
     }),
   };
 
@@ -134,10 +184,15 @@ function App() {
       <div ref={containerRef} className="max-w-full mx-auto py-20">
         <div className="relative w-full overflow-hidden mb-8">
           <motion.div
+            ref={topTickerRef}
             className="inline-flex gap-16"
             variants={marqueeVariants}
             animate="animate"
-            custom={1}
+            custom={{
+              direction: 1,
+              position: tickerPositions.top,
+              paused: isPaused,
+            }}
           >
             {topDuplicates.map((city, index) => (
               <motion.span
@@ -157,10 +212,15 @@ function App() {
         </div>
         <div className="relative w-full overflow-hidden">
           <motion.div
+            ref={bottomTickerRef}
             className="inline-flex gap-16"
             variants={marqueeVariants}
             animate="animate"
-            custom={-1}
+            custom={{
+              direction: -1,
+              position: tickerPositions.bottom,
+              paused: isPaused,
+            }}
           >
             {bottomDuplicates.map((city, index) => (
               <motion.span
