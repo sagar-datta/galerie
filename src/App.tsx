@@ -3,6 +3,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 function App() {
+  // State
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [selectedPosition, setSelectedPosition] = useState<{
     top: number;
@@ -11,32 +12,18 @@ function App() {
   const [isReturning, setIsReturning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [hasReturned, setHasReturned] = useState(false);
-  const [tickerPositions, setTickerPositions] = useState<{
-    top: { current: number; target: number };
-    bottom: { current: number; target: number };
-  }>({
-    top: { current: 0, target: -1000 },
-    bottom: { current: 0, target: 1000 },
-  });
+  const [tickerPositions, setTickerPositions] = useState<
+    Array<{
+      current: number;
+      target: number;
+    }>
+  >([]);
 
-  // Initialize animation positions on mount
-  useEffect(() => {
-    const containerWidth = containerRef.current?.offsetWidth || 1000;
-    setTickerPositions({
-      top: {
-        current: 0,
-        target: -containerWidth / 2,
-      },
-      bottom: {
-        current: 0,
-        target: containerWidth / 2,
-      },
-    });
-  }, []);
+  // Refs
   const containerRef = useRef<HTMLDivElement>(null);
-  const topTickerRef = useRef<HTMLDivElement>(null);
-  const bottomTickerRef = useRef<HTMLDivElement>(null);
+  const tickerRefs = useRef<(HTMLDivElement | null)[]>([]);
 
+  // Constants
   const cities = [
     "NEW YORK",
     "PARIS",
@@ -50,82 +37,101 @@ function App() {
     "TOKYO",
   ];
 
-  // Split cities into two groups
-  const midPoint = Math.ceil(cities.length / 2);
-  const topCities = cities.slice(0, midPoint);
-  const bottomCities = cities.slice(midPoint);
+  const rowSize = 4;
+  const rows: string[][] = [];
+  for (let i = 0; i < cities.length; i += rowSize) {
+    rows.push(cities.slice(i, i + rowSize));
+  }
 
-  // Create duplicated arrays - using only 2 copies for better performance
-  const createDuplicates = (arr: string[]) => [...arr, ...arr];
-  const topDuplicates = createDuplicates(topCities);
-  const bottomDuplicates = createDuplicates(bottomCities);
+  const createDuplicates = useCallback((arr: string[]) => [...arr, ...arr], []);
+  const rowDuplicates = rows.map(createDuplicates);
 
-  const handleCityClick = (
-    city: string,
-    e: React.MouseEvent<HTMLSpanElement>
-  ) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setSelectedPosition({
-      top: rect.top,
-      left: rect.left,
-    });
-    // Store current ticker positions and calculate targets
-    const topPos = getTickerPosition(topTickerRef.current);
-    const bottomPos = getTickerPosition(bottomTickerRef.current);
-    const containerWidth = containerRef.current?.offsetWidth || 1000;
+  // Utility functions
+  const getTickerPosition = useCallback((element: HTMLDivElement | null) => {
+    if (!element) return 0;
+    const transform = window.getComputedStyle(element).transform;
+    const matrix = new DOMMatrix(transform);
+    return matrix.m41;
+  }, []);
 
-    setTickerPositions({
-      top: {
-        current: topPos,
-        target: topPos - containerWidth / 2,
-      },
-      bottom: {
-        current: bottomPos,
-        target: bottomPos + containerWidth / 2,
-      },
-    });
-    setIsPaused(true);
-    setHasReturned(false);
-    setSelectedCity(city);
-    setIsReturning(false);
-  };
+  const updateTickerPositions = useCallback(
+    (shouldPause: boolean = false) => {
+      const containerWidth = containerRef.current?.offsetWidth || 1000;
+      const newPositions = rows.map((_, index) => {
+        const currentPos = getTickerPosition(tickerRefs.current[index]);
+        return {
+          current: currentPos,
+          target:
+            index % 2 === 0
+              ? currentPos - containerWidth
+              : currentPos + containerWidth,
+        };
+      });
+      setTickerPositions(newPositions);
+      setIsPaused(shouldPause);
+    },
+    [getTickerPosition, rows]
+  );
 
-  const handleReturn = () => {
+  // Initialize refs and positions
+  useEffect(() => {
+    tickerRefs.current = Array(rows.length).fill(null);
+  }, [rows.length]);
+
+  useEffect(() => {
+    if (!selectedCity && rows.length > 0) {
+      const containerWidth = containerRef.current?.offsetWidth || 1000;
+      const positions = rows.map((_, index) => ({
+        current: 0,
+        target: index % 2 === 0 ? -containerWidth / 2 : containerWidth / 2,
+      }));
+      setTickerPositions(positions);
+      setIsPaused(false);
+    }
+  }, [rows.length, selectedCity]);
+
+  // Event handlers
+  const handleCityClick = useCallback(
+    (city: string, e: React.MouseEvent<HTMLSpanElement>, rowIndex: number) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      setSelectedPosition({
+        top: rect.top,
+        left: rect.left,
+      });
+
+      updateTickerPositions(true);
+      setHasReturned(false);
+      setSelectedCity(city);
+      setIsReturning(false);
+    },
+    [updateTickerPositions]
+  );
+
+  const handleReturn = useCallback(() => {
     setIsReturning(true);
-  };
+  }, []);
 
-  // Effect to handle the completion of return animation
+  // Return animation effect
   useEffect(() => {
     if (isReturning && !hasReturned) {
-      // Wait for city to complete return animation
-      setTimeout(() => {
+      const timer1 = setTimeout(() => {
         setHasReturned(true);
         setSelectedCity(null);
         setSelectedPosition(null);
         setIsReturning(false);
-        // Wait a bit longer before resuming ticker to ensure perfect alignment
-        setTimeout(() => {
-          // Get fresh positions and calculate targets
-          const topPos = getTickerPosition(topTickerRef.current);
-          const bottomPos = getTickerPosition(bottomTickerRef.current);
-          const containerWidth = containerRef.current?.offsetWidth || 1000;
 
-          setTickerPositions({
-            top: {
-              current: topPos,
-              target: topPos - containerWidth / 2,
-            },
-            bottom: {
-              current: bottomPos,
-              target: bottomPos + containerWidth / 2,
-            },
-          });
-          setIsPaused(false);
+        const timer2 = setTimeout(() => {
+          updateTickerPositions(false);
         }, 200);
-      }, 300);
-    }
-  }, [isReturning, hasReturned]);
 
+        return () => clearTimeout(timer2);
+      }, 300);
+
+      return () => clearTimeout(timer1);
+    }
+  }, [isReturning, hasReturned, updateTickerPositions]);
+
+  // Animation variants
   const marqueeVariants = {
     animate: ({
       direction,
@@ -135,29 +141,19 @@ function App() {
       direction: number;
       position: { current: number; target: number };
       paused: boolean;
-    }) => {
-      return {
-        x: paused ? position.current : [position.current, position.target],
-        transition: {
-          x: paused
-            ? { duration: 0 }
-            : {
-                repeat: Infinity,
-                repeatType: "loop",
-                duration: 60,
-                ease: "linear",
-              },
+    }) => ({
+      x: paused ? position.current : [position.current, position.target],
+      transition: {
+        x: {
+          duration: paused ? 0.3 : 60,
+          ease: paused ? "easeInOut" : "linear",
+          repeat: paused ? 0 : Infinity,
+          repeatType: "loop",
+          delay: paused ? 0 : 0.3,
         },
-      };
-    },
+      },
+    }),
   };
-
-  const getTickerPosition = useCallback((element: HTMLDivElement | null) => {
-    if (!element) return 0;
-    const transform = window.getComputedStyle(element).transform;
-    const matrix = new DOMMatrix(transform);
-    return matrix.m41; // Get X transform value
-  }, []);
 
   const selectedCityVariants = {
     initial: (position: { top: number; left: number } | null) => ({
@@ -184,6 +180,7 @@ function App() {
     }),
   };
 
+  // Render
   return (
     <div className="min-h-screen" style={{ backgroundColor: COLORS.beige }}>
       <AnimatePresence>
@@ -226,68 +223,48 @@ function App() {
         )}
       </AnimatePresence>
       <div ref={containerRef} className="max-w-full mx-auto py-20">
-        <div className="relative w-full overflow-hidden mb-8">
-          <motion.div
-            ref={topTickerRef}
-            className="inline-flex gap-16"
-            variants={marqueeVariants}
-            animate="animate"
-            custom={{
-              direction: 1,
-              position: {
-                current: tickerPositions.top.current,
-                target: tickerPositions.top.target,
-              },
-              paused: isPaused,
-            }}
+        {rowDuplicates.map((rowDuplicate: string[], rowIndex: number) => (
+          <div
+            key={rowIndex}
+            className={`relative w-full overflow-hidden ${
+              rowIndex !== rowDuplicates.length - 1 ? "mb-8" : ""
+            }`}
           >
-            {topDuplicates.map((city, index) => (
-              <motion.span
-                key={`${city}-${index}`}
-                className="text-6xl tracking-widest font-bold cursor-pointer flex-shrink-0"
-                style={{
-                  color: COLORS.dark,
-                  fontFamily: "Helvetica, Arial, sans-serif",
-                }}
-                onClick={(e) => handleCityClick(city, e)}
-                whileHover={{ color: "#ff685b" }}
-              >
-                {city}
-              </motion.span>
-            ))}
-          </motion.div>
-        </div>
-        <div className="relative w-full overflow-hidden">
-          <motion.div
-            ref={bottomTickerRef}
-            className="inline-flex gap-16"
-            variants={marqueeVariants}
-            animate="animate"
-            custom={{
-              direction: -1,
-              position: {
-                current: tickerPositions.bottom.current,
-                target: tickerPositions.bottom.target,
-              },
-              paused: isPaused,
-            }}
-          >
-            {bottomDuplicates.map((city, index) => (
-              <motion.span
-                key={`${city}-${index}`}
-                className="text-6xl tracking-widest font-bold cursor-pointer flex-shrink-0"
-                style={{
-                  color: COLORS.dark,
-                  fontFamily: "Helvetica, Arial, sans-serif",
-                }}
-                onClick={(e) => handleCityClick(city, e)}
-                whileHover={{ color: "#ff685b" }}
-              >
-                {city}
-              </motion.span>
-            ))}
-          </motion.div>
-        </div>
+            <motion.div
+              ref={(el) => {
+                if (tickerRefs.current) {
+                  tickerRefs.current[rowIndex] = el;
+                }
+              }}
+              className="inline-flex gap-16"
+              variants={marqueeVariants}
+              animate="animate"
+              custom={{
+                direction: rowIndex % 2 === 0 ? 1 : -1,
+                position: tickerPositions[rowIndex] || {
+                  current: 0,
+                  target: 0,
+                },
+                paused: isPaused,
+              }}
+            >
+              {rowDuplicate.map((city: string, index: number) => (
+                <motion.span
+                  key={`${city}-${index}`}
+                  className="text-6xl tracking-widest font-bold cursor-pointer flex-shrink-0"
+                  style={{
+                    color: COLORS.dark,
+                    fontFamily: "Helvetica, Arial, sans-serif",
+                  }}
+                  onClick={(e) => handleCityClick(city, e, rowIndex)}
+                  whileHover={{ color: "#ff685b" }}
+                >
+                  {city}
+                </motion.span>
+              ))}
+            </motion.div>
+          </div>
+        ))}
       </div>
     </div>
   );
