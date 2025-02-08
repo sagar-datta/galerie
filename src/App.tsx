@@ -1,5 +1,6 @@
 import { COLORS } from "./constants/colors";
 import { useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 function App() {
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
@@ -37,101 +38,145 @@ function App() {
     city: string,
     e: React.MouseEvent<HTMLSpanElement>
   ) => {
-    if (containerRef.current) {
-      const rect = e.currentTarget.getBoundingClientRect();
-      setSelectedPosition({
-        top: rect.top,
-        left: rect.left,
-      });
-      setSelectedCity(city);
-      setIsReturning(false);
-
-      containerRef.current.classList.add("paused");
-    }
+    const rect = e.currentTarget.getBoundingClientRect();
+    setSelectedPosition({
+      top: rect.top,
+      left: rect.left,
+    });
+    setSelectedCity(city);
+    setIsReturning(false);
   };
 
   const handleReturn = () => {
     setIsReturning(true);
     setTimeout(() => {
-      if (containerRef.current) {
-        containerRef.current.classList.remove("paused");
-      }
       setSelectedCity(null);
       setSelectedPosition(null);
       setIsReturning(false);
     }, 1000);
   };
 
+  const marqueeVariants = {
+    animate: (direction: number) => ({
+      x: direction > 0 ? ["0%", "-50%"] : ["-50%", "0%"],
+      transition: {
+        x: {
+          repeat: Infinity,
+          repeatType: "loop",
+          duration: 120,
+          ease: "linear",
+        },
+      },
+    }),
+  };
+
+  const selectedCityVariants = {
+    initial: (position: { top: number; left: number } | null) => ({
+      top: position?.top || 0,
+      left: position?.left || 0,
+      x: 0,
+      y: 0,
+    }),
+    animate: {
+      top: "50%",
+      x: "2rem",
+      y: "-50%",
+    },
+    exit: (position: { top: number; left: number } | null) => ({
+      top: position?.top || 0,
+      left: position?.left || 0,
+      x: 0,
+      y: 0,
+    }),
+  };
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: COLORS.beige }}>
-      {selectedCity && (
-        <div
-          className="fixed top-0 left-0 w-full h-full z-50"
-          style={{ backgroundColor: COLORS.beige }}
-        >
-          <button
-            onClick={handleReturn}
-            className="fixed top-4 left-4 px-6 py-3 text-xl font-bold transition-colors"
-            style={{
-              backgroundColor: COLORS.dark,
-              color: COLORS.beige,
-            }}
+      <AnimatePresence>
+        {selectedCity && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed top-0 left-0 w-full h-full z-50"
+            style={{ backgroundColor: COLORS.beige }}
           >
-            Return
-          </button>
-          <div
-            className={`selected-city text-6xl tracking-widest font-bold ${
-              isReturning ? "returning" : ""
-            }`}
-            style={{
-              position: "absolute",
-              top: selectedPosition?.top,
-              left: selectedPosition?.left,
-              color: COLORS.dark,
-              fontFamily: "Helvetica, Arial, sans-serif",
-            }}
+            <motion.button
+              onClick={handleReturn}
+              className="fixed top-4 left-4 px-6 py-3 text-xl font-bold"
+              style={{
+                backgroundColor: COLORS.dark,
+                color: COLORS.beige,
+              }}
+              whileHover={{
+                backgroundColor: "#ff685b",
+              }}
+            >
+              Return
+            </motion.button>
+            <motion.div
+              variants={selectedCityVariants}
+              initial="initial"
+              animate={isReturning ? "exit" : "animate"}
+              custom={selectedPosition}
+              className="text-6xl tracking-widest font-bold"
+              style={{
+                position: "absolute",
+                color: COLORS.dark,
+                fontFamily: "Helvetica, Arial, sans-serif",
+              }}
+            >
+              {selectedCity}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <div ref={containerRef} className="max-w-full mx-auto py-20">
+        <div className="relative w-full overflow-hidden mb-8">
+          <motion.div
+            className="inline-flex gap-16"
+            variants={marqueeVariants}
+            animate="animate"
+            custom={1}
           >
-            {selectedCity}
-          </div>
-        </div>
-      )}
-      <div
-        ref={containerRef}
-        className="max-w-full mx-auto py-20 content-visibility-auto"
-      >
-        <div className="ticker-row mb-8 scroll-left">
-          <div className="ticker-content">
             {topDuplicates.map((city, index) => (
-              <span
+              <motion.span
                 key={`${city}-${index}`}
-                className="ticker-item text-6xl tracking-widest font-bold cursor-pointer"
+                className="text-6xl tracking-widest font-bold cursor-pointer flex-shrink-0"
                 style={{
                   color: COLORS.dark,
                   fontFamily: "Helvetica, Arial, sans-serif",
                 }}
                 onClick={(e) => handleCityClick(city, e)}
+                whileHover={{ color: "#ff685b" }}
               >
                 {city}
-              </span>
+              </motion.span>
             ))}
-          </div>
+          </motion.div>
         </div>
-        <div className="ticker-row scroll-right">
-          <div className="ticker-content">
+        <div className="relative w-full overflow-hidden">
+          <motion.div
+            className="inline-flex gap-16"
+            variants={marqueeVariants}
+            animate="animate"
+            custom={-1}
+          >
             {bottomDuplicates.map((city, index) => (
-              <span
+              <motion.span
                 key={`${city}-${index}`}
-                className="ticker-item text-6xl tracking-widest font-bold cursor-pointer"
+                className="text-6xl tracking-widest font-bold cursor-pointer flex-shrink-0"
                 style={{
                   color: COLORS.dark,
                   fontFamily: "Helvetica, Arial, sans-serif",
                 }}
                 onClick={(e) => handleCityClick(city, e)}
+                whileHover={{ color: "#ff685b" }}
               >
                 {city}
-              </span>
+              </motion.span>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>

@@ -3,113 +3,17 @@
   min-height: 100vh;
 }
 
-.ticker-row {
+.relative {
   position: relative;
-  width: 100%;
-  overflow: hidden;
-  contain: layout style;
 }
 
-.ticker-content {
+.inline-flex {
   display: inline-flex;
-  animation-duration: 120s;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  gap: 4rem;
-  will-change: transform;
-  transform-style: preserve-3d;
-  perspective: 1000px;
-  contain: layout style;
-}
-
-.scroll-left .ticker-content {
-  animation-name: scrollLeft;
-}
-
-.scroll-right .ticker-content {
-  animation-name: scrollRight;
-}
-
-.paused .ticker-content {
-  animation-play-state: paused !important;
-}
-
-@keyframes scrollLeft {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  100% {
-    transform: translate3d(-50%, 0, 0);
-  }
-}
-
-@keyframes scrollRight {
-  0% {
-    transform: translate3d(-50%, 0, 0);
-  }
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-.ticker-item {
-  white-space: nowrap;
-  flex-shrink: 0;
-  transition: color 0.3s ease;
-  cursor: pointer;
-  backface-visibility: hidden;
-  -webkit-font-smoothing: antialiased;
-  transform: translateZ(0);
-  contain: layout style paint;
-}
-
-.ticker-item:hover {
-  color: #ff685b !important;
-}
-
-.selected-city {
-  animation: slideToLeft 1s forwards cubic-bezier(0.4, 0, 0.2, 1);
-  white-space: nowrap;
-  position: fixed;
-  z-index: 60;
-  backface-visibility: hidden;
-  -webkit-font-smoothing: antialiased;
-  transform: translateZ(0);
-  contain: layout style;
-}
-
-.selected-city.returning {
-  animation: slideBack 1s forwards cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@keyframes slideToLeft {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  100% {
-    transform: translate3d(2rem, -50%, 0);
-    top: 50% !important;
-  }
-}
-
-@keyframes slideBack {
-  0% {
-    transform: translate3d(2rem, -50%, 0);
-    top: 50% !important;
-  }
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
 }
 
 button {
-  transition: all 0.3s ease;
   z-index: 70;
   contain: layout style;
-}
-
-button:hover {
-  background-color: #ff685b !important;
 }
 
 @media (hover: none) {
