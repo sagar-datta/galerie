@@ -38,17 +38,18 @@ function App() {
   const handleReturn = useCallback(() => {
     setIsReturning(true);
 
-    // Return animation timing
+    // Wait for the return animation to complete
     setTimeout(() => {
       setHasReturned(true);
       setSelectedCity(null);
       setSelectedPosition(null);
       setIsReturning(false);
 
-      setTimeout(() => {
+      // Brief delay before resuming ticker to ensure smooth transition
+      requestAnimationFrame(() => {
         updateTickerPositions(false);
-      }, 200);
-    }, 300);
+      });
+    }, 350); // Slightly longer than the animation duration (300ms) to ensure completion
   }, [updateTickerPositions]);
 
   return (

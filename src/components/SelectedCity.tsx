@@ -19,11 +19,20 @@ export function SelectedCity({
       "selected-city-element"
     );
     if (selectedCityElement) {
-      selectedCityElement.style.transition =
-        "top 0.5s ease-in-out, left 0.5s ease-in-out, transform 0.5s ease-in-out, opacity 0.5s ease-in-out";
-      selectedCityElement.style.top = "50%";
-      selectedCityElement.style.left = "2rem";
-      selectedCityElement.style.transform = "translateY(-50%)";
+      // Force a reflow to ensure initial position is rendered
+      selectedCityElement.getBoundingClientRect();
+
+      // Wait for next frame to establish initial position
+      requestAnimationFrame(() => {
+        // Add a tiny delay to ensure initial position is visible
+        setTimeout(() => {
+          selectedCityElement.style.transition =
+            "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)";
+          selectedCityElement.style.top = "50%";
+          selectedCityElement.style.left = "50%";
+          selectedCityElement.style.transform = "translate(-50%, -50%)";
+        }, 16); // Approximately one frame at 60fps
+      });
     }
   }, []);
 
@@ -33,11 +42,19 @@ export function SelectedCity({
     );
     if (selectedCityElement) {
       selectedCityElement.style.transition =
-        "top 0.3s ease-in-out, left 0.3s ease-in-out, transform 0.3s ease-in-out, opacity 0.3s ease-in-out";
+        "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
       selectedCityElement.style.top = `${position.top}px`;
       selectedCityElement.style.left = `${position.left}px`;
-      selectedCityElement.style.transform = "translateY(0%) translateX(0%)";
-      selectedCityElement.style.opacity = "0";
+      selectedCityElement.style.transform = "translate(0, 0)";
+
+      // Only hide after animation completes
+      selectedCityElement.addEventListener(
+        "transitionend",
+        () => {
+          selectedCityElement.style.opacity = "0";
+        },
+        { once: true }
+      );
     }
   }, [position]);
 
@@ -74,6 +91,8 @@ export function SelectedCity({
           left: `${position.left}px`,
           color: COLORS.dark,
           fontFamily: "Helvetica, Arial, sans-serif",
+          opacity: 1, // Start visible in original position
+          transition: "none", // Disable initial transition
         }}
         id="selected-city-element"
       >

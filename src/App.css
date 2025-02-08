@@ -21,25 +21,26 @@ button {
 }
 
 #selected-city-element {
-  opacity: 0; /* Initially hidden */
-  transition: opacity 0.5s ease-in-out, top 0.5s ease-in-out,
-    left 0.5s ease-in-out, transform 0.5s ease-in-out; /* Smooth transitions */
-  top: 0; /* Initial top position */
-  left: 0; /* Initial left position */
-  transform: translateY(0); /* Initial transform */
+  opacity: 0;
+  pointer-events: auto;
+  will-change: transform, opacity, top, left;
+  transform-origin: center center;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-#selected-city-element.animate-in {
-  opacity: 1; /* Fade in */
-  top: 50%; /* Move to center vertically */
-  left: 2rem; /* Move to 2rem from left */
-  transform: translateY(-50%); /* Center vertically using transform */
+.ticker-row {
+  display: flex;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-duration: 900s; /* 15 minutes */
+  width: fit-content;
+  min-width: 100%;
+  will-change: transform;
 }
 
-#selected-city-element.animate-out {
-  opacity: 0; /* Fade out */
-  /* top and left will be set dynamically by JS to return to the original position */
-  transform: translateY(0); /* Return to original vertical position */
+.ticker-row.paused {
+  animation-play-state: paused !important;
 }
 
 @keyframes ticker-right-to-left {
