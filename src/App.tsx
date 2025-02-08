@@ -1,6 +1,5 @@
 import { COLORS } from "./constants/colors";
 import { useState, useRef, useCallback, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 
 function App() {
   // State
@@ -97,6 +96,39 @@ function App() {
     }
   }, [rows.length, selectedCity]);
 
+    const animateSelectedCityIn = useCallback(() => {
+    const selectedCityElement = document.getElementById("selected-city-element");
+    if (selectedCityElement && selectedPosition) {
+      selectedCityElement.style.transition = 'top 0.5s ease-in-out, left 0.5s ease-in-out, transform 0.5s ease-in-out, opacity 0.5s ease-in-out';
+      selectedCityElement.style.top = '50%';
+      selectedCityElement.style.left = '2rem';
+      selectedCityElement.style.transform = 'translateY(-50%)';
+    }
+  }, [selectedPosition]);
+
+  const animateSelectedCityOut = useCallback((position: { top: number, left: number } | null) => {
+    const selectedCityElement = document.getElementById("selected-city-element");
+    if (selectedCityElement && position) {
+      selectedCityElement.style.transition = 'top 0.3s ease-in-out, left 0.3s ease-in-out, transform 0.3s ease-in-out, opacity 0.3s ease-in-out';
+      selectedCityElement.style.top = `${position.top}px`;
+      selectedCityElement.style.left = `${position.left}px`;
+      selectedCityElement.style.transform = 'translateY(0%) translateX(0%)';
+      selectedCityElement.style.opacity = '0';
+    }
+  }, []);
+
+    useEffect(() => {
+    if (selectedCity && selectedPosition) {
+      animateSelectedCityIn();
+    }
+  }, [selectedCity, selectedPosition, animateSelectedCityIn]);
+
+  useEffect(() => {
+    if (isReturning && selectedPosition) {
+      animateSelectedCityOut(selectedPosition);
+    }
+  }, [isReturning, selectedPosition, animateSelectedCityOut]);
+
   // Event handlers
   const handleCityClick = useCallback(
     (city: string, e: React.MouseEvent<HTMLSpanElement>, rowIndex: number) => {
@@ -124,6 +156,7 @@ function App() {
       const timer1 = setTimeout(() => {
         setHasReturned(true);
         setSelectedCity(null);
+        animateSelectedCityOut(selectedPosition); // Animate out
         setSelectedPosition(null);
         setIsReturning(false);
 
@@ -138,94 +171,43 @@ function App() {
     }
   }, [isReturning, hasReturned, updateTickerPositions]);
 
-  // Animation variants
-  const marqueeVariants = {
-    animate: ({
-      direction,
-      position,
-      paused,
-    }: {
-      direction: number;
-      position: { current: number; target: number };
-      paused: boolean;
-    }) => ({
-      x: paused ? position.current : [position.current, position.target],
-      transition: {
-        x: {
-          duration: paused ? 0.3 : 150,
-          ease: "linear", // Ensure linear easing for consistent speed
-        },
-      },
-    }),
-  };
-
-  const selectedCityVariants = {
-    initial: (position: { top: number; left: number } | null) => ({
-      top: position?.top || 0,
-      left: position?.left || 0,
-      x: 0,
-      y: 0,
-    }),
-    animate: {
-      top: "50%",
-      x: "2rem",
-      y: "-50%",
-    },
-    exit: (position: { top: number; left: number } | null) => ({
-      opacity: 1,
-      top: position?.top || 0,
-      left: position?.left || 0,
-      x: 0,
-      y: 0,
-      transition: {
-        duration: 0.3,
-        ease: "easeInOut",
-      },
-    }),
-  };
-
   // Render
   return (
     <div className="min-h-screen" style={{ backgroundColor: COLORS.beige }}>
-      <AnimatePresence>
-        {selectedCity && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed top-0 left-0 w-full h-full z-50"
-            style={{ backgroundColor: COLORS.beige }}
+      {selectedCity && (
+        <div
+          className="fixed top-0 left-0 w-full h-full z-50"
+          style={{ backgroundColor: COLORS.beige }}
+        >
+          <button
+            onClick={handleReturn}
+            className="fixed top-4 left-4 px-6 py-3 text-xl font-bold"
+            style={{
+              backgroundColor: COLORS.dark,
+              color: COLORS.beige,
+            }}
           >
-            <motion.button
-              onClick={handleReturn}
-              className="fixed top-4 left-4 px-6 py-3 text-xl font-bold"
-              style={{
-                backgroundColor: COLORS.dark,
-                color: COLORS.beige,
-              }}
-              whileHover={{
-                backgroundColor: "#ff685b",
-              }}
-            >
-              Return
-            </motion.button>
-            <motion.div
-              variants={selectedCityVariants}
-              initial="initial"
-              animate={isReturning ? "exit" : "animate"}
-              custom={selectedPosition}
-              className="text-6xl tracking-widest font-bold"
-              style={{
-                position: "absolute",
-                color: COLORS.dark,
-                fontFamily: "Helvetica, Arial, sans-serif",
-              }}
-            >
-              {selectedCity}
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            Return
+          </button>
+          <div
+            // variants={selectedCityVariants} // REMOVE THIS LINE
+            // initial="initial" // REMOVE THIS LINE
+            // animate={isReturning ? "exit" : "animate"} // REMOVE THIS LINE
+            // custom={selectedPosition} // REMOVE THIS LINE
+            className="text-6xl tracking-widest font-bold"
+            style={{
+              position: "absolute",
+              top: `${selectedPosition?.top}px`, // SET INITIAL TOP
+              left: `${selectedPosition?.left}px`, // SET INITIAL LEFT
+              color: COLORS.dark,
+              fontFamily: "Helvetica, Arial, sans-serif",
+            }}
+            id="selected-city-element" // ADD ID FOR JS MANIPULATION
+          >
+            {selectedCity}
+          </div>
+        </div>
+      )}
       <div ref={containerRef} className="max-w-full mx-auto py-20">
         {rowDuplicates.map((rowDuplicate: string[], rowIndex: number) => (
           <div
@@ -234,22 +216,14 @@ function App() {
               rowIndex !== rowDuplicates.length - 1 ? "mb-8" : ""
             }`}
           >
-            <motion.div
+            <div
               ref={(el) => {
-                if (tickerRefs.current) {
                   tickerRefs.current[rowIndex] = el;
-                }
               }}
               className="inline-flex gap-16"
-              variants={marqueeVariants}
-              animate="animate"
-              custom={{
-                direction: rowIndex % 2 === 0 ? 1 : -1,
-                position: tickerPositions[rowIndex] || {
-                  current: 0,
-                  target: 0,
-                },
-                paused: isPaused,
+              style={{ // ADD STYLE HERE TO CONTROL ANIMATION
+                transform: `translateX(${tickerPositions[rowIndex]?.current || 0}px)`,
+                transition: isPaused ? 'none' : 'transform 150s linear',
               }}
             >
               {rowDuplicate.map((city: string, index: number) => (
@@ -266,7 +240,7 @@ function App() {
                   {city}
                 </motion.span>
               ))}
-            </motion.div>
+            </div>
           </div>
         ))}
       </div>
