@@ -1,6 +1,7 @@
 import { COLORS } from "./constants/colors";
 import { useState, useCallback, useEffect } from "react";
 import { CitiesTicker } from "./components/CitiesTicker";
+import { MainFooter } from "./components/MainFooter";
 
 function App() {
   // State
@@ -144,17 +145,7 @@ function App() {
       <div className="relative overflow-hidden">
         <CitiesTicker onCityClick={handleCityClick} isPaused={isPaused} />
       </div>
-      <div
-        className="flex items-center px-8 overflow-hidden"
-        style={{ backgroundColor: COLORS.coral }}
-      >
-        <span
-          className="text-6xl font-bold tracking-widest"
-          style={{ color: COLORS.beige }}
-        >
-          SAGAR
-        </span>
-      </div>
+      <MainFooter />
     </div>
   );
 }
