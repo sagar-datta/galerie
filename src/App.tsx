@@ -88,8 +88,10 @@ function App() {
     if (!selectedCity && rows.length > 0) {
       const containerWidth = containerRef.current?.offsetWidth || 1000;
       const positions = rows.map((_, index) => ({
-        current: 0,
-        target: index % 2 === 0 ? -containerWidth * 2 : containerWidth * 2,
+        current: index % 2 !== 0 ? -containerWidth : 0, // Shift current position for odd rows
+        target: index % 2 === 0
+          ? -containerWidth * 2
+          : containerWidth * 2,
       }));
       setTickerPositions(positions);
       setIsPaused(false);
