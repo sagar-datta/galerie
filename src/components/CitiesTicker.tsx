@@ -38,8 +38,8 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
   // Create duplicates for infinite scroll
   const createDuplicates = useCallback((arr: string[], rowIndex: number) => {
     let duplicatedArr = [...arr];
-    for (let i = 0; i < 4; i++) {
-      // Only need ~5 copies for smooth infinite scroll
+    for (let i = 0; i < 24; i++) {
+      // Create 24 duplicates (25 total copies) to fill 15-minute animation
       duplicatedArr = [...duplicatedArr, ...arr];
     }
     return duplicatedArr;
