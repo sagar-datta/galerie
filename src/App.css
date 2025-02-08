@@ -40,9 +40,3 @@ button {
   /* top and left will be set dynamically by JS to return to the original position */
   transform: translateY(0); /* Return to original vertical position */
 }
-
-@media (hover: none) {
-    .group:hover .group-hover\:opacity-100 {
-        opacity: 1;
-    }
-}
