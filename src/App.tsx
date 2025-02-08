@@ -15,9 +15,24 @@ function App() {
     top: { current: number; target: number };
     bottom: { current: number; target: number };
   }>({
-    top: { current: 0, target: 0 },
-    bottom: { current: 0, target: 0 },
+    top: { current: 0, target: -1000 },
+    bottom: { current: 0, target: 1000 },
   });
+
+  // Initialize animation positions on mount
+  useEffect(() => {
+    const containerWidth = containerRef.current?.offsetWidth || 1000;
+    setTickerPositions({
+      top: {
+        current: 0,
+        target: -containerWidth / 2,
+      },
+      bottom: {
+        current: 0,
+        target: containerWidth / 2,
+      },
+    });
+  }, []);
   const containerRef = useRef<HTMLDivElement>(null);
   const topTickerRef = useRef<HTMLDivElement>(null);
   const bottomTickerRef = useRef<HTMLDivElement>(null);
