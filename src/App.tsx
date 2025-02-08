@@ -89,7 +89,7 @@ function App() {
       const containerWidth = containerRef.current?.offsetWidth || 1000;
       const positions = rows.map((_, index) => ({
         current: 0,
-        target: index % 2 === 0 ? -containerWidth / 2 : containerWidth / 2,
+        target: index % 2 === 0 ? -containerWidth * 2 : containerWidth * 2,
       }));
       setTickerPositions(positions);
       setIsPaused(false);
