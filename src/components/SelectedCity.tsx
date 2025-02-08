@@ -28,9 +28,9 @@ export function SelectedCity({
         setTimeout(() => {
           selectedCityElement.style.transition =
             "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)";
-          selectedCityElement.style.top = "50%";
-          selectedCityElement.style.left = "50%";
-          selectedCityElement.style.transform = "translate(-50%, -50%)";
+          selectedCityElement.style.top = "91.66%"; // Position in coral bar
+          selectedCityElement.style.left = "50%"; // Center horizontally
+          selectedCityElement.style.transform = "translate(-50%, -50%)"; // Keep vertical centering
         }, 16); // Approximately one frame at 60fps
       });
     }
@@ -84,20 +84,27 @@ export function SelectedCity({
         Return
       </button>
       <div
-        className="text-6xl tracking-widest font-bold"
+        className="fixed bottom-0 left-0 w-full h-1/6"
         style={{
-          position: "absolute",
-          top: `${position.top}px`,
-          left: `${position.left}px`,
-          color: COLORS.dark,
-          fontFamily: "Helvetica, Arial, sans-serif",
-          opacity: 1, // Start visible in original position
-          transition: "none", // Disable initial transition
+          backgroundColor: COLORS.coral,
         }}
-        id="selected-city-element"
       >
-        {city}
       </div>
+        <div
+          className="text-6xl tracking-widest font-bold"
+          style={{
+            position: "absolute",
+            top: `${position.top}px`,
+            left: `${position.left}px`,
+            color: COLORS.dark, // Keep text color
+            fontFamily: "Helvetica, Arial, sans-serif",
+            opacity: 1,
+            transition: "none",
+          }}
+          id="selected-city-element"
+        >
+          {city}
+        </div>
     </div>
   );
 }
