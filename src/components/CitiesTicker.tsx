@@ -76,7 +76,7 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
               isPaused ? "paused" : ""
             }`}
             style={{
-              transform: `translateX(${rowIndex % 2 === 0 ? "0%" : "-80%"})`,
+              transform: `translateX(${rowIndex % 2 === 0 ? "0%" : "-40%"})`, // Odd rows start at -40% to match their animation end point
               animationName:
                 rowIndex % 2 === 0
                   ? "ticker-right-to-left"

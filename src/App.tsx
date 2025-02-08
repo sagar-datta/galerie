@@ -107,7 +107,10 @@ function App() {
   ]);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: COLORS.beige }}>
+    <div
+      className="grid min-h-screen grid-rows-[3fr_1fr] overflow-hidden"
+      style={{ backgroundColor: COLORS.beige }}
+    >
       {selectedCity && (
         <div
           className="fixed top-0 left-0 w-full h-full z-50"
@@ -138,7 +141,20 @@ function App() {
           </div>
         </div>
       )}
-      <CitiesTicker onCityClick={handleCityClick} isPaused={isPaused} />
+      <div className="relative overflow-hidden">
+        <CitiesTicker onCityClick={handleCityClick} isPaused={isPaused} />
+      </div>
+      <div
+        className="flex items-center px-8 overflow-hidden"
+        style={{ backgroundColor: COLORS.coral }}
+      >
+        <span
+          className="text-6xl font-bold tracking-widest"
+          style={{ color: COLORS.beige }}
+        >
+          SAGAR
+        </span>
+      </div>
     </div>
   );
 }
