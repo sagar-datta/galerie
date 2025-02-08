@@ -47,8 +47,11 @@ function App() {
   // For even rows (right to left), duplicate to the right (append).
   // For odd rows (left to right), duplicate to the left (prepend).
   const createDuplicates = useCallback((arr: string[], rowIndex: number) => {
-    const duplicatedArr = [...arr, ...arr, ...arr];
-    return rowIndex % 2 === 0 ? duplicatedArr : duplicatedArr;
+    let duplicatedArr = [...arr];
+    for (let i = 0; i < 99; i++) { // repeat 99 more times, for a total of 100
+      duplicatedArr = [...duplicatedArr, ...arr];
+    }
+    return duplicatedArr;
   }, []);
   const rowDuplicates = rows.map(createDuplicates);
 
