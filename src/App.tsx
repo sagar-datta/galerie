@@ -190,10 +190,6 @@ function App() {
             Return
           </button>
           <div
-            // variants={selectedCityVariants} // REMOVE THIS LINE
-            // initial="initial" // REMOVE THIS LINE
-            // animate={isReturning ? "exit" : "animate"} // REMOVE THIS LINE
-            // custom={selectedPosition} // REMOVE THIS LINE
             className="text-6xl tracking-widest font-bold"
             style={{
               position: "absolute",
@@ -227,7 +223,7 @@ function App() {
               }}
             >
               {rowDuplicate.map((city: string, index: number) => (
-                <motion.span
+                <span
                   key={`${city}-${index}`}
                   className="text-6xl tracking-widest font-bold cursor-pointer flex-shrink-0"
                   style={{
@@ -235,10 +231,9 @@ function App() {
                     fontFamily: "Helvetica, Arial, sans-serif",
                   }}
                   onClick={(e) => handleCityClick(city, e, rowIndex)}
-                  whileHover={{ color: "#ff685b" }}
                 >
                   {city}
-                </motion.span>
+                </span>
               ))}
             </div>
           </div>
