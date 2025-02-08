@@ -171,7 +171,7 @@ function App() {
           >
             <div // Ticker Row Container
               ref={(el) => {
-                  tickerRefs.current[rowIndex] = el;
+                tickerRefs.current[rowIndex] = el;
               }}
               className={`ticker-row inline-flex gap-16 ${rowIndex % 2 === 0 ? 'even' : 'odd'} ${isPaused ? 'paused' : ''}`}
             >
