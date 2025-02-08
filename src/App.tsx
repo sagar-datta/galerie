@@ -188,14 +188,20 @@ function App() {
               ref={(el) => {
                 tickerRefs.current[rowIndex] = el;
               }}
-              className={`ticker-row inline-flex gap-16 ${isPaused ? "paused" : ""}`}
-              style={{ // ADD INLINE STYLE HERE
-                transform: `translateX(${rowIndex % 2 === 0 ? '0%' : '100%'})`, // Initial translateX based on even/odd row
-                animationName: 'ticker-animation', // Use the single ticker-animation keyframes
-                animationDirection: rowIndex % 2 === 0 ? 'normal' : 'reverse', // Control animation direction
+              className={`ticker-row inline-flex gap-16 ${
+                isPaused ? "paused" : ""
+              }`}
+              style={{
+                // ADD INLINE STYLE HERE
+                transform: `translateX(${rowIndex % 2 === 0 ? "0%" : "-80%"})`, // Even rows start at 0%, odd rows start at -80%
+                animationName:
+                  rowIndex % 2 === 0
+                    ? "ticker-right-to-left"
+                    : "ticker-left-to-right", // Different animations for each direction
+                animationDirection: rowIndex % 2 === 0 ? "normal" : "reverse", // Only reverse for odd rows
               }}
             >
-             {/* REMOVE even and odd classes from className
+              {/* REMOVE even and odd classes from className
                  className={`ticker-row inline-flex gap-16 ${
                 rowIndex % 2 === 0 ? "even" : "odd" */}
               {rowDuplicate.map((city: string, index: number) => (

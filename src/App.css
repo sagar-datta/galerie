@@ -22,7 +22,8 @@ button {
 
 #selected-city-element {
   opacity: 0; /* Initially hidden */
-  transition: opacity 0.5s ease-in-out, top 0.5s ease-in-out, left 0.5s ease-in-out, transform 0.5s ease-in-out; /* Smooth transitions */
+  transition: opacity 0.5s ease-in-out, top 0.5s ease-in-out,
+    left 0.5s ease-in-out, transform 0.5s ease-in-out; /* Smooth transitions */
   top: 0; /* Initial top position */
   left: 0; /* Initial left position */
   transform: translateY(0); /* Initial transform */
@@ -41,12 +42,21 @@ button {
   transform: translateY(0); /* Return to original vertical position */
 }
 
-@keyframes ticker-animation { /* Renamed to ticker-animation and simplified */
+@keyframes ticker-right-to-left {
   0% {
     transform: translateX(0%); /* Start at original position */
   }
   100% {
-    transform: translateX(-100%); /* Move offscreen to the left */
+    transform: translateX(-100%); /* Move left by 100% */
+  }
+}
+
+@keyframes ticker-left-to-right {
+  0% {
+    transform: translateX(20%); /* Start slightly right */
+  }
+  100% {
+    transform: translateX(-80%); /* Move left but not completely off */
   }
 }
 
