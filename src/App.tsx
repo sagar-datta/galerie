@@ -153,8 +153,7 @@ function App() {
       x: paused ? position.current : [position.current, position.target],
       transition: {
         x: {
-          duration: paused ? 0.3 : 180,
-          repeatType: "loop",
+          duration: paused ? 0.3 : 240,
           delay: paused ? 0 : 0.3,
         },
       },
