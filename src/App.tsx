@@ -49,17 +49,9 @@ function App() {
   const rowDuplicates = rows.map(createDuplicates);
 
   const updateTickerPositions = useCallback((shouldPause: boolean = false) => {
-      setIsPaused(shouldPause);
-    },
-    []);
-    if (!selectedCity && rows.length > 0) {
-      const containerWidth = containerRef.current?.offsetWidth || 1000;
-      const positions = rows.map((_, index) => ({
-        current: index % 2 !== 0 ? -containerWidth : 0, // Shift current position for odd rows
-        target: index % 2 === 0 ? -containerWidth * 2 : containerWidth * 2,
-      }));
-      setTickerPositions(positions);
-    }
+    setIsPaused(shouldPause);
+  }, []);
+
   const animateSelectedCityIn = useCallback(() => {
     const selectedCityElement = document.getElementById("selected-city-element");
     if (selectedCityElement && selectedPosition) {
