@@ -14,6 +14,13 @@
 button {
   z-index: 70;
   contain: layout style;
+  transition: all 0.1s ease-out;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #ff685b !important;
+  color: white !important;
 }
 
 .city-text:hover {
