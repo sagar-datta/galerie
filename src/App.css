@@ -63,7 +63,7 @@ button {
   display: flex;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
-  animation-duration: 150s; /* Adjust duration for speed */
+  animation-duration: 200s; /* Increased duration for slower speed */
   width: fit-content; /* Make sure the container only takes the width of its content */
   min-width: 100%; /* Ensure it at least covers the container width for looping */
 }
