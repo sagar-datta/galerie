@@ -43,19 +43,19 @@ button {
 
 @keyframes ticker-left-to-right {
   0% {
-    transform: translateX(0%); /* Start at original position */
+    transform: translateX(100%); /* Start offscreen to the right */
   }
   100% {
-    transform: translateX(100%); /* Move offscreen to the right */
+    transform: translateX(-100%); /* Move offscreen to the left */
   }
 }
 
 @keyframes ticker-right-to-left {
   0% {
-    transform: translateX(0%); /* Start at original position */
+    transform: translateX(-100%); /* Start offscreen to the left */
   }
   100% {
-    transform: translateX(-100%); /* Move offscreen to the left */
+    transform: translateX(100%); /* Move offscreen to the right */
   }
 }
 
