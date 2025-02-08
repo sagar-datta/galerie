@@ -48,7 +48,8 @@ function App() {
   // For odd rows (left to right), duplicate to the left (prepend).
   const createDuplicates = useCallback((arr: string[], rowIndex: number) => {
     let duplicatedArr = [...arr];
-    for (let i = 0; i < 99; i++) { // repeat 99 more times, for a total of 100
+    for (let i = 0; i < 99; i++) {
+      // repeat 99 more times, for a total of 100
       duplicatedArr = [...duplicatedArr, ...arr];
     }
     return duplicatedArr;
@@ -58,16 +59,21 @@ function App() {
   const updateTickerPositions = useCallback(
     (shouldPause: boolean = false) => {
       const containerWidth = containerRef.current?.offsetWidth || 1000;
-      const newPositions = rows.map((_, index) => {
-        const currentPos = tickerPositions[index]?.current || 0; // Use existing current position
-        return {
-          current: currentPos,
-          target:
-            index % 2 === 0
-              ? currentPos - containerWidth * 2 // Modified target position
-              : currentPos + containerWidth * 2, // Modified target position
-        };
-      }).map(pos => ({ current: pos.current, target: Math.round(pos.target) })); // Round target
+      const newPositions = rows
+        .map((_, index) => {
+          const currentPos = tickerPositions[index]?.current || 0; // Use existing current position
+          return {
+            current: currentPos,
+            target:
+              index % 2 === 0
+                ? currentPos - containerWidth * 2 // Modified target position
+                : currentPos + containerWidth * 2, // Modified target position
+          };
+        })
+        .map((pos) => ({
+          current: pos.current,
+          target: Math.round(pos.target),
+        })); // Round target
       setTickerPositions(newPositions);
       setIsPaused(shouldPause);
     },
@@ -84,9 +90,7 @@ function App() {
       const containerWidth = containerRef.current?.offsetWidth || 1000;
       const positions = rows.map((_, index) => ({
         current: index % 2 !== 0 ? -containerWidth : 0, // Shift current position for odd rows
-        target: index % 2 === 0
-          ? -containerWidth * 2
-          : containerWidth * 2,
+        target: index % 2 === 0 ? -containerWidth * 2 : containerWidth * 2,
       }));
       setTickerPositions(positions);
       setIsPaused(false);
