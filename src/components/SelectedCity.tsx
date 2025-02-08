@@ -31,6 +31,7 @@ export function SelectedCity({
           selectedCityElement.style.top = "91.66%"; // Position in coral bar
           selectedCityElement.style.left = "50%"; // Center horizontally
           selectedCityElement.style.transform = "translate(-50%, -50%)"; // Keep vertical centering
+          selectedCityElement.style.color = COLORS.white; // Change color to white
         }, 16); // Approximately one frame at 60fps
       });
     }
@@ -46,6 +47,7 @@ export function SelectedCity({
       selectedCityElement.style.top = `${position.top}px`;
       selectedCityElement.style.left = `${position.left}px`;
       selectedCityElement.style.transform = "translate(0, 0)";
+      selectedCityElement.style.color = COLORS.dark; // Reset color to dark
 
       // Only hide after animation completes
       selectedCityElement.addEventListener(
@@ -88,23 +90,22 @@ export function SelectedCity({
         style={{
           backgroundColor: COLORS.coral,
         }}
+      ></div>
+      <div
+        className="text-6xl tracking-widest font-bold"
+        style={{
+          position: "absolute",
+          top: `${position.top}px`,
+          left: `${position.left}px`,
+          color: COLORS.dark, // Keep text color
+          fontFamily: "Helvetica, Arial, sans-serif",
+          opacity: 1,
+          transition: "none",
+        }}
+        id="selected-city-element"
       >
+        {city}
       </div>
-        <div
-          className="text-6xl tracking-widest font-bold"
-          style={{
-            position: "absolute",
-            top: `${position.top}px`,
-            left: `${position.left}px`,
-            color: COLORS.dark, // Keep text color
-            fontFamily: "Helvetica, Arial, sans-serif",
-            opacity: 1,
-            transition: "none",
-          }}
-          id="selected-city-element"
-        >
-          {city}
-        </div>
     </div>
   );
 }
