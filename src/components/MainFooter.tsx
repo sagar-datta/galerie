@@ -7,11 +7,8 @@ export function MainFooter() {
         className="overflow-hidden flex items-end justify-end px-8 pb-4 row-span-3"
         style={{ backgroundColor: COLORS.beige }}
       >
-        <span
-          className="text-7xl font-bold tracking-widest truncate"
-          style={{ color: COLORS.red }}
-        >
-          SAGAR's PHOTO GALLERY
+        <span className="text-7xl font-bold" style={{ color: COLORS.red }}>
+          Sagar's Photo Gallery
         </span>
       </div>
       <div
@@ -19,10 +16,10 @@ export function MainFooter() {
         style={{ backgroundColor: COLORS.coral }}
       >
         <span
-          className="text-6xl font-bold tracking-widest truncate"
-          style={{ color: COLORS.beige }}
+          className="text-4xl font-bold tracking-widest truncate"
+          style={{ color: COLORS.white }}
         >
-          hey
+          select place above to view images.
         </span>
       </div>
     </div>
