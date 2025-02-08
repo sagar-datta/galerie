@@ -149,7 +149,7 @@ function App() {
       transition: {
         x: {
           duration: paused ? 0.3 : 240,
-          ease: "linear", // Ensure linear easing for consistent speed
+          ease: "easeInOut",
         },
       },
     }),
