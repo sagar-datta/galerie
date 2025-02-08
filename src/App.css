@@ -17,7 +17,7 @@ button {
 }
 
 .city-text:hover {
-  color: #ff685b;
+  color: #ff685b !important; /* ADD !important */
 }
 
 #selected-city-element {
