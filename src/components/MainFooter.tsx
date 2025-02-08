@@ -8,7 +8,7 @@ export function MainFooter() {
         style={{ backgroundColor: COLORS.beige }}
       >
         <span className="text-7xl font-bold" style={{ color: COLORS.red }}>
-          Sagar's Photo Gallery
+          Galerie de Sagar
         </span>
       </div>
       <div
