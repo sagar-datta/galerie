@@ -74,5 +74,4 @@ button {
 
 .ticker-row.odd {
   animation-name: ticker-left-to-right;
-  flex-direction: row-reverse; /* Reverse direction for odd rows */
 }
