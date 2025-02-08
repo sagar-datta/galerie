@@ -63,7 +63,7 @@ button {
   display: flex;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
-  animation-duration: 1200s; /* EVEN SLOWER crawl speed - adjust as needed */
+  animation-duration: 3600s; /* EXTREMELY SLOW crawl speed (1 hour) - adjust as needed */
   width: fit-content; /* Make sure the container only takes the width of its content */
   min-width: 100%; /* Ensure it at least covers the container width for looping */
 }
