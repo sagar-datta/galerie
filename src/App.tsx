@@ -148,8 +148,8 @@ function App() {
       x: paused ? position.current : [position.current, position.target],
       transition: {
         x: {
-          duration: paused ? 0.3 : 240,
-          ease: "easeInOut",
+          duration: paused ? 0.3 : 120,
+          ease: "linear", // Ensure linear easing for consistent speed
         },
       },
     }),
