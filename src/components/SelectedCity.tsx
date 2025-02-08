@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { COLORS } from "../constants/colors";
 
 interface SelectedCityProps {
@@ -37,11 +37,17 @@ export function SelectedCity({
     }
   }, []);
 
+  const [footerHeight, setFooterHeight] = useState("h-[6rem]");
+
   const animateSelectedCityOut = useCallback(() => {
     const selectedCityElement = document.getElementById(
       "selected-city-element"
     );
     if (selectedCityElement) {
+      // First animate the footer height
+      setFooterHeight("h-[6rem]");
+
+      // Then animate the city text
       selectedCityElement.style.transition =
         "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
       selectedCityElement.style.top = `${position.top}px`;
@@ -62,6 +68,11 @@ export function SelectedCity({
 
   useEffect(() => {
     animateSelectedCityIn();
+    // Set the expanded footer height after a small delay
+    const timer = setTimeout(() => {
+      setFooterHeight("h-[16.67vh]");
+    }, 16);
+    return () => clearTimeout(timer);
   }, [animateSelectedCityIn]);
 
   useEffect(() => {
@@ -86,10 +97,8 @@ export function SelectedCity({
         Return
       </button>
       <div
-        className="fixed bottom-0 left-0 w-full h-1/6"
-        style={{
-          backgroundColor: COLORS.coral,
-        }}
+        className={`fixed bottom-0 left-0 w-full transition-height duration-500 ease-in-out ${footerHeight}`}
+        style={{ backgroundColor: COLORS.coral }}
       ></div>
       <div
         className="text-6xl tracking-widest font-bold"

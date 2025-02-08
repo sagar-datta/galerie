@@ -68,7 +68,7 @@ function App() {
       <div className="relative overflow-hidden">
         <CitiesTicker onCityClick={handleCityClick} isPaused={isPaused} />
       </div>
-      <MainFooter />
+      <MainFooter isCitySelected={!!selectedCity} />
     </div>
   );
 }

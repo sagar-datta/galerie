@@ -79,3 +79,12 @@ button:hover {
 
 /* Removed .ticker-row.even and .ticker-row.odd animation-name and flex-direction */
 /* We will control animation direction and initial position via inline styles in JSX */
+
+@keyframes expandHeight {
+  from {
+    height: 0;
+  }
+  to {
+    height: 16.67vh;
+  }
+}

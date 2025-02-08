@@ -1,6 +1,10 @@
 import { COLORS } from "../constants/colors";
 
-export function MainFooter() {
+interface MainFooterProps {
+  isCitySelected: boolean;
+}
+
+export function MainFooter({ isCitySelected }: MainFooterProps) {
   return (
     <div className="w-full flex flex-col overflow-hidden">
       <div
@@ -12,8 +16,8 @@ export function MainFooter() {
         </span>
       </div>
       <div
-        className="h-24 overflow-hidden flex items-center px-8"
         style={{ backgroundColor: COLORS.coral }}
+        className="overflow-hidden flex items-center px-8 h-24"
       >
         <span
           className="text-4xl font-bold tracking-widest truncate"
