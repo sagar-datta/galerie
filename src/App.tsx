@@ -48,7 +48,7 @@ function App() {
   // For odd rows (left to right), duplicate to the left (prepend).
   const createDuplicates = useCallback((arr: string[], rowIndex: number) => {
     const duplicatedArr = [...arr, ...arr, ...arr];
-    return rowIndex % 2 === 0 ? duplicatedArr : [...duplicatedArr.slice(arr.length), ...arr];
+    return rowIndex % 2 === 0 ? duplicatedArr : duplicatedArr;
   }, []);
   const rowDuplicates = rows.map(createDuplicates);
 
