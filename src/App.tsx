@@ -1,5 +1,5 @@
 import { COLORS } from "./constants/colors";
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 
 function App() {
   // State
@@ -10,7 +10,7 @@ function App() {
   } | null>(null);
   const [isReturning, setIsReturning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const [hasReturned, setHasReturned] = useState(false);;
+  const [hasReturned, setHasReturned] = useState(false);
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
   const tickerRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -29,14 +29,15 @@ function App() {
     "TOKYO",
   ];
 
-    const rowSize = 4;
-    const rows: string[][] = useMemo(() => { // Memoize rows
-        const calculatedRows: string[][] = [];
-        for (let i = 0; i < cities.length; i += rowSize) {
-            calculatedRows.push(cities.slice(i, i + rowSize));
-        }
-        return calculatedRows;
-    }, [cities, rowSize]); // Dependencies: cities, rowSize (though these are constants here)
+  const rowSize = 4;
+  const rows: string[][] = useMemo(() => {
+    // Memoize rows
+    const calculatedRows: string[][] = [];
+    for (let i = 0; i < cities.length; i += rowSize) {
+      calculatedRows.push(cities.slice(i, i + rowSize));
+    }
+    return calculatedRows;
+  }, [cities, rowSize]); // Dependencies: cities, rowSize (though these are constants here)
 
   // Duplicates 3 times.
   // For even rows (right to left), duplicate to the right (append).
@@ -49,8 +50,9 @@ function App() {
     }
     return duplicatedArr;
   }, []);
-  const rowDuplicates = useMemo(() => { // Memoize rowDuplicates
-      return rows.map(createDuplicates);
+  const rowDuplicates = useMemo(() => {
+    // Memoize rowDuplicates
+    return rows.map(createDuplicates);
   }, [rows, createDuplicates]); // Dependencies: rows, createDuplicates
 
   const updateTickerPositions = useCallback((shouldPause: boolean = false) => {
@@ -58,7 +60,9 @@ function App() {
   }, []);
 
   const animateSelectedCityIn = useCallback(() => {
-    const selectedCityElement = document.getElementById("selected-city-element");
+    const selectedCityElement = document.getElementById(
+      "selected-city-element"
+    );
     if (selectedCityElement && selectedPosition) {
       selectedCityElement.style.transition =
         "top 0.5s ease-in-out, left 0.5s ease-in-out, transform 0.5s ease-in-out, opacity 0.5s ease-in-out";
@@ -68,18 +72,24 @@ function App() {
     }
   }, [selectedPosition]);
 
-  const animateSelectedCityOut = useCallback((position: { top: number, left: number } | null) => {
-    const selectedCityElement = document.getElementById("selected-city-element");
-    if (selectedCityElement && position) {
-      selectedCityElement.style.transition = 'top 0.3s ease-in-out, left 0.3s ease-in-out, transform 0.3s ease-in-out, opacity 0.3s ease-in-out';
-      selectedCityElement.style.top = `${position.top}px`;
-      selectedCityElement.style.left = `${position.left}px`;
-      selectedCityElement.style.transform = 'translateY(0%) translateX(0%)';
-      selectedCityElement.style.opacity = '0';
-    }
-  }, []);
+  const animateSelectedCityOut = useCallback(
+    (position: { top: number; left: number } | null) => {
+      const selectedCityElement = document.getElementById(
+        "selected-city-element"
+      );
+      if (selectedCityElement && position) {
+        selectedCityElement.style.transition =
+          "top 0.3s ease-in-out, left 0.3s ease-in-out, transform 0.3s ease-in-out, opacity 0.3s ease-in-out";
+        selectedCityElement.style.top = `${position.top}px`;
+        selectedCityElement.style.left = `${position.left}px`;
+        selectedCityElement.style.transform = "translateY(0%) translateX(0%)";
+        selectedCityElement.style.opacity = "0";
+      }
+    },
+    []
+  );
 
-    useEffect(() => {
+  useEffect(() => {
     if (selectedCity && selectedPosition) {
       animateSelectedCityIn();
     }
@@ -118,16 +128,16 @@ function App() {
       const timer1 = setTimeout(() => {
         setHasReturned(true);
         setSelectedCity(null);
-          animateSelectedCityOut(selectedPosition); // Animate out
-          setSelectedPosition(null);
-          setIsReturning(false);
+        animateSelectedCityOut(selectedPosition); // Animate out
+        setSelectedPosition(null);
+        setIsReturning(false);
 
-          const timer2 = setTimeout(() => {
-            updateTickerPositions(false);
-          }, 200);
+        const timer2 = setTimeout(() => {
+          updateTickerPositions(false);
+        }, 200);
 
-          return () => clearTimeout(timer2);
-        }, 300);
+        return () => clearTimeout(timer2);
+      }, 300);
 
       return () => clearTimeout(timer1);
     }
@@ -178,7 +188,9 @@ function App() {
               ref={(el) => {
                 tickerRefs.current[rowIndex] = el;
               }}
-              className={`ticker-row inline-flex gap-16 ${rowIndex % 2 === 0 ? 'even' : 'odd'} ${isPaused ? 'paused' : ''}`}
+              className={`ticker-row inline-flex gap-16 ${
+                rowIndex % 2 === 0 ? "even" : "odd"
+              } ${isPaused ? "paused" : ""}`}
             >
               {rowDuplicate.map((city: string, index: number) => (
                 <span
