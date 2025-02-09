@@ -102,10 +102,11 @@ export function SelectedCity({
     >
       <button
         onClick={onReturn}
-        className="fixed top-8 left-8 px-6 py-3 text-xl font-bold z-50 duration-0"
+        className="fixed top-8 left-8 px-6 py-3 text-xl font-bold z-50 transition-opacity duration-50"
         style={{
           backgroundColor: COLORS.dark,
           color: COLORS.beige,
+          opacity: showGalleryTransition ? 1 : 0,
         }}
       >
         Return
