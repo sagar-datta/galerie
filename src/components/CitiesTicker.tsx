@@ -16,7 +16,7 @@ const CITIES = [
 ];
 
 const ROW_SIZE = 4;
-const DUPLICATE_COUNT = 24; // Back to 24 duplicates for smoother animation
+const DUPLICATE_COUNT = 4; // Reduced to 4 duplicates as we'll use CSS to create infinite effect
 
 interface CitiesTickerProps {
   onCityClick: (city: string, rect: DOMRect) => void;
@@ -36,9 +36,10 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
     return calculatedRows;
   }, []); // Dependencies removed since CITIES and ROW_SIZE are now constants
 
-  // Create duplicates for infinite scroll
+  // Create duplicates for infinite scroll - now with fewer duplicates
   const createDuplicates = useCallback((arr: string[]) => {
     let duplicatedArr = [...arr];
+    // We only need a few duplicates as CSS will handle the infinite loop
     for (let i = 0; i < DUPLICATE_COUNT; i++) {
       duplicatedArr = [...duplicatedArr, ...arr];
     }
@@ -66,12 +67,10 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
   useEffect(() => {
     let rafId: number;
     const handleResize = () => {
-      // Cancel any existing animation frame
       if (rafId) {
         cancelAnimationFrame(rafId);
       }
 
-      // Schedule the reset in the next frame
       rafId = requestAnimationFrame(() => {
         tickerRefs.current.forEach((ref) => {
           if (ref) {

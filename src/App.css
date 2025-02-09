@@ -48,7 +48,7 @@ button:hover {
   display: flex;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
-  animation-duration: 900s; /* 15 minutes */
+  animation-duration: 180s; /* Reduced from 900s to 180s since we have fewer duplicates */
   width: fit-content;
   min-width: 100%;
   will-change: transform;
@@ -58,6 +58,8 @@ button:hover {
   -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
   contain: layout style paint;
+  animation-fill-mode: both; /* Ensures smooth loop */
+  transition: animation-play-state 0.3s ease;
 }
 
 .ticker-row.paused {
@@ -89,4 +91,15 @@ button:hover {
   to {
     height: 16.67vh;
   }
+}
+
+/* Add smooth transition when pausing/resuming */
+.ticker-row {
+  animation-play-state: running;
+}
+
+/* Optimize paint */
+.ticker-row > * {
+  contain: style layout;
+  will-change: transform;
 }
