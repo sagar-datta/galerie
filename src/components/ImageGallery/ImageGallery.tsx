@@ -1,5 +1,5 @@
 import { GalleryImage } from "../../types/gallery.types";
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { COLORS } from "../../constants/colors";
 
 function getCloudinaryUrl(publicId: string) {
@@ -15,10 +15,28 @@ interface ImageGalleryProps {
 export function ImageGallery({ city, images }: ImageGalleryProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [loadedImages, setLoadedImages] = useState<GalleryImage[]>([]);
+  const [shouldCenter, setShouldCenter] = useState(true);
+
+  const checkIfShouldCenter = () => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    // If scrollWidth is greater than clientWidth, not all content is visible
+    const shouldCenterNew = container.scrollWidth <= container.clientWidth;
+    setShouldCenter(shouldCenterNew);
+  };
 
   useEffect(() => {
     setLoadedImages(images);
+    // Check after images load
+    setTimeout(checkIfShouldCenter, 100);
   }, [images]);
+
+  // Check on resize
+  useEffect(() => {
+    window.addEventListener("resize", checkIfShouldCenter);
+    return () => window.removeEventListener("resize", checkIfShouldCenter);
+  }, []);
 
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -55,11 +73,14 @@ export function ImageGallery({ city, images }: ImageGalleryProps) {
   return (
     <div
       ref={scrollContainerRef}
-      className="h-full overflow-x-auto overflow-y-hidden whitespace-nowrap"
+      className={`h-full overflow-x-auto overflow-y-hidden whitespace-nowrap flex ${
+        shouldCenter ? "justify-center" : ""
+      }`}
       style={{
         scrollbarWidth: "none",
         msOverflowStyle: "none",
         overscrollBehavior: "none",
+        justifyContent: shouldCenter ? "center" : "flex-start",
       }}
     >
       <style>
@@ -67,18 +88,44 @@ export function ImageGallery({ city, images }: ImageGalleryProps) {
           .overflow-x-auto::-webkit-scrollbar {
             display: none;
           }
+
+          .image-hover {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 0;
+          }
+
+          .image-hover:hover img { /* Target the image inside .image-hover on hover */
+            transform: translate(-4px, -4px) scale(1); /* Move only the image */
+          } /* Move only the image */
+
+          .image-hover::before {/* Coral box behind image */
+            content: '';
+            position: absolute;
+            top: 4px;    /* Offset to create shadow effect */
+            left: 4px;   /* Offset to create shadow effect */
+            width: 100%;     /* Same width as image */
+            height: 100%;    /* Same height as image */
+            background-color: ${COLORS.dark}; /* Initial dark color */
+            z-index: -1;    /* Behind image */
+          }
+
+          .image-hover:hover::before { /* Coral color on hover */
+            background-color: ${COLORS.coral};
+          }
+
         `}
       </style>
       <div className="h-full flex flex-col gap-2">
         {imageRows.map((row, rowIndex) => (
           <div
             key={`row-${rowIndex}`}
-            className="flex gap-8 h-[calc(50%-0.25rem)] px-8"
+            className="flex gap-8 h-[calc(50%-0.25rem)] px-10"
           >
             {row.map((image, imageIndex) => (
               <div
                 key={`${image.id}-${rowIndex}-${imageIndex}`}
-                className="relative flex-none aspect-square h-[85%] shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] overflow-hidden"
+                className="relative flex-none aspect-square h-[85%] image-hover"
                 style={{ marginTop: "auto", marginBottom: "auto" }}
               >
                 <img
@@ -94,8 +141,6 @@ export function ImageGallery({ city, images }: ImageGalleryProps) {
                 />
               </div>
             ))}
-            {/* Spacer element to ensure consistent end padding */}
-            <div className="flex-none w-8" aria-hidden="true"></div>
           </div>
         ))}
       </div>
