@@ -12,12 +12,6 @@ function ImageModal({ image, onClose, city }: ModalProps) {
   if (!image) return null;
 
   const aspectRatio = (image.width / image.height).toFixed(2);
-  const svgCursor = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="30" viewBox="0 0 140 30">
-      <rect width="140" height="30" fill="#ff685b"/>
-      <text x="70" y="20" fill="white" font-family="Arial" font-size="14" font-weight="700" text-anchor="middle" letter-spacing="0.5">BACK TO ${city.toUpperCase()}</text>
-    </svg>`
-  )}`;
 
   return (
     <div
