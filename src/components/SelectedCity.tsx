@@ -97,7 +97,7 @@ export function SelectedCity({
         Return
       </button>
       <div
-        className={`fixed bottom-0 left-0 w-full transition-height duration-500 ease-in-out ${footerHeight}`}
+        className={`fixed bottom-0 left-0 w-full transition-height duration-300 ease-in-out ${footerHeight}`}
         style={{ backgroundColor: COLORS.coral }}
       ></div>
       <div
