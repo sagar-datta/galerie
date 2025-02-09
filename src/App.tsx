@@ -46,11 +46,6 @@ function MainApp() {
   );
   const animationFrameRef = useRef<number | undefined>(undefined);
 
-  // Memoized state updates
-  const updateTickerPositions = useCallback((shouldPause: boolean = false) => {
-    setState((prev) => ({ ...prev, isPaused: shouldPause }));
-  }, []);
-
   // Handle URL-based city selection
   useEffect(() => {
     if (cityName && state.isDirectAccess) {
