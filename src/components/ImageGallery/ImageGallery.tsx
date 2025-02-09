@@ -96,22 +96,20 @@ export function ImageGallery({ city, images }: ImageGalleryProps) {
           }
 
           .image-hover:hover img { /* Target the image inside .image-hover on hover */
-            transform: translate(-4px, -4px) scale(1); /* Move only the image */
+            transform: translate(-6px, -6px) scale(1); /* Move only the image */
           } /* Move only the image */
 
           .image-hover::before {/* Coral box behind image */
             content: '';
             position: absolute;
-            top: 4px;    /* Offset to create shadow effect */
-            left: 4px;   /* Offset to create shadow effect */
+        
             width: 100%;     /* Same width as image */
             height: 100%;    /* Same height as image */
-            background-color: ${COLORS.dark}; /* Initial dark color */
             z-index: -1;    /* Behind image */
           }
 
           .image-hover:hover::before { /* Coral color on hover */
-            background-color: ${COLORS.coral};
+            background-color: ${COLORS.dark};
           }
 
         `}
