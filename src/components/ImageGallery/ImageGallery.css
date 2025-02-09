@@ -1,5 +1,21 @@
+/* For Firefox */
+.overflow-x-auto {
+  scrollbar-width: thin;
+  scrollbar-color: #ff3420 transparent;
+}
+
+/* For Webkit browsers like Chrome/Safari */
 .overflow-x-auto::-webkit-scrollbar {
-  display: none;
+  height: 8px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb {
+  background-color: #ff3420;
+  border-radius: 0px;
 }
 
 .image-hover {
