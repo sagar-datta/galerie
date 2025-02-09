@@ -51,7 +51,7 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
 
   // Event handlers with improved performance using event delegation
   const handleRowClick = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>, rowIndex: number) => {
+    (e: React.MouseEvent<HTMLDivElement>, _rowIndex: number) => {
       const target = e.target as HTMLElement;
       if (target.classList.contains("city-text")) {
         const city = target.textContent || "";
