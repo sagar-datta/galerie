@@ -2,9 +2,15 @@ import { GalleryImage } from "../../types/gallery.types";
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import "./ImageGallery.css";
 
-const getCloudinaryUrl = (publicId: string) => {
+const getCloudinaryUrl = (
+  publicId: string,
+  options?: { lowQuality?: boolean }
+) => {
   const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-  return `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
+  const transformations = options?.lowQuality
+    ? "w_100,e_blur:1000,q_1,f_auto" // Tiny placeholder
+    : "q_auto:good,f_auto,w_800"; // Full quality image with good compression
+  return `https://res.cloudinary.com/${cloudName}/image/upload/${transformations}/${publicId}`;
 };
 
 interface ImageGalleryProps {
@@ -15,17 +21,30 @@ interface ImageGalleryProps {
 export function ImageGallery({ city, images }: ImageGalleryProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [shouldCenter, setShouldCenter] = useState(true);
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
 
   const checkIfShouldCenter = useCallback(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
-
-    // If scrollWidth is greater than clientWidth, not all content is visible
     const shouldCenterNew = container.scrollWidth <= container.clientWidth;
     setShouldCenter(shouldCenterNew);
   }, []);
 
-  // Use ResizeObserver to detect when images load and container size changes
+  // Preload first 4 images
+  useEffect(() => {
+    const preloadImages = images.slice(0, 4);
+    preloadImages.forEach((image) => {
+      const link = document.createElement("link");
+      link.rel = "preload";
+      link.as = "image";
+      link.href = getCloudinaryUrl(image.publicId);
+      document.head.appendChild(link);
+      return () => {
+        document.head.removeChild(link);
+      };
+    });
+  }, [images]);
+
   useEffect(() => {
     const observer = new ResizeObserver(() => {
       checkIfShouldCenter();
@@ -44,7 +63,6 @@ export function ImageGallery({ city, images }: ImageGalleryProps) {
     };
   }, [checkIfShouldCenter]);
 
-  // Check on resize
   useEffect(() => {
     window.addEventListener("resize", checkIfShouldCenter);
     return () => window.removeEventListener("resize", checkIfShouldCenter);
@@ -56,13 +74,11 @@ export function ImageGallery({ city, images }: ImageGalleryProps) {
 
     e.preventDefault();
 
-    // If it's horizontal scroll, use it directly
     if (Math.abs(e.deltaX) > 0) {
       container.scrollLeft += e.deltaX;
       return;
     }
 
-    // For vertical scroll, use a consistent multiplier
     container.scrollLeft += e.deltaY * 2.5;
   }, []);
 
@@ -74,7 +90,10 @@ export function ImageGallery({ city, images }: ImageGalleryProps) {
     return () => container.removeEventListener("wheel", handleWheel);
   }, [handleWheel]);
 
-  // Split images into two rows - memoized to prevent unnecessary recalculations
+  const handleImageLoad = useCallback((imageId: string) => {
+    setLoadedImages((prev) => new Set(prev).add(imageId));
+  }, []);
+
   const imageRows = useMemo(() => {
     const rows: GalleryImage[][] = [[], []];
     images.forEach((image, index) => {
@@ -103,13 +122,24 @@ export function ImageGallery({ city, images }: ImageGalleryProps) {
               <div
                 key={`${image.id}-${rowIndex}-${imageIndex}`}
                 className="relative flex-none aspect-square h-[85%] image-hover"
-                style={{ marginTop: "auto", marginBottom: "auto" }}
+                style={{
+                  marginTop: "auto",
+                  marginBottom: "auto",
+                  background: `url(${getCloudinaryUrl(image.publicId, {
+                    lowQuality: true,
+                  })})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
               >
                 <img
                   src={getCloudinaryUrl(image.publicId)}
                   alt={image.caption || `Photo from ${city}`}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
+                  className={`w-full h-full object-cover transition-opacity duration-300 ${
+                    loadedImages.has(image.id) ? "opacity-100" : "opacity-0"
+                  }`}
+                  loading={rowIndex === 0 || imageIndex < 2 ? "eager" : "lazy"}
+                  onLoad={() => handleImageLoad(image.id)}
                   onError={(e) => {
                     console.error("Image load error for:", image.publicId);
                     const imgElement = e.target as HTMLImageElement;
