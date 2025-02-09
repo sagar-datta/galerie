@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { COLORS } from "../constants/colors";
+import { ImageGallery } from "./ImageGallery/ImageGallery";
+import { cityGalleries } from "../data/images";
 
 interface SelectedCityProps {
   city: string;
@@ -14,6 +16,23 @@ export function SelectedCity({
   onReturn,
   isReturning,
 }: SelectedCityProps) {
+  const [footerHeight, setFooterHeight] = useState("h-[6rem]");
+  const [showGallery, setShowGallery] = useState(false);
+
+  // Find city gallery case-insensitively
+  const cityKey = Object.keys(cityGalleries).find(
+    (key) => key.toLowerCase() === city.toLowerCase()
+  );
+
+  const cityGallery = cityKey ? cityGalleries[cityKey] : undefined;
+
+  // Debug logs
+  console.log("SelectedCity props:", { city, position, isReturning });
+  console.log("Available cities:", Object.keys(cityGalleries));
+  console.log("ShowGallery state:", showGallery);
+  console.log("Found city key:", cityKey);
+  console.log("CityGallery found:", cityGallery);
+
   const animateSelectedCityIn = useCallback(() => {
     const selectedCityElement = document.getElementById(
       "selected-city-element"
@@ -32,14 +51,20 @@ export function SelectedCity({
           selectedCityElement.style.left = "50%"; // Center horizontally
           selectedCityElement.style.transform = "translate(-50%, -50%)"; // Keep vertical centering
           selectedCityElement.style.color = COLORS.white; // Change color to white
+
+          // Show gallery after city name animation
+          setTimeout(() => {
+            console.log("Setting showGallery to true");
+            setShowGallery(true);
+          }, 500);
         }, 16); // Approximately one frame at 60fps
       });
     }
   }, []);
 
-  const [footerHeight, setFooterHeight] = useState("h-[6rem]");
-
   const animateSelectedCityOut = useCallback(() => {
+    console.log("Animating out, setting showGallery to false");
+    setShowGallery(false);
     const selectedCityElement = document.getElementById(
       "selected-city-element"
     );
@@ -83,12 +108,12 @@ export function SelectedCity({
 
   return (
     <div
-      className="fixed top-0 left-0 w-full h-full z-50"
+      className="fixed top-0 left-0 w-full h-full z-50 overflow-y-auto"
       style={{ backgroundColor: COLORS.beige }}
     >
       <button
         onClick={onReturn}
-        className="fixed top-4 left-4 px-6 py-3 text-xl font-bold"
+        className="fixed top-4 left-4 px-6 py-3 text-xl font-bold z-50"
         style={{
           backgroundColor: COLORS.dark,
           color: COLORS.beige,
@@ -103,18 +128,30 @@ export function SelectedCity({
       <div
         className="text-6xl tracking-widest font-bold"
         style={{
-          position: "absolute",
+          position: "fixed",
           top: `${position.top}px`,
           left: `${position.left}px`,
-          color: COLORS.dark, // Keep text color
+          color: COLORS.dark,
           fontFamily: "Helvetica, Arial, sans-serif",
           opacity: 1,
           transition: "none",
+          zIndex: 40,
         }}
         id="selected-city-element"
       >
-        {city}
+        {cityKey || city}
       </div>
+      {showGallery && cityGallery && (
+        <div
+          className="w-full min-h-screen pt-20 pb-32"
+          style={{
+            opacity: showGallery ? 1 : 0,
+            transition: "opacity 0.5s ease",
+          }}
+        >
+          <ImageGallery city={cityKey || city} images={cityGallery.images} />
+        </div>
+      )}
     </div>
   );
 }
