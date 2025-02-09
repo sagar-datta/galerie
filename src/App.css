@@ -23,8 +23,16 @@ button:hover {
   color: white !important;
 }
 
+.city-text {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .city-text:hover {
-  color: #ff685b !important; /* ADD !important */
+  color: #ff685b !important;
 }
 
 #selected-city-element {
@@ -44,6 +52,12 @@ button:hover {
   width: fit-content;
   min-width: 100%;
   will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  contain: layout style paint;
 }
 
 .ticker-row.paused {
@@ -52,33 +66,21 @@ button:hover {
 
 @keyframes ticker-right-to-left {
   0% {
-    transform: translateX(0%); /* Start at original position */
+    transform: translate3d(0, 0, 0);
   }
   100% {
-    transform: translateX(-60%); /* Move left but keep some text visible */
+    transform: translate3d(-60%, 0, 0);
   }
 }
 
 @keyframes ticker-left-to-right {
   0% {
-    transform: translateX(20%); /* Start slightly right */
+    transform: translate3d(20%, 0, 0);
   }
   100% {
-    transform: translateX(-40%); /* Move left but keep more text visible */
+    transform: translate3d(-40%, 0, 0);
   }
 }
-
-.ticker-row {
-  display: flex;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  animation-duration: 900s; /* 15 minutes */
-  width: fit-content; /* Make sure the container only takes the width of its content */
-  min-width: 100%; /* Ensure it at least covers the container width for looping */
-}
-
-/* Removed .ticker-row.even and .ticker-row.odd animation-name and flex-direction */
-/* We will control animation direction and initial position via inline styles in JSX */
 
 @keyframes expandHeight {
   from {

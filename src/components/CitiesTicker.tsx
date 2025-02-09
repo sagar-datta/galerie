@@ -16,7 +16,7 @@ const CITIES = [
 ];
 
 const ROW_SIZE = 4;
-const DUPLICATE_COUNT = 12; // Reduced from 24 to 12 for better performance while maintaining smooth scroll
+const DUPLICATE_COUNT = 24; // Back to 24 duplicates for smoother animation
 
 interface CitiesTickerProps {
   onCityClick: (city: string, rect: DOMRect) => void;
@@ -64,18 +64,32 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
 
   // Reset animation on window resize for smooth experience
   useEffect(() => {
+    let rafId: number;
     const handleResize = () => {
-      tickerRefs.current.forEach((ref) => {
-        if (ref) {
-          ref.style.animation = "none";
-          ref.offsetHeight; // Trigger reflow
-          ref.style.animation = "";
-        }
+      // Cancel any existing animation frame
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+
+      // Schedule the reset in the next frame
+      rafId = requestAnimationFrame(() => {
+        tickerRefs.current.forEach((ref) => {
+          if (ref) {
+            ref.style.animation = "none";
+            ref.offsetHeight; // Trigger reflow
+            ref.style.animation = "";
+          }
+        });
       });
     };
 
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+    };
   }, []);
 
   return (
