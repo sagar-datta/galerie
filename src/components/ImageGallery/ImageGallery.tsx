@@ -12,13 +12,19 @@ function ImageModal({ image, onClose, city }: ModalProps) {
   if (!image) return null;
 
   const aspectRatio = (image.width / image.height).toFixed(2);
+  const svgCursor = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="30" viewBox="0 0 140 30">
+      <rect width="140" height="30" fill="#ff685b"/>
+      <text x="70" y="20" fill="white" font-family="Arial" font-size="14" font-weight="700" text-anchor="middle" letter-spacing="0.5">BACK TO ${city.toUpperCase()}</text>
+    </svg>`
+  )}`;
 
   return (
     <div
       className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
       onClick={onClose}
       style={{
-        cursor: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='24' viewBox='0 0 100 24'><rect width='100' height='24' rx='2' fill='%23ff685b'/><text x='50%' y='50%' fill='%23f5f5dc' font-family='Arial' font-size='12' text-anchor='middle' dominant-baseline='middle'>back to ${city}</text></svg>") 50 12, auto`,
+        cursor: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='24' viewBox='0 0 100 24'><rect width='100' height='24' rx='2' fill='%23ff685b'/><text x='50%' y='50%' fill='white' font-family='Arial' font-size='12' font-weight='bold' text-anchor='middle' dominant-baseline='middle'>BACK TO ${city.toUpperCase()}</text></svg>") 50 12, auto`,
       }}
     >
       <div className="flex gap-6 max-w-[95vw]">
