@@ -111,11 +111,14 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
       }
 
       rafId = requestAnimationFrame(() => {
-        tickerRefs.current.forEach((ref) => {
+        tickerRefs.current.forEach((ref, index) => {
           if (ref) {
+            const isRightToLeft = index % 2 === 0;
             ref.style.animation = "none";
             ref.offsetHeight; // Trigger reflow
-            ref.style.animation = "";
+            ref.style.animation = `${
+              isRightToLeft ? "ticker-right-to-left" : "ticker-left-to-right"
+            } 14400s linear infinite ${isRightToLeft ? "normal" : "reverse"}`;
           }
         });
       });
