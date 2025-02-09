@@ -26,13 +26,6 @@ export function SelectedCity({
 
   const cityGallery = cityKey ? cityGalleries[cityKey] : undefined;
 
-  // Debug logs
-  console.log("SelectedCity props:", { city, position, isReturning });
-  console.log("Available cities:", Object.keys(cityGalleries));
-  console.log("ShowGallery state:", showGallery);
-  console.log("Found city key:", cityKey);
-  console.log("CityGallery found:", cityGallery);
-
   const animateSelectedCityIn = useCallback(() => {
     const selectedCityElement = document.getElementById(
       "selected-city-element"
@@ -54,7 +47,6 @@ export function SelectedCity({
 
           // Show gallery after city name animation
           setTimeout(() => {
-            console.log("Setting showGallery to true");
             setShowGallery(true);
           }, 500);
         }, 16); // Approximately one frame at 60fps
@@ -63,7 +55,6 @@ export function SelectedCity({
   }, []);
 
   const animateSelectedCityOut = useCallback(() => {
-    console.log("Animating out, setting showGallery to false");
     setShowGallery(false);
     const selectedCityElement = document.getElementById(
       "selected-city-element"
@@ -108,7 +99,7 @@ export function SelectedCity({
 
   return (
     <div
-      className="fixed top-0 left-0 w-full h-full z-50 overflow-y-auto"
+      className="fixed top-0 left-0 w-full h-full z-50"
       style={{ backgroundColor: COLORS.beige }}
     >
       <button
@@ -121,10 +112,28 @@ export function SelectedCity({
       >
         Return
       </button>
+
+      {/* Gallery Container */}
+      {showGallery && cityGallery && (
+        <div
+          className="absolute inset-x-0 bottom-[16.67vh] top-0"
+          style={{
+            opacity: showGallery ? 1 : 0,
+            transition: "opacity 0.5s ease",
+            overflow: "hidden",
+          }}
+        >
+          <ImageGallery city={cityKey || city} images={cityGallery.images} />
+        </div>
+      )}
+
+      {/* Coral Footer */}
       <div
         className={`fixed bottom-0 left-0 w-full transition-height duration-300 ease-in-out ${footerHeight}`}
         style={{ backgroundColor: COLORS.coral }}
-      ></div>
+      />
+
+      {/* City Name */}
       <div
         className="text-6xl tracking-widest font-bold"
         style={{
@@ -141,17 +150,6 @@ export function SelectedCity({
       >
         {cityKey || city}
       </div>
-      {showGallery && cityGallery && (
-        <div
-          className="w-full min-h-screen pt-20 pb-32"
-          style={{
-            opacity: showGallery ? 1 : 0,
-            transition: "opacity 0.5s ease",
-          }}
-        >
-          <ImageGallery city={cityKey || city} images={cityGallery.images} />
-        </div>
-      )}
     </div>
   );
 }
