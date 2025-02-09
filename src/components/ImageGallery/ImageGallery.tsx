@@ -1,11 +1,11 @@
 import { GalleryImage } from "../../types/gallery.types";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import "./ImageGallery.css";
 
-function getCloudinaryUrl(publicId: string) {
+const getCloudinaryUrl = (publicId: string) => {
   const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
   return `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
-}
+};
 
 interface ImageGalleryProps {
   city: string;
@@ -14,61 +14,74 @@ interface ImageGalleryProps {
 
 export function ImageGallery({ city, images }: ImageGalleryProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [loadedImages, setLoadedImages] = useState<GalleryImage[]>([]);
   const [shouldCenter, setShouldCenter] = useState(true);
 
-  const checkIfShouldCenter = () => {
+  const checkIfShouldCenter = useCallback(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
     // If scrollWidth is greater than clientWidth, not all content is visible
     const shouldCenterNew = container.scrollWidth <= container.clientWidth;
     setShouldCenter(shouldCenterNew);
-  };
+  }, []);
 
+  // Use ResizeObserver to detect when images load and container size changes
   useEffect(() => {
-    setLoadedImages(images);
-    // Check after images load
-    setTimeout(checkIfShouldCenter, 100);
-  }, [images]);
+    const observer = new ResizeObserver(() => {
+      checkIfShouldCenter();
+    });
+
+    const container = scrollContainerRef.current;
+    if (container) {
+      observer.observe(container);
+    }
+
+    return () => {
+      if (container) {
+        observer.unobserve(container);
+      }
+      observer.disconnect();
+    };
+  }, [checkIfShouldCenter]);
 
   // Check on resize
   useEffect(() => {
     window.addEventListener("resize", checkIfShouldCenter);
     return () => window.removeEventListener("resize", checkIfShouldCenter);
+  }, [checkIfShouldCenter]);
+
+  const handleWheel = useCallback((e: WheelEvent) => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    e.preventDefault();
+
+    // If it's horizontal scroll, use it directly
+    if (Math.abs(e.deltaX) > 0) {
+      container.scrollLeft += e.deltaX;
+      return;
+    }
+
+    // For vertical scroll, use a consistent multiplier
+    container.scrollLeft += e.deltaY * 2.5;
   }, []);
 
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
-
-      // If it's horizontal scroll, use it directly
-      if (Math.abs(e.deltaX) > 0) {
-        container.scrollLeft += e.deltaX;
-        return;
-      }
-
-      // For vertical scroll, use a consistent multiplier
-      container.scrollLeft += e.deltaY * 2.5;
-    };
-
     container.addEventListener("wheel", handleWheel, { passive: false });
     return () => container.removeEventListener("wheel", handleWheel);
-  }, []);
+  }, [handleWheel]);
 
-  // Split images into two rows
-  const splitIntoRows = (images: GalleryImage[]): GalleryImage[][] => {
+  // Split images into two rows - memoized to prevent unnecessary recalculations
+  const imageRows = useMemo(() => {
     const rows: GalleryImage[][] = [[], []];
     images.forEach((image, index) => {
       rows[index % 2].push(image);
     });
     return rows;
-  };
-
-  const imageRows = splitIntoRows(loadedImages);
+  }, [images]);
 
   return (
     <div
