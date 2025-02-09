@@ -2,6 +2,60 @@ import { GalleryImage } from "../../types/gallery.types";
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import "./ImageGallery.css";
 
+interface ModalProps {
+  image: GalleryImage | null;
+  onClose: () => void;
+  city: string;
+}
+
+function ImageModal({ image, onClose, city }: ModalProps) {
+  if (!image) return null;
+
+  const aspectRatio = (image.width / image.height).toFixed(2);
+
+  return (
+    <div
+      className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+      onClick={onClose}
+    >
+      <div className="flex gap-6 max-w-[95vw]">
+        <img
+          src={getCloudinaryUrl(image.publicId)}
+          alt={image.caption || `Photo from ${city}`}
+          className="max-h-[90vh] max-w-[70vw] object-contain"
+          onClick={(e) => e.stopPropagation()}
+        />
+        <div
+          className="bg-[#1a1a1a] p-6 w-[300px] text-white self-center"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {image.caption && (
+            <div className="mb-6">
+              <h3 className="text-lg font-medium mb-2">Caption</h3>
+              <p>{image.caption}</p>
+            </div>
+          )}
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-lg font-medium mb-2">Location</h3>
+              <p>{city}</p>
+            </div>
+            <div>
+              <h3 className="text-lg font-medium mb-2">Dimensions</h3>
+              <p>
+                {image.width} × {image.height}
+              </p>
+              <p className="text-sm text-gray-300 mt-1">
+                Aspect Ratio: {aspectRatio}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const getCloudinaryUrl = (
   publicId: string,
   options?: { lowQuality?: boolean }
@@ -22,6 +76,11 @@ export function ImageGallery({ city, images }: ImageGalleryProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [shouldCenter, setShouldCenter] = useState(true);
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
+  const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
+
+  const handleImageClick = useCallback((image: GalleryImage) => {
+    setSelectedImage(image);
+  }, []);
 
   const checkIfShouldCenter = useCallback(() => {
     const container = scrollContainerRef.current;
@@ -103,54 +162,65 @@ export function ImageGallery({ city, images }: ImageGalleryProps) {
   }, [images]);
 
   return (
-    <div
-      ref={scrollContainerRef}
-      className={`h-full overflow-x-auto overflow-y-hidden whitespace-nowrap flex ${
-        shouldCenter ? "justify-center" : ""
-      }`}
-      style={{
-        justifyContent: shouldCenter ? "center" : "flex-start",
-      }}
-    >
-      <div className="h-full flex flex-col gap-2">
-        {imageRows.map((row, rowIndex) => (
-          <div
-            key={`row-${rowIndex}`}
-            className="flex gap-8 h-[calc(50%-0.25rem)] px-10"
-          >
-            {row.map((image, imageIndex) => (
-              <div
-                key={`${image.id}-${rowIndex}-${imageIndex}`}
-                className="relative flex-none aspect-square h-[85%] image-hover"
-                style={{
-                  marginTop: "auto",
-                  marginBottom: "auto",
-                  background: `url(${getCloudinaryUrl(image.publicId, {
-                    lowQuality: true,
-                  })})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
-              >
-                <img
-                  src={getCloudinaryUrl(image.publicId)}
-                  alt={image.caption || `Photo from ${city}`}
-                  className={`w-full h-full object-cover transition-opacity duration-300 ${
-                    loadedImages.has(image.id) ? "opacity-100" : "opacity-0"
-                  }`}
-                  loading={rowIndex === 0 || imageIndex < 2 ? "eager" : "lazy"}
-                  onLoad={() => handleImageLoad(image.id)}
-                  onError={(e) => {
-                    console.error("Image load error for:", image.publicId);
-                    const imgElement = e.target as HTMLImageElement;
-                    console.log("Failed URL:", imgElement.src);
+    <div className="relative h-full">
+      <div
+        ref={scrollContainerRef}
+        className={`h-full overflow-x-auto overflow-y-hidden whitespace-nowrap flex ${
+          shouldCenter ? "justify-center" : ""
+        }`}
+        style={{
+          justifyContent: shouldCenter ? "center" : "flex-start",
+        }}
+      >
+        <div className="h-full flex flex-col gap-2">
+          {imageRows.map((row, rowIndex) => (
+            <div
+              key={`row-${rowIndex}`}
+              className="flex gap-8 h-[calc(50%-0.25rem)] px-10"
+            >
+              {row.map((image, imageIndex) => (
+                <div
+                  key={`${image.id}-${rowIndex}-${imageIndex}`}
+                  className="relative flex-none aspect-square h-[85%] image-hover"
+                  style={{
+                    marginTop: "auto",
+                    marginBottom: "auto",
+                    background: `url(${getCloudinaryUrl(image.publicId, {
+                      lowQuality: true,
+                    })})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    cursor: "pointer",
                   }}
-                />
-              </div>
-            ))}
-          </div>
-        ))}
+                  onClick={() => handleImageClick(image)}
+                >
+                  <img
+                    src={getCloudinaryUrl(image.publicId)}
+                    alt={image.caption || `Photo from ${city}`}
+                    className={`w-full h-full object-cover transition-opacity duration-300 ${
+                      loadedImages.has(image.id) ? "opacity-100" : "opacity-0"
+                    }`}
+                    loading={
+                      rowIndex === 0 || imageIndex < 2 ? "eager" : "lazy"
+                    }
+                    onLoad={() => handleImageLoad(image.id)}
+                    onError={(e) => {
+                      console.error("Image load error for:", image.publicId);
+                      const imgElement = e.target as HTMLImageElement;
+                      console.log("Failed URL:", imgElement.src);
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
+      <ImageModal
+        image={selectedImage}
+        onClose={() => setSelectedImage(null)}
+        city={city}
+      />
     </div>
   );
 }
