@@ -17,7 +17,7 @@ export function SelectedCity({
   isReturning,
 }: SelectedCityProps) {
   const [footerHeight, setFooterHeight] = useState("h-[6rem]");
-  const [showGallery, setShowGallery] = useState(false);
+  const [showGalleryTransition, setShowGalleryTransition] = useState(false);
 
   // Find city gallery case-insensitively but preserve original city name
   const cityKey = Object.keys(cityGalleries).find(
@@ -45,17 +45,15 @@ export function SelectedCity({
           selectedCityElement.style.transform = "translate(-50%, -50%)"; // Keep vertical centering
           selectedCityElement.style.color = COLORS.white; // Change color to white
 
-          // Show gallery after city name animation
-          setTimeout(() => {
-            setShowGallery(true);
-          }, 500);
+          // Start gallery transition after city name starts moving
+          setShowGalleryTransition(true);
         }, 16); // Approximately one frame at 60fps
       });
     }
   }, []);
 
   const animateSelectedCityOut = useCallback(() => {
-    setShowGallery(false);
+    setShowGalleryTransition(false);
     const selectedCityElement = document.getElementById(
       "selected-city-element"
     );
@@ -113,12 +111,12 @@ export function SelectedCity({
         Return
       </button>
 
-      {/* Gallery Container with more padding */}
-      {showGallery && cityGallery && (
+      {/* Gallery Container - Always render if gallery exists */}
+      {cityGallery && (
         <div
           className="absolute inset-x-0 bottom-[16.67vh] top-0 pt-28 pb-12"
           style={{
-            opacity: showGallery ? 1 : 0,
+            opacity: showGalleryTransition ? 1 : 0,
             transition: "opacity 0.5s ease",
             overflow: "hidden",
           }}
