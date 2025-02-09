@@ -19,7 +19,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<MainApp />} />
-        <Route path="/city/:cityName" element={<MainApp />} />
+        <Route path="/:cityName" element={<MainApp />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
@@ -76,7 +76,7 @@ function MainApp() {
   // Event handlers
   const handleCityClick = useCallback(
     (city: string, rect: DOMRect) => {
-      navigate(`/city/${city.toLowerCase()}`);
+      navigate(`/${city.toLowerCase()}`);
       setState((prev) => ({
         ...prev,
         selectedCity: city.toUpperCase(),
