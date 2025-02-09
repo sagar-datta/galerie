@@ -28,116 +28,98 @@ function App() {
 
 // Main application component
 function MainApp() {
-  // URL params and navigation
   const { cityName } = useParams();
   const navigate = useNavigate();
 
-  // State
-  const [selectedCity, setSelectedCity] = useState<string | null>(null);
-  const [selectedPosition, setSelectedPosition] = useState<{
-    top: number;
-    left: number;
-  } | null>(null);
-  const [isReturning, setIsReturning] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-  const [isDirectAccess, setIsDirectAccess] = useState(true);
+  // Batch state updates using a single state object
+  const [state, setState] = useState({
+    selectedCity: null as string | null,
+    selectedPosition: null as { top: number; left: number } | null,
+    isReturning: false,
+    isPaused: false,
+    isDirectAccess: true,
+  });
 
-  // Refs for cleanup
-  const returnTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
+  // Refs for cleanup and animation with proper initialization
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined
   );
   const animationFrameRef = useRef<number | undefined>(undefined);
 
+  // Memoized state updates
   const updateTickerPositions = useCallback((shouldPause: boolean = false) => {
-    setIsPaused(shouldPause);
+    setState((prev) => ({ ...prev, isPaused: shouldPause }));
   }, []);
 
   // Handle URL-based city selection
   useEffect(() => {
-    if (cityName && isDirectAccess) {
+    if (cityName && state.isDirectAccess) {
       const validCity = Object.keys(cityGalleries).find(
         (key) => key.toUpperCase() === cityName.toUpperCase()
       );
       if (validCity) {
-        setSelectedCity(validCity.toUpperCase());
-        // For direct access, position is centered vertically and horizontally
-        setSelectedPosition({
-          top: window.innerHeight * 0.9166, // 91.66% of viewport height
-          left: window.innerWidth / 2,
-        });
-        updateTickerPositions(true);
+        setState((prev) => ({
+          ...prev,
+          selectedCity: validCity.toUpperCase(),
+          selectedPosition: {
+            top: window.innerHeight * 0.9166,
+            left: window.innerWidth / 2,
+          },
+          isPaused: true,
+        }));
       } else {
         navigate("/", { replace: true });
       }
     }
-  }, [cityName, navigate, updateTickerPositions, isDirectAccess]);
+  }, [cityName, navigate, state.isDirectAccess]);
 
   // Event handlers
   const handleCityClick = useCallback(
     (city: string, rect: DOMRect) => {
-      // Update URL (lowercase for URLs) but keep display name uppercase
       navigate(`/city/${city.toLowerCase()}`);
-      setIsDirectAccess(false);
-
-      // Batch state updates for better performance
-      requestAnimationFrame(() => {
-        setSelectedPosition({
+      setState((prev) => ({
+        ...prev,
+        selectedCity: city.toUpperCase(),
+        selectedPosition: {
           top: rect.top,
           left: rect.left,
-        });
-        setSelectedCity(city.toUpperCase()); // Ensure uppercase for display
-        updateTickerPositions(true);
-      });
-      setIsReturning(false);
+        },
+        isPaused: true,
+        isDirectAccess: false,
+        isReturning: false,
+      }));
     },
-    [updateTickerPositions, navigate]
+    [navigate]
   );
 
   const handleReturn = useCallback(() => {
-    setIsReturning(true);
+    setState((prev) => ({ ...prev, isReturning: true }));
     navigate("/");
 
-    // Clear any existing timeouts/animation frames
-    if (returnTimeoutRef.current) {
-      clearTimeout(returnTimeoutRef.current);
-    }
-    if (animationFrameRef.current) {
+    // Clear existing timeouts/animations
+    timeoutRef.current && clearTimeout(timeoutRef.current);
+    animationFrameRef.current &&
       cancelAnimationFrame(animationFrameRef.current);
-    }
 
-    // Set new timeout
-    returnTimeoutRef.current = setTimeout(() => {
-      // Batch state updates
-      requestAnimationFrame(() => {
-        setSelectedCity(null);
-        setSelectedPosition(null);
-        setIsReturning(false);
-        setIsDirectAccess(true);
-
-        // Schedule ticker resumption
-        animationFrameRef.current = requestAnimationFrame(() => {
-          updateTickerPositions(false);
-        });
-      });
+    // Set new timeout for cleanup
+    timeoutRef.current = setTimeout(() => {
+      setState((prev) => ({
+        ...prev,
+        selectedCity: null,
+        selectedPosition: null,
+        isReturning: false,
+        isPaused: false,
+        isDirectAccess: true,
+      }));
     }, 350);
-  }, [updateTickerPositions, navigate]);
-
-  // Reset animation state when unmounting selected city
-  useEffect(() => {
-    if (!selectedCity && isPaused) {
-      updateTickerPositions(false);
-    }
-  }, [selectedCity, isPaused, updateTickerPositions]);
+  }, [navigate]);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (returnTimeoutRef.current) {
-        clearTimeout(returnTimeoutRef.current);
-      }
-      if (animationFrameRef.current) {
+      timeoutRef.current && clearTimeout(timeoutRef.current);
+      animationFrameRef.current &&
         cancelAnimationFrame(animationFrameRef.current);
-      }
     };
   }, []);
 
@@ -146,19 +128,19 @@ function MainApp() {
       className="grid h-screen grid-rows-[1fr_auto] overflow-hidden"
       style={{ backgroundColor: COLORS.beige }}
     >
-      {selectedCity && selectedPosition && (
+      {state.selectedCity && state.selectedPosition && (
         <SelectedCity
-          city={selectedCity}
-          position={selectedPosition}
+          city={state.selectedCity}
+          position={state.selectedPosition}
           onReturn={handleReturn}
-          isReturning={isReturning}
-          isDirectAccess={isDirectAccess}
+          isReturning={state.isReturning}
+          isDirectAccess={state.isDirectAccess}
         />
       )}
       <div className="relative overflow-hidden">
-        <CitiesTicker onCityClick={handleCityClick} isPaused={isPaused} />
+        <CitiesTicker onCityClick={handleCityClick} isPaused={state.isPaused} />
       </div>
-      <MainFooter isCitySelected={!!selectedCity} />
+      <MainFooter isCitySelected={!!state.selectedCity} />
     </div>
   );
 }
