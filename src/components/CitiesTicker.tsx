@@ -1,5 +1,6 @@
 import { useRef, useCallback, useMemo, useEffect } from "react";
 import { COLORS } from "../constants/colors";
+import { cityGalleries } from "../data/images";
 
 // Move constants outside component to prevent recreation
 const CITIES = [
@@ -18,6 +19,37 @@ const CITIES = [
 const ROW_SIZE = 4;
 const DUPLICATE_COUNT = 200; // Significantly increased for an even longer, smoother animation
 
+const getCloudinaryUrl = (
+  publicId: string,
+  options?: { lowQuality?: boolean }
+) => {
+  const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+  const transformations = options?.lowQuality
+    ? "w_100,e_blur:1000,q_1,f_auto" // Tiny placeholder
+    : "q_auto:good,f_auto,w_800"; // Full quality image
+  return `https://res.cloudinary.com/${cloudName}/image/upload/${transformations}/${publicId}`;
+};
+
+// Preload both full quality and low quality versions of images
+const preloadImagesForCity = (cityName: string) => {
+  const cityKey = Object.keys(cityGalleries).find(
+    (key) => key.toLowerCase() === cityName.toLowerCase()
+  );
+
+  if (!cityKey) return;
+
+  const gallery = cityGalleries[cityKey];
+  gallery.images.forEach((image) => {
+    // Preload full quality version
+    const fullQualityImg = new Image();
+    fullQualityImg.src = getCloudinaryUrl(image.publicId);
+
+    // Preload low quality version
+    const lowQualityImg = new Image();
+    lowQualityImg.src = getCloudinaryUrl(image.publicId, { lowQuality: true });
+  });
+};
+
 interface CitiesTickerProps {
   onCityClick: (city: string, rect: DOMRect) => void;
   isPaused: boolean;
@@ -27,6 +59,7 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
   const tickerRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const preloadedCities = useRef<Set<string>>(new Set());
 
   const rows: string[][] = useMemo(() => {
     const calculatedRows: string[][] = [];
@@ -34,7 +67,7 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
       calculatedRows.push(CITIES.slice(i, i + ROW_SIZE));
     }
     return calculatedRows;
-  }, []); // Dependencies removed since CITIES and ROW_SIZE are now constants
+  }, []);
 
   // Create duplicates for infinite scroll
   const createDuplicates = useCallback((arr: string[]) => {
@@ -61,6 +94,13 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
     },
     [onCityClick]
   );
+
+  const handleCityHover = useCallback((city: string) => {
+    if (!preloadedCities.current.has(city)) {
+      preloadedCities.current.add(city);
+      preloadImagesForCity(city);
+    }
+  }, []);
 
   // Reset animation on window resize for smooth experience
   useEffect(() => {
@@ -124,6 +164,7 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
                   color: COLORS.dark,
                   fontFamily: "Helvetica, Arial, sans-serif",
                 }}
+                onMouseEnter={() => handleCityHover(city)}
               >
                 {city}
               </span>
