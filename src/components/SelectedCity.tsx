@@ -19,7 +19,7 @@ export function SelectedCity({
   const [footerHeight, setFooterHeight] = useState("h-[6rem]");
   const [showGallery, setShowGallery] = useState(false);
 
-  // Find city gallery case-insensitively
+  // Find city gallery case-insensitively but preserve original city name
   const cityKey = Object.keys(cityGalleries).find(
     (key) => key.toLowerCase() === city.toLowerCase()
   );
@@ -104,7 +104,7 @@ export function SelectedCity({
     >
       <button
         onClick={onReturn}
-        className="fixed top-4 left-4 px-6 py-3 text-xl font-bold z-50"
+        className="fixed top-8 left-8 px-6 py-3 text-xl font-bold z-50"
         style={{
           backgroundColor: COLORS.dark,
           color: COLORS.beige,
@@ -113,17 +113,17 @@ export function SelectedCity({
         Return
       </button>
 
-      {/* Gallery Container */}
+      {/* Gallery Container with more padding */}
       {showGallery && cityGallery && (
         <div
-          className="absolute inset-x-0 bottom-[16.67vh] top-0"
+          className="absolute inset-x-0 bottom-[16.67vh] top-0 pt-28 pb-12"
           style={{
             opacity: showGallery ? 1 : 0,
             transition: "opacity 0.5s ease",
             overflow: "hidden",
           }}
         >
-          <ImageGallery city={cityKey || city} images={cityGallery.images} />
+          <ImageGallery city={city} images={cityGallery.images} />
         </div>
       )}
 
@@ -148,7 +148,7 @@ export function SelectedCity({
         }}
         id="selected-city-element"
       >
-        {cityKey || city}
+        {city}
       </div>
     </div>
   );
