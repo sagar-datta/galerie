@@ -17,16 +17,19 @@ function ImageModal({ image, onClose, city }: ModalProps) {
     <div
       className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
       onClick={onClose}
+      style={{
+        cursor: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='24' viewBox='0 0 100 24'><rect width='100' height='24' rx='2' fill='%23ff685b'/><text x='50%' y='50%' fill='%23f5f5dc' font-family='Arial' font-size='12' text-anchor='middle' dominant-baseline='middle'>back to ${city}</text></svg>") 50 12, auto`,
+      }}
     >
       <div className="flex gap-6 max-w-[95vw]">
         <img
           src={getCloudinaryUrl(image.publicId)}
           alt={image.caption || `Photo from ${city}`}
-          className="max-h-[90vh] max-w-[70vw] object-contain"
+          className="max-h-[90vh] max-w-[70vw] object-contain cursor-default"
           onClick={(e) => e.stopPropagation()}
         />
         <div
-          className="bg-[#1a1a1a] p-6 w-[300px] text-white self-center"
+          className="bg-[#1a1a1a] p-6 w-[300px] text-white self-center cursor-default"
           onClick={(e) => e.stopPropagation()}
         >
           {image.caption && (
