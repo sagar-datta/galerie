@@ -1,6 +1,6 @@
 import { GalleryImage } from "../../types/gallery.types";
 import { useEffect, useState, useRef } from "react";
-import { COLORS } from "../../constants/colors";
+import "./ImageGallery.css";
 
 function getCloudinaryUrl(publicId: string) {
   const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
@@ -77,43 +77,9 @@ export function ImageGallery({ city, images }: ImageGalleryProps) {
         shouldCenter ? "justify-center" : ""
       }`}
       style={{
-        scrollbarWidth: "none",
-        msOverflowStyle: "none",
-        overscrollBehavior: "none",
         justifyContent: shouldCenter ? "center" : "flex-start",
       }}
     >
-      <style>
-        {`
-          .overflow-x-auto::-webkit-scrollbar {
-            display: none;
-          }
-
-          .image-hover {
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            z-index: 0;
-          }
-
-          .image-hover:hover img { /* Target the image inside .image-hover on hover */
-            transform: translate(-6px, -6px) scale(1); /* Move only the image */
-          } /* Move only the image */
-
-          .image-hover::before {/* Coral box behind image */
-            content: '';
-            position: absolute;
-        
-            width: 100%;     /* Same width as image */
-            height: 100%;    /* Same height as image */
-            z-index: -1;    /* Behind image */
-          }
-
-          .image-hover:hover::before { /* Coral color on hover */
-            background-color: ${COLORS.dark};
-          }
-
-        `}
-      </style>
       <div className="h-full flex flex-col gap-2">
         {imageRows.map((row, rowIndex) => (
           <div
