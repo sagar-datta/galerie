@@ -1,5 +1,5 @@
 import { COLORS } from "./constants/colors";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { CitiesTicker } from "./components/CitiesTicker";
 import { MainFooter } from "./components/MainFooter";
 import { SelectedCity } from "./components/SelectedCity";
@@ -13,6 +13,13 @@ function App() {
   } | null>(null);
   const [isReturning, setIsReturning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+
+  // Refs for cleanup - initialized with undefined
+  const returnTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined
+  );
+  const animationFrameRef = useRef<number | undefined>(undefined);
+
   const updateTickerPositions = useCallback((shouldPause: boolean = false) => {
     setIsPaused(shouldPause);
   }, []);
@@ -20,13 +27,15 @@ function App() {
   // Event handlers
   const handleCityClick = useCallback(
     (city: string, rect: DOMRect) => {
-      setSelectedPosition({
-        top: rect.top,
-        left: rect.left,
+      // Batch state updates for better performance
+      requestAnimationFrame(() => {
+        setSelectedPosition({
+          top: rect.top,
+          left: rect.left,
+        });
+        setSelectedCity(city);
+        updateTickerPositions(true);
       });
-
-      updateTickerPositions(true);
-      setSelectedCity(city);
       setIsReturning(false);
     },
     [updateTickerPositions]
@@ -35,18 +44,41 @@ function App() {
   const handleReturn = useCallback(() => {
     setIsReturning(true);
 
-    // Wait for the return animation to complete
-    setTimeout(() => {
-      setSelectedCity(null);
-      setSelectedPosition(null);
-      setIsReturning(false);
+    // Clear any existing timeouts/animation frames
+    if (returnTimeoutRef.current) {
+      clearTimeout(returnTimeoutRef.current);
+    }
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
 
-      // Brief delay before resuming ticker to ensure smooth transition
+    // Set new timeout
+    returnTimeoutRef.current = setTimeout(() => {
+      // Batch state updates
       requestAnimationFrame(() => {
-        updateTickerPositions(false);
+        setSelectedCity(null);
+        setSelectedPosition(null);
+        setIsReturning(false);
+
+        // Schedule ticker resumption
+        animationFrameRef.current = requestAnimationFrame(() => {
+          updateTickerPositions(false);
+        });
       });
-    }, 350); // Slightly longer than the animation duration (300ms) to ensure completion
+    }, 350);
   }, [updateTickerPositions]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (returnTimeoutRef.current) {
+        clearTimeout(returnTimeoutRef.current);
+      }
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div

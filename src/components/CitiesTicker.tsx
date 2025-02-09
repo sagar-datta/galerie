@@ -1,5 +1,22 @@
-import { useRef, useCallback, useMemo } from "react";
+import { useRef, useCallback, useMemo, useEffect } from "react";
 import { COLORS } from "../constants/colors";
+
+// Move constants outside component to prevent recreation
+const CITIES = [
+  "NEW YORK",
+  "PARIS",
+  "LONDON",
+  "CHICAGO",
+  "MIAMI",
+  "SHANGHAI",
+  "BERLIN",
+  "VIENNA",
+  "MELBOURNE",
+  "TOKYO",
+];
+
+const ROW_SIZE = 4;
+const DUPLICATE_COUNT = 12; // Reduced from 24 to 12 for better performance while maintaining smooth scroll
 
 interface CitiesTickerProps {
   onCityClick: (city: string, rect: DOMRect) => void;
@@ -11,53 +28,55 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const tickerRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  // Constants
-  const cities = [
-    "NEW YORK",
-    "PARIS",
-    "LONDON",
-    "CHICAGO",
-    "MIAMI",
-    "SHANGHAI",
-    "BERLIN",
-    "VIENNA",
-    "MELBOURNE",
-    "TOKYO",
-  ];
-
-  const rowSize = 4;
   const rows: string[][] = useMemo(() => {
-    // Memoize rows
     const calculatedRows: string[][] = [];
-    for (let i = 0; i < cities.length; i += rowSize) {
-      calculatedRows.push(cities.slice(i, i + rowSize));
+    for (let i = 0; i < CITIES.length; i += ROW_SIZE) {
+      calculatedRows.push(CITIES.slice(i, i + ROW_SIZE));
     }
     return calculatedRows;
-  }, [cities, rowSize]); // Dependencies: cities, rowSize (though these are constants here)
+  }, []); // Dependencies removed since CITIES and ROW_SIZE are now constants
 
   // Create duplicates for infinite scroll
-  const createDuplicates = useCallback((arr: string[], _rowIndex: number) => {
+  const createDuplicates = useCallback((arr: string[]) => {
     let duplicatedArr = [...arr];
-    for (let i = 0; i < 24; i++) {
-      // Create 24 duplicates (25 total copies) to fill 15-minute animation
+    for (let i = 0; i < DUPLICATE_COUNT; i++) {
       duplicatedArr = [...duplicatedArr, ...arr];
     }
     return duplicatedArr;
   }, []);
 
   const rowDuplicates = useMemo(() => {
-    // Memoize rowDuplicates
     return rows.map(createDuplicates);
-  }, [rows, createDuplicates]); // Dependencies: rows, createDuplicates
+  }, [rows, createDuplicates]);
 
-  // Event handlers
-  const handleCityClick = useCallback(
-    (city: string, e: React.MouseEvent<HTMLSpanElement>, _rowIndex: number) => {
-      const rect = e.currentTarget.getBoundingClientRect();
-      onCityClick(city, rect);
+  // Event handlers with improved performance using event delegation
+  const handleRowClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>, rowIndex: number) => {
+      const target = e.target as HTMLElement;
+      if (target.classList.contains("city-text")) {
+        const city = target.textContent || "";
+        const rect = target.getBoundingClientRect();
+        onCityClick(city, rect);
+      }
     },
     [onCityClick]
   );
+
+  // Reset animation on window resize for smooth experience
+  useEffect(() => {
+    const handleResize = () => {
+      tickerRefs.current.forEach((ref) => {
+        if (ref) {
+          ref.style.animation = "none";
+          ref.offsetHeight; // Trigger reflow
+          ref.style.animation = "";
+        }
+      });
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <div ref={containerRef} className="max-w-full mx-auto py-20">
@@ -67,6 +86,7 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
           className={`relative w-full overflow-hidden ${
             rowIndex !== rowDuplicates.length - 1 ? "mb-8" : ""
           }`}
+          onClick={(e) => handleRowClick(e, rowIndex)}
         >
           <div
             ref={(el) => {
@@ -76,7 +96,7 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
               isPaused ? "paused" : ""
             }`}
             style={{
-              transform: `translateX(${rowIndex % 2 === 0 ? "0%" : "-40%"})`, // Odd rows start at -40% to match their animation end point
+              transform: `translateX(${rowIndex % 2 === 0 ? "0%" : "-40%"})`,
               animationName:
                 rowIndex % 2 === 0
                   ? "ticker-right-to-left"
@@ -92,7 +112,6 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
                   color: COLORS.dark,
                   fontFamily: "Helvetica, Arial, sans-serif",
                 }}
-                onClick={(e) => handleCityClick(city, e, rowIndex)}
               >
                 {city}
               </span>
