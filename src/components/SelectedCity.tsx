@@ -8,6 +8,7 @@ interface SelectedCityProps {
   position: { top: number; left: number };
   onReturn: () => void;
   isReturning: boolean;
+  isDirectAccess?: boolean;
 }
 
 export function SelectedCity({
@@ -15,6 +16,7 @@ export function SelectedCity({
   position,
   onReturn,
   isReturning,
+  isDirectAccess = false,
 }: SelectedCityProps) {
   const [footerHeight, setFooterHeight] = useState("h-[6rem]");
   const [showGalleryTransition, setShowGalleryTransition] = useState(false);
@@ -31,26 +33,34 @@ export function SelectedCity({
       "selected-city-element"
     );
     if (selectedCityElement) {
-      // Force a reflow to ensure initial position is rendered
-      selectedCityElement.getBoundingClientRect();
+      if (isDirectAccess) {
+        // For direct URL access, just fade in without movement
+        selectedCityElement.style.transition = "opacity 0.5s ease-in-out";
+        selectedCityElement.style.opacity = "1";
+        selectedCityElement.style.color = COLORS.white;
+        setShowGalleryTransition(true);
+      } else {
+        // Force a reflow to ensure initial position is rendered
+        selectedCityElement.getBoundingClientRect();
 
-      // Wait for next frame to establish initial position
-      requestAnimationFrame(() => {
-        // Add a tiny delay to ensure initial position is visible
-        setTimeout(() => {
-          selectedCityElement.style.transition =
-            "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)";
-          selectedCityElement.style.top = "91.66%"; // Position in coral bar
-          selectedCityElement.style.left = "50%"; // Center horizontally
-          selectedCityElement.style.transform = "translate(-50%, -50%)"; // Keep vertical centering
-          selectedCityElement.style.color = COLORS.white; // Change color to white
+        // Wait for next frame to establish initial position
+        requestAnimationFrame(() => {
+          // Add a tiny delay to ensure initial position is visible
+          setTimeout(() => {
+            selectedCityElement.style.transition =
+              "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)";
+            selectedCityElement.style.top = "91.66%"; // Position in coral bar
+            selectedCityElement.style.left = "50%"; // Center horizontally
+            selectedCityElement.style.transform = "translate(-50%, -50%)"; // Keep vertical centering
+            selectedCityElement.style.color = COLORS.white; // Change color to white
 
-          // Start gallery transition after city name starts moving
-          setShowGalleryTransition(true);
-        }, 16); // Approximately one frame at 60fps
-      });
+            // Start gallery transition after city name starts moving
+            setShowGalleryTransition(true);
+          }, 16); // Approximately one frame at 60fps
+        });
+      }
     }
-  }, []);
+  }, [isDirectAccess]);
 
   const animateSelectedCityOut = useCallback(() => {
     setShowGalleryTransition(false);
@@ -58,27 +68,24 @@ export function SelectedCity({
       "selected-city-element"
     );
     if (selectedCityElement) {
-      // First animate the footer height
-      setFooterHeight("h-[6rem]");
+      if (isDirectAccess) {
+        // For direct URL access, just fade out
+        selectedCityElement.style.transition = "opacity 0.3s ease-in-out";
+        selectedCityElement.style.opacity = "0";
+      } else {
+        // First animate the footer height
+        setFooterHeight("h-[6rem]");
 
-      // Then animate the city text
-      selectedCityElement.style.transition =
-        "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
-      selectedCityElement.style.top = `${position.top}px`;
-      selectedCityElement.style.left = `${position.left}px`;
-      selectedCityElement.style.transform = "translate(0, 0)";
-      selectedCityElement.style.color = COLORS.dark; // Reset color to dark
-
-      // Only hide after animation completes
-      selectedCityElement.addEventListener(
-        "transitionend",
-        () => {
-          selectedCityElement.style.opacity = "0";
-        },
-        { once: true }
-      );
+        // Then animate the city text
+        selectedCityElement.style.transition =
+          "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
+        selectedCityElement.style.top = `${position.top}px`;
+        selectedCityElement.style.left = `${position.left}px`;
+        selectedCityElement.style.transform = "translate(0, 0)";
+        selectedCityElement.style.color = COLORS.dark; // Reset color to dark
+      }
     }
-  }, [position]);
+  }, [position, isDirectAccess]);
 
   useEffect(() => {
     animateSelectedCityIn();
@@ -94,6 +101,21 @@ export function SelectedCity({
       animateSelectedCityOut();
     }
   }, [isReturning, animateSelectedCityOut]);
+
+  // Calculate initial styles based on access type
+  const initialStyles = isDirectAccess
+    ? {
+        top: "91.66%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        color: COLORS.white,
+      }
+    : {
+        top: `${position.top}px`,
+        left: `${position.left}px`,
+        transform: "none",
+        color: COLORS.dark,
+      };
 
   return (
     <div
@@ -137,11 +159,9 @@ export function SelectedCity({
         className="text-6xl tracking-widest font-bold"
         style={{
           position: "fixed",
-          top: `${position.top}px`,
-          left: `${position.left}px`,
-          color: COLORS.dark,
+          ...initialStyles,
           fontFamily: "Helvetica, Arial, sans-serif",
-          opacity: 1,
+          opacity: isDirectAccess ? 0 : 1,
           transition: "none",
           zIndex: 40,
         }}

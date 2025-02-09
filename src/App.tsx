@@ -3,8 +3,35 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { CitiesTicker } from "./components/CitiesTicker";
 import { MainFooter } from "./components/MainFooter";
 import { SelectedCity } from "./components/SelectedCity";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useParams,
+  useNavigate,
+  Navigate,
+} from "react-router-dom";
+import { cityGalleries } from "./data/images";
 
+// Main App wrapper with router
 function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<MainApp />} />
+        <Route path="/city/:cityName" element={<MainApp />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+// Main application component
+function MainApp() {
+  // URL params and navigation
+  const { cityName } = useParams();
+  const navigate = useNavigate();
+
   // State
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [selectedPosition, setSelectedPosition] = useState<{
@@ -13,8 +40,9 @@ function App() {
   } | null>(null);
   const [isReturning, setIsReturning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [isDirectAccess, setIsDirectAccess] = useState(true);
 
-  // Refs for cleanup - initialized with undefined
+  // Refs for cleanup
   const returnTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined
   );
@@ -24,25 +52,50 @@ function App() {
     setIsPaused(shouldPause);
   }, []);
 
+  // Handle URL-based city selection
+  useEffect(() => {
+    if (cityName && isDirectAccess) {
+      const validCity = Object.keys(cityGalleries).find(
+        (key) => key.toUpperCase() === cityName.toUpperCase()
+      );
+      if (validCity) {
+        setSelectedCity(validCity.toUpperCase());
+        // For direct access, position is centered vertically and horizontally
+        setSelectedPosition({
+          top: window.innerHeight * 0.9166, // 91.66% of viewport height
+          left: window.innerWidth / 2,
+        });
+        updateTickerPositions(true);
+      } else {
+        navigate("/", { replace: true });
+      }
+    }
+  }, [cityName, navigate, updateTickerPositions, isDirectAccess]);
+
   // Event handlers
   const handleCityClick = useCallback(
     (city: string, rect: DOMRect) => {
+      // Update URL (lowercase for URLs) but keep display name uppercase
+      navigate(`/city/${city.toLowerCase()}`);
+      setIsDirectAccess(false);
+
       // Batch state updates for better performance
       requestAnimationFrame(() => {
         setSelectedPosition({
           top: rect.top,
           left: rect.left,
         });
-        setSelectedCity(city);
+        setSelectedCity(city.toUpperCase()); // Ensure uppercase for display
         updateTickerPositions(true);
       });
       setIsReturning(false);
     },
-    [updateTickerPositions]
+    [updateTickerPositions, navigate]
   );
 
   const handleReturn = useCallback(() => {
     setIsReturning(true);
+    navigate("/");
 
     // Clear any existing timeouts/animation frames
     if (returnTimeoutRef.current) {
@@ -59,6 +112,7 @@ function App() {
         setSelectedCity(null);
         setSelectedPosition(null);
         setIsReturning(false);
+        setIsDirectAccess(true);
 
         // Schedule ticker resumption
         animationFrameRef.current = requestAnimationFrame(() => {
@@ -66,7 +120,14 @@ function App() {
         });
       });
     }, 350);
-  }, [updateTickerPositions]);
+  }, [updateTickerPositions, navigate]);
+
+  // Reset animation state when unmounting selected city
+  useEffect(() => {
+    if (!selectedCity && isPaused) {
+      updateTickerPositions(false);
+    }
+  }, [selectedCity, isPaused, updateTickerPositions]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -91,6 +152,7 @@ function App() {
           position={selectedPosition}
           onReturn={handleReturn}
           isReturning={isReturning}
+          isDirectAccess={isDirectAccess}
         />
       )}
       <div className="relative overflow-hidden">

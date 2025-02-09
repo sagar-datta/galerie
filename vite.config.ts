@@ -49,7 +49,7 @@ export default defineConfig({
   },
   // Optimize dependencies
   optimizeDeps: {
-    include: ["react", "react-dom"],
+    include: ["react", "react-dom", "react-router-dom"],
     exclude: [],
   },
   // Enable proper tree-shaking
