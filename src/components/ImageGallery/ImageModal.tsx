@@ -50,51 +50,48 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
 
   return (
     <div
-      className={`fixed inset-0 bg-[#131313]/80 flex items-center justify-center z-50 backdrop-blur-lg ${
+      className={`fixed inset-0 bg-[#131313]/90 flex z-50 backdrop-blur-sm ${
         isClosing ? "modal-exit" : "modal-enter"
       }`}
       onClick={handleClose}
       style={cursorStyle}
     >
-      <div className="flex gap-6 max-w-[95vw]">
+      <div className="relative h-[85vh] flex items-center justify-center">
         <img
           src={getCloudinaryUrl(image.publicId)}
           alt={image.caption || `Photo from ${city}`}
-          className="max-h-[90vh] max-w-[70vw] object-contain cursor-default relative transform -translate-x-2 -translate-y-2"
-          style={{
-            boxShadow: `6px 6px 0 ${COLORS.black}`,
-          }}
+          className="max-h-[85vh] max-w-[95vw] object-contain cursor-default"
           onClick={(e) => e.stopPropagation()}
         />
-        <div
-          className="p-6 w-[300px] text-white self-center cursor-default relative transform -translate-x-2 -translate-y-2"
-          style={{
-            backgroundColor: COLORS.dark,
-            boxShadow: `6px 6px 0 ${COLORS.black}`,
-          }}
-          onClick={(e) => e.stopPropagation()}
-        >
-          {image.caption && (
-            <div className="mb-6">
-              <h3 className="text-lg font-medium mb-2">Caption</h3>
-              <p>{image.caption}</p>
-            </div>
-          )}
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-lg font-medium mb-2">Location</h3>
-              <p>{city}</p>
-            </div>
-            <div>
-              <h3 className="text-lg font-medium mb-2">Dimensions</h3>
-              <p>
-                {image.width} × {image.height}
-              </p>
-              <p className="text-sm text-gray-300 mt-1">
-                Aspect Ratio: {aspectRatio}
-              </p>
-            </div>
+      </div>
+      <div
+        className="fixed bottom-0 left-0 right-0 bg-[#131313] text-white p-4 cursor-default flex items-center gap-8"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {image.caption && (
+          <div className="flex-1">
+            <h3 className="text-sm uppercase tracking-wide text-gray-400">
+              Caption
+            </h3>
+            <p className="text-base">{image.caption}</p>
           </div>
+        )}
+        <div className="flex-none">
+          <h3 className="text-sm uppercase tracking-wide text-gray-400">
+            Location
+          </h3>
+          <p className="text-base">{city}</p>
+        </div>
+        <div className="flex-none">
+          <h3 className="text-sm uppercase tracking-wide text-gray-400">
+            Dimensions
+          </h3>
+          <p className="text-base">
+            {image.width} × {image.height}
+            <span className="text-sm text-gray-400 ml-2">
+              ({aspectRatio}:1)
+            </span>
+          </p>
         </div>
       </div>
     </div>
