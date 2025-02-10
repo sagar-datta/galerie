@@ -1,4 +1,4 @@
-import { useRef, useCallback, useMemo, useEffect } from "react";
+import { useRef, useCallback, useMemo, useEffect, useState } from "react";
 import { COLORS } from "../constants/colors";
 import { cityGalleries } from "../data/images";
 
@@ -16,7 +16,8 @@ const CITIES = [
   "TOKYO",
 ];
 
-const ROW_SIZE = 4;
+const MIN_ROW_HEIGHT = 120; // Increased for better spacing
+const ROW_MARGIN = 32; // 8rem margin between rows
 const DUPLICATE_COUNT = 200; // Significantly increased for an even longer, smoother animation
 
 const getCloudinaryUrl = (
@@ -60,14 +61,37 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const tickerRefs = useRef<(HTMLDivElement | null)[]>([]);
   const preloadedCities = useRef<Set<string>>(new Set());
+  const [availableRows, setAvailableRows] = useState(3); // Default to 3 rows
 
-  const rows: string[][] = useMemo(() => {
-    const calculatedRows: string[][] = [];
-    for (let i = 0; i < CITIES.length; i += ROW_SIZE) {
-      calculatedRows.push(CITIES.slice(i, i + ROW_SIZE));
-    }
-    return calculatedRows;
+  // Calculate rows based on available height
+  const calculateRows = useCallback(() => {
+    if (!containerRef.current) return;
+
+    const containerTop = containerRef.current.getBoundingClientRect().top;
+    const viewportHeight = window.innerHeight;
+    const footerHeight = 180; // Combined height of both footer sections
+    const availableHeight = viewportHeight - containerTop - footerHeight;
+
+    // Calculate total space needed for each row including margins
+    const rowSpaceNeeded = MIN_ROW_HEIGHT + ROW_MARGIN;
+    const possibleRows = Math.floor(availableHeight / rowSpaceNeeded);
+
+    // Ensure we have at least 1 row and at most 3 rows
+    const optimalRows = Math.max(1, Math.min(3, possibleRows));
+    setAvailableRows(optimalRows);
   }, []);
+
+  // Create dynamic rows based on available space
+  const rows = useMemo(() => {
+    const citiesPerRow = Math.ceil(CITIES.length / availableRows);
+    const calculatedRows: string[][] = [];
+
+    for (let i = 0; i < CITIES.length; i += citiesPerRow) {
+      calculatedRows.push(CITIES.slice(i, i + citiesPerRow));
+    }
+
+    return calculatedRows;
+  }, [availableRows]);
 
   // Create duplicates for infinite scroll
   const createDuplicates = useCallback((arr: string[]) => {
@@ -102,15 +126,14 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
     }
   }, []);
 
-  // Reset animation on window resize for smooth experience
+  // Initialize ResizeObserver and handle window resize
   useEffect(() => {
-    let rafId: number;
-    const handleResize = () => {
-      if (rafId) {
-        cancelAnimationFrame(rafId);
-      }
+    let resizeObserver: ResizeObserver;
 
-      rafId = requestAnimationFrame(() => {
+    const handleResize = () => {
+      calculateRows();
+
+      requestAnimationFrame(() => {
         tickerRefs.current.forEach((ref, index) => {
           if (ref) {
             const isRightToLeft = index % 2 === 0;
@@ -124,17 +147,29 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
       });
     };
 
+    if (containerRef.current) {
+      resizeObserver = new ResizeObserver(handleResize);
+      resizeObserver.observe(containerRef.current);
+      resizeObserver.observe(document.body); // Observe body for footer changes
+    }
+
     window.addEventListener("resize", handleResize);
+    handleResize(); // Initial calculation
+
     return () => {
-      window.removeEventListener("resize", handleResize);
-      if (rafId) {
-        cancelAnimationFrame(rafId);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
       }
+      window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [calculateRows]);
 
   return (
-    <div ref={containerRef} className="max-w-full mx-auto py-20">
+    <div
+      ref={containerRef}
+      className="max-w-full mx-auto py-20"
+      style={{ minHeight: `${MIN_ROW_HEIGHT * availableRows}px` }}
+    >
       {rowDuplicates.map((rowDuplicate: string[], rowIndex: number) => (
         <div
           key={rowIndex}
@@ -147,9 +182,8 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
             ref={(el) => {
               tickerRefs.current[rowIndex] = el;
             }}
-            className={`ticker-row inline-flex gap-16 ${
-              isPaused ? "paused" : ""
-            }`}
+            className={`ticker-row inline-flex ${isPaused ? "paused" : ""}`}
+            data-rows={availableRows}
             style={{
               transform: `translateX(${rowIndex % 2 === 0 ? "0%" : "-40%"})`,
               animationName:

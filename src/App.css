@@ -24,10 +24,12 @@ button {
   perspective: 1000px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: transform 0.3s ease;
 }
 
 .city-text:hover {
   color: #ff685b !important;
+  transform: scale(1.05);
 }
 
 #selected-city-element {
@@ -53,6 +55,20 @@ button {
   -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
   contain: layout style paint;
+  transition: gap 0.3s ease;
+}
+
+/* Adjust gap based on number of rows */
+.ticker-row[data-rows="1"] {
+  gap: 2rem;
+}
+
+.ticker-row[data-rows="2"] {
+  gap: 3rem;
+}
+
+.ticker-row[data-rows="3"] {
+  gap: 4rem;
 }
 
 .ticker-row.paused {
@@ -90,4 +106,14 @@ button {
 .ticker-row > * {
   contain: style layout;
   will-change: transform;
+}
+
+/* Optimize transitions between row configurations */
+.ticker-row {
+  transition: margin-bottom 0.3s ease;
+}
+
+/* Adjust spacing based on available rows */
+.ticker-row:last-child {
+  margin-bottom: 0 !important;
 }
