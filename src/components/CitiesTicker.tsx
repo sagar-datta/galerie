@@ -69,8 +69,7 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
 
     const containerTop = containerRef.current.getBoundingClientRect().top;
     const viewportHeight = window.innerHeight;
-    const footerHeight = 180; // Combined height of both footer sections
-    const availableHeight = viewportHeight - containerTop - footerHeight;
+    const availableHeight = viewportHeight * 0.8 - containerTop;
 
     // Calculate total space needed for each row including margins
     const rowSpaceNeeded = MIN_ROW_HEIGHT + ROW_MARGIN;
