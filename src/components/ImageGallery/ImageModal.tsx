@@ -56,7 +56,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
       onClick={handleClose}
       style={cursorStyle}
     >
-      <div className="w-full h-[85vh] flex items-center justify-center">
+      <div className="w-full h-[85vh] flex items-center justify-center pt-8">
         <div className="flex items-center justify-center w-full">
           <img
             src={getCloudinaryUrl(image.publicId)}
