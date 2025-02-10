@@ -1,6 +1,7 @@
 import { GalleryImage } from "../../types/gallery.types";
 import { COLORS } from "../../constants/colors";
 import { getCloudinaryUrl } from "./utils";
+import { useState, useEffect } from "react";
 
 interface ImageModalProps {
   image: GalleryImage | null;
@@ -9,14 +10,29 @@ interface ImageModalProps {
 }
 
 export function ImageModal({ image, onClose, city }: ImageModalProps) {
+  const [isClosing, setIsClosing] = useState(false);
+
+  useEffect(() => {
+    if (image) {
+      setIsClosing(false);
+    }
+  }, [image]);
+
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(onClose, 50); // Match the animation duration
+  };
+
   if (!image) return null;
 
   const aspectRatio = (image.width / image.height).toFixed(2);
 
   return (
     <div
-      className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
-      onClick={onClose}
+      className={`fixed inset-0 bg-black/80 flex items-center justify-center z-50 ${
+        isClosing ? "modal-exit" : "modal-enter"
+      }`}
+      onClick={handleClose}
       style={{
         cursor: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='110' height='24' viewBox='0 0 110 24'><rect width='110' height='24' rx='2' fill='%23ff685b'/><text x='50%' y='50%' fill='%231a1a1a' font-family='Arial' font-size='12' font-weight='bold' letter-spacing='1' text-anchor='middle' dominant-baseline='middle'>BACK TO ${city.toUpperCase()}</text></svg>") 55 12, auto`,
       }}

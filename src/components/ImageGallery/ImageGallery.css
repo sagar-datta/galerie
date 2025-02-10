@@ -47,6 +47,23 @@
   cursor: none;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-enter {
+  animation: fadeIn 50ms ease-out forwards;
+}
+
+.modal-exit {
+  animation: fadeIn 50ms ease-out reverse forwards;
+}
+
 .custom-cursor::after {
   content: "";
   position: fixed;
