@@ -4,6 +4,30 @@ import { ImageModal } from "./ImageModal";
 import { getCloudinaryUrl } from "./utils";
 import "./ImageGallery.css";
 
+// Move wheel handler outside component since it doesn't use any component state
+const createWheelHandler =
+  (container: HTMLDivElement | null) => (e: WheelEvent) => {
+    if (!container) return;
+
+    e.preventDefault();
+
+    if (Math.abs(e.deltaX) > 0) {
+      container.scrollLeft += e.deltaX;
+      return;
+    }
+
+    container.scrollLeft += e.deltaY * 2.5;
+  };
+
+// Memoize row creation function
+const createImageRows = (images: GalleryImage[]) => {
+  const rows: GalleryImage[][] = [[], []];
+  images.forEach((image, index) => {
+    rows[index % 2].push(image);
+  });
+  return rows;
+};
+
 interface ImageGalleryProps {
   city: string;
   images: GalleryImage[];
@@ -29,24 +53,26 @@ export function ImageGallery({ city, images }: ImageGalleryProps) {
   // Preload first 4 images
   useEffect(() => {
     const preloadImages = images.slice(0, 4);
+    const links: HTMLLinkElement[] = [];
+
     preloadImages.forEach((image) => {
       const link = document.createElement("link");
       link.rel = "preload";
       link.as = "image";
       link.href = getCloudinaryUrl(image.publicId);
       document.head.appendChild(link);
-      return () => {
-        document.head.removeChild(link);
-      };
+      links.push(link);
     });
+
+    return () => {
+      links.forEach((link) => document.head.removeChild(link));
+    };
   }, [images]);
 
   useEffect(() => {
-    const observer = new ResizeObserver(() => {
-      checkIfShouldCenter();
-    });
-
+    const observer = new ResizeObserver(checkIfShouldCenter);
     const container = scrollContainerRef.current;
+
     if (container) {
       observer.observe(container);
     }
@@ -64,39 +90,22 @@ export function ImageGallery({ city, images }: ImageGalleryProps) {
     return () => window.removeEventListener("resize", checkIfShouldCenter);
   }, [checkIfShouldCenter]);
 
-  const handleWheel = useCallback((e: WheelEvent) => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    e.preventDefault();
-
-    if (Math.abs(e.deltaX) > 0) {
-      container.scrollLeft += e.deltaX;
-      return;
-    }
-
-    container.scrollLeft += e.deltaY * 2.5;
-  }, []);
-
+  // Create and use wheel handler directly in useEffect
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    container.addEventListener("wheel", handleWheel, { passive: false });
-    return () => container.removeEventListener("wheel", handleWheel);
-  }, [handleWheel]);
+    const wheelHandler = createWheelHandler(container);
+    container.addEventListener("wheel", wheelHandler, { passive: false });
+    return () => container.removeEventListener("wheel", wheelHandler);
+  }, []); // Empty deps since we get fresh ref value in handler creation
 
   const handleImageLoad = useCallback((imageId: string) => {
     setLoadedImages((prev) => new Set(prev).add(imageId));
   }, []);
 
-  const imageRows = useMemo(() => {
-    const rows: GalleryImage[][] = [[], []];
-    images.forEach((image, index) => {
-      rows[index % 2].push(image);
-    });
-    return rows;
-  }, [images]);
+  // Memoize image rows calculation with proper dependency
+  const imageRows = useMemo(() => createImageRows(images), [images]);
 
   return (
     <div className="relative h-full">
