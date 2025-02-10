@@ -67,17 +67,25 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
   const calculateRows = useCallback(() => {
     if (!containerRef.current) return;
 
+    const viewport = window.innerHeight;
     const containerTop = containerRef.current.getBoundingClientRect().top;
-    const viewportHeight = window.innerHeight;
-    const availableHeight = viewportHeight * 0.8 - containerTop;
 
-    // Calculate total space needed for each row including margins
-    const rowSpaceNeeded = MIN_ROW_HEIGHT + ROW_MARGIN;
-    const possibleRows = Math.floor(availableHeight / rowSpaceNeeded);
+    // Add buffer to ensure we collapse before content gets cut off
+    const safetyBuffer = 20;
+    const bottomMargin = 80; // Increased margin to trigger earlier collapse
 
-    // Ensure we have at least 1 row and at most 3 rows
-    const optimalRows = Math.max(1, Math.min(3, possibleRows));
-    setAvailableRows(optimalRows);
+    // Calculate available space excluding margins and buffer
+    const availableSpace =
+      viewport - containerTop - bottomMargin - safetyBuffer;
+
+    // Calculate space needed for text content plus margins
+    const spacePerRow = MIN_ROW_HEIGHT + ROW_MARGIN;
+
+    // Calculate max rows that can fit without cutting off
+    let maxRows = Math.floor(availableSpace / spacePerRow);
+    maxRows = Math.max(1, Math.min(3, maxRows));
+
+    setAvailableRows(maxRows);
   }, []);
 
   // Create dynamic rows based on available space
