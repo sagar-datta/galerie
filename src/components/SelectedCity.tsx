@@ -57,7 +57,6 @@ export function SelectedCity({
         selectedCityElement.style.left = "50%";
         selectedCityElement.style.transform = "translate(-50%, -50%)";
         selectedCityElement.style.color = COLORS.white;
-
         setShowGalleryTransition(true);
       });
     }
@@ -140,7 +139,9 @@ export function SelectedCity({
       />
 
       <div
-        className="text-6xl tracking-widest font-bold"
+        className={`tracking-widest font-bold ${
+          showGalleryTransition ? "text-[clamp(1.75rem,8vh,5rem)]" : "text-6xl"
+        }`}
         style={{
           position: "fixed",
           top: isDirectAccess ? "91.66%" : `${position.top}px`,
