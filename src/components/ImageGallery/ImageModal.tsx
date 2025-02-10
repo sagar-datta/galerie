@@ -36,7 +36,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
 
   return (
     <div
-      className={`fixed inset-0 bg-black/80 flex items-center justify-center z-50 ${
+      className={`fixed inset-0 bg-black/80 flex items-center justify-center z-50 backdrop-blur-lg ${
         isClosing ? "modal-exit" : "modal-enter"
       }`}
       onClick={handleClose}
