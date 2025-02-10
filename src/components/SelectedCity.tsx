@@ -41,7 +41,6 @@ export function SelectedCity({
     if (!selectedCityElement) return;
 
     if (isDirectAccess) {
-      // For direct URL access, just fade in
       selectedCityElement.style.transition = "opacity 0.5s ease-in-out";
       selectedCityElement.style.opacity = "1";
       selectedCityElement.style.color = COLORS.white;
@@ -49,10 +48,8 @@ export function SelectedCity({
     } else {
       selectedCityElement.style.transition = "none";
       selectedCityElement.style.opacity = "1";
-      // Force a reflow
       selectedCityElement.getBoundingClientRect();
 
-      // Then start the animation
       requestAnimationFrame(() => {
         selectedCityElement.style.transition =
           "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)";
@@ -116,10 +113,9 @@ export function SelectedCity({
           color: COLORS.beige,
         }}
       >
-        Return
+        <span>Return</span>
       </button>
 
-      {/* Gallery Container - Only render if gallery exists and is transitioning */}
       {cityGallery && showGalleryTransition && (
         <div
           className="absolute inset-x-0 bottom-[16.67vh] top-0 pt-28 pb-12"
@@ -138,13 +134,11 @@ export function SelectedCity({
         </div>
       )}
 
-      {/* Coral Footer */}
       <div
         className={`fixed bottom-0 left-0 w-full transition-height duration-300 ease-in-out ${footerHeight}`}
         style={{ backgroundColor: COLORS.coral }}
       />
 
-      {/* City Name */}
       <div
         className="text-6xl tracking-widest font-bold"
         style={{

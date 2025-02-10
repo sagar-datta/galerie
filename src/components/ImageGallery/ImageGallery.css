@@ -19,15 +19,16 @@
 }
 
 .image-hover {
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translate(0, 0);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
   z-index: 0;
 }
 
-.image-hover:hover img {
-  /* Target the image inside .image-hover on hover */
-  transform: translate(-6px, -6px) scale(1); /* Move only the image */
-} /* Move only the image */
+.image-hover:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #ff685b; /* Use coral color */
+}
 
 .image-hover::before {
   /* Coral box behind image */
@@ -80,14 +81,51 @@
   position: fixed;
   top: 2rem;
   left: 2rem;
+  z-index: 50;
   padding: 0.75rem 1.5rem;
   font-size: 1.25rem;
   font-weight: 700;
-  z-index: 50;
-  transition: opacity 50ms ease-out, transform 50ms ease-out;
+  transition: transform 0.2s ease;
   transform-origin: center center;
   will-change: transform, opacity;
   backface-visibility: hidden;
+  background: none !important;
+  color: #ebe9d1 !important; /* COLORS.beige */
+  isolation: isolate;
+}
+
+.return-button > span {
+  position: relative;
+  z-index: 2;
+}
+
+.return-button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translate(6px, 6px);
+  background-color: #ff685b; /* COLORS.coral */
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.return-button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: #131313; /* COLORS.dark */
+  z-index: 1;
+}
+
+.return-button:hover {
+  transform: translate(-2px, -2px);
+  background-color: #131313 !important;
+  color: #ebe9d1 !important;
+}
+
+.return-button:hover::before {
+  opacity: 1;
 }
 
 .return-button-hidden {
