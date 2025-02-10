@@ -56,13 +56,15 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
       onClick={handleClose}
       style={cursorStyle}
     >
-      <div className="relative h-[85vh] flex items-center justify-center">
-        <img
-          src={getCloudinaryUrl(image.publicId)}
-          alt={image.caption || `Photo from ${city}`}
-          className="max-h-[85vh] max-w-[95vw] object-contain cursor-default"
-          onClick={(e) => e.stopPropagation()}
-        />
+      <div className="w-full h-[85vh] flex items-center justify-center">
+        <div className="flex items-center justify-center w-full">
+          <img
+            src={getCloudinaryUrl(image.publicId)}
+            alt={image.caption || `Photo from ${city}`}
+            className="max-h-[85vh] max-w-[95vw] object-contain cursor-default"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
       </div>
       <div
         className="fixed bottom-0 left-0 right-0 bg-[#131313] text-white p-4 cursor-default flex items-center gap-8"
