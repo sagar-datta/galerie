@@ -1,4 +1,5 @@
 import { GalleryImage } from "../../types/gallery.types";
+import { COLORS } from "../../constants/colors";
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import "./ImageGallery.css";
 
@@ -25,12 +26,16 @@ function ImageModal({ image, onClose, city }: ModalProps) {
         <img
           src={getCloudinaryUrl(image.publicId)}
           alt={image.caption || `Photo from ${city}`}
-          className="max-h-[90vh] max-w-[70vw] object-contain cursor-default"
+          className="max-h-[90vh] max-w-[70vw] object-contain cursor-default relative transform -translate-x-2 -translate-y-2"
+          style={{
+            boxShadow: `6px 6px 0 ${COLORS.dark}`,
+          }}
           onClick={(e) => e.stopPropagation()}
         />
         <div
-          className="bg-[#1a1a1a] p-6 w-[300px] text-white self-center cursor-default relative transform -translate-x-2 -translate-y-2"
+          className="p-6 w-[300px] text-white self-center cursor-default relative transform -translate-x-2 -translate-y-2"
           style={{
+            backgroundColor: COLORS.dark,
             boxShadow: "6px 6px 0 #ff685b",
           }}
           onClick={(e) => e.stopPropagation()}
