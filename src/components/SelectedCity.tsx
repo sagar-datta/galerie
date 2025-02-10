@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState, memo } from "react";
 import { COLORS } from "../constants/colors";
 import { ImageGallery } from "./ImageGallery/ImageGallery";
 import { cityGalleries } from "../data/images";
+import { GalleryImage } from "../types/gallery.types";
 
 interface SelectedCityProps {
   city: string;
@@ -23,6 +24,21 @@ export function SelectedCity({
 }: SelectedCityProps) {
   const [footerHeight, setFooterHeight] = useState("h-[6rem]");
   const [showGalleryTransition, setShowGalleryTransition] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
+  const [isButtonVisible, setIsButtonVisible] = useState(true);
+
+  // Handle button visibility with delay for opacity transition
+  useEffect(() => {
+    if (selectedImage) {
+      setIsButtonVisible(false);
+    } else {
+      // Add small delay to ensure button is visible after modal closes
+      const timer = setTimeout(() => {
+        setIsButtonVisible(true);
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedImage]);
 
   // Find city gallery once
   const cityGallery =
@@ -104,11 +120,18 @@ export function SelectedCity({
     >
       <button
         onClick={onReturn}
-        className="fixed top-8 left-8 px-6 py-3 text-xl font-bold z-50 transition-opacity duration-50"
+        className={`fixed top-8 left-8 px-6 py-3 text-xl font-bold z-50 ${
+          showGalleryTransition && !selectedImage
+            ? "return-button-enter"
+            : "return-button-exit"
+        }`}
         style={{
           backgroundColor: COLORS.dark,
           color: COLORS.beige,
-          opacity: showGalleryTransition ? 1 : 0,
+          visibility: isButtonVisible ? "visible" : "hidden",
+          pointerEvents: isButtonVisible ? "auto" : "none",
+          transition:
+            "opacity 50ms ease-out, filter 50ms ease-out, transform 50ms ease-out",
         }}
       >
         Return
@@ -124,7 +147,12 @@ export function SelectedCity({
             overflow: "hidden",
           }}
         >
-          <MemoizedGallery city={city} images={cityGallery.images} />
+          <MemoizedGallery
+            city={city}
+            images={cityGallery.images}
+            selectedImage={selectedImage}
+            onImageSelect={setSelectedImage}
+          />
         </div>
       )}
 

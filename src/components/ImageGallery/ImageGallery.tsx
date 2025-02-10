@@ -31,17 +31,26 @@ const createImageRows = (images: GalleryImage[]) => {
 interface ImageGalleryProps {
   city: string;
   images: GalleryImage[];
+  selectedImage: GalleryImage | null;
+  onImageSelect: (image: GalleryImage | null) => void;
 }
 
-export function ImageGallery({ city, images }: ImageGalleryProps) {
+export function ImageGallery({
+  city,
+  images,
+  selectedImage,
+  onImageSelect,
+}: ImageGalleryProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [shouldCenter, setShouldCenter] = useState(true);
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
-  const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
 
-  const handleImageClick = useCallback((image: GalleryImage) => {
-    setSelectedImage(image);
-  }, []);
+  const handleImageClick = useCallback(
+    (image: GalleryImage) => {
+      onImageSelect(image);
+    },
+    [onImageSelect]
+  );
 
   const checkIfShouldCenter = useCallback(() => {
     const container = scrollContainerRef.current;
@@ -164,7 +173,7 @@ export function ImageGallery({ city, images }: ImageGalleryProps) {
       </div>
       <ImageModal
         image={selectedImage}
-        onClose={() => setSelectedImage(null)}
+        onClose={() => onImageSelect(null)}
         city={city}
       />
     </div>

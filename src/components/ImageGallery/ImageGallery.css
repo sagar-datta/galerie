@@ -47,6 +47,18 @@
   cursor: none;
 }
 
+.custom-cursor::after {
+  content: "";
+  position: fixed;
+  width: 120px;
+  height: 28px;
+  background: #ff685b
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 28'%3E%3Ctext x='60' y='18' fill='white' font-family='Arial' font-size='14' font-weight='700' text-anchor='middle' style='text-transform: uppercase;'%3EBACK TO CITY%3C/text%3E%3C/svg%3E")
+    center/contain no-repeat;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -64,14 +76,14 @@
   animation: fadeIn 50ms ease-out reverse forwards;
 }
 
-.custom-cursor::after {
-  content: "";
-  position: fixed;
-  width: 120px;
-  height: 28px;
-  background: #ff685b
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 28'%3E%3Ctext x='60' y='18' fill='white' font-family='Arial' font-size='14' font-weight='700' text-anchor='middle' style='text-transform: uppercase;'%3EBACK TO CITY%3C/text%3E%3C/svg%3E")
-    center/contain no-repeat;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
+.return-button-enter {
+  opacity: 1;
+  filter: blur(0);
+  transform: scale(1);
+}
+
+.return-button-exit {
+  opacity: 0;
+  filter: blur(4px);
+  transform: scale(0.98);
 }
