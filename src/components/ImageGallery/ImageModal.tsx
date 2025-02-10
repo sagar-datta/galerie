@@ -12,12 +12,26 @@ interface ImageModalProps {
 export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
   const [isClosing, setIsClosing] = useState(false);
 
-  const cursorStyle = useMemo(
-    () => ({
-      cursor: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 32' width='128' height='32'><rect x='6' y='6' width='122' height='26' rx='1' fill='%23EBE9D1'/><rect x='3' y='3' width='122' height='26' rx='1' fill='%23FF685B'/><g stroke='%23131313' stroke-linecap='square' stroke-width='3' fill='none'><path d='M20 16h18'></path><path d='m24 11l-6 5l6 5'></path></g><text x='75' y='22' fill='%23131313' text-anchor='middle' font-size='18' font-family='Helvetica' font-weight='900' stroke='%23131313' stroke-width='0.5'>${city}</text></svg>") 16 16, auto`,
-    }),
-    [city]
-  );
+  const cursorStyle = useMemo(() => {
+    const minWidth = 128;
+    const maxWidth = 300; // Maximum width to avoid browser issues
+    const charWidth = 10;
+    const textWidth = city.length * charWidth;
+    const padding = Math.max(16, textWidth * 0.2); // Dynamic padding, at least 16px
+    const calculatedWidth = Math.min(
+      Math.max(minWidth, textWidth + 2 * padding),
+      maxWidth
+    );
+    const textX = calculatedWidth / 2 + 16;
+
+    return {
+      cursor: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${calculatedWidth} 32' width='${calculatedWidth}' height='32'><rect x='6' y='6' width='${
+        calculatedWidth - 8
+      }' height='26' rx='1' fill='%23EBE9D1'/><rect x='3' y='3' width='${
+        calculatedWidth - 8
+      }' height='26' rx='1' fill='%23FF685B'/><g stroke='%23131313' stroke-linecap='square' stroke-width='3' fill='none'><path d='M20 16h18'></path><path d='m24 11l-6 5l6 5'></path></g><text x='${textX}' y='22' fill='%23131313' text-anchor='middle' font-size='18' font-family='Helvetica' font-weight='900' stroke='%23131313' stroke-width='0.5'>${city}</text></svg>") 16 16, auto`,
+    };
+  }, [city]);
 
   useEffect(() => {
     if (image) {
