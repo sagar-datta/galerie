@@ -1,7 +1,7 @@
 import { GalleryImage } from "../../types/gallery.types";
 import { COLORS } from "../../constants/colors";
 import { getCloudinaryUrl } from "./utils";
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect, memo, useMemo } from "react";
 
 interface ImageModalProps {
   image: GalleryImage | null;
@@ -11,6 +11,13 @@ interface ImageModalProps {
 
 export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
   const [isClosing, setIsClosing] = useState(false);
+
+  const cursorStyle = useMemo(
+    () => ({
+      cursor: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 32' width='128' height='32'><rect x='6' y='6' width='122' height='26' rx='1' fill='%23EBE9D1'/><rect x='3' y='3' width='122' height='26' rx='1' fill='%23FF685B'/><g stroke='%23131313' stroke-linecap='square' stroke-width='3' fill='none'><path d='M20 16h18'></path><path d='m24 11l-6 5l6 5'></path></g><text x='75' y='22' fill='%23131313' text-anchor='middle' font-size='18' font-family='Helvetica' font-weight='900' stroke='%23131313' stroke-width='0.5'>${city}</text></svg>") 16 16, auto`,
+    }),
+    [city]
+  );
 
   useEffect(() => {
     if (image) {
@@ -33,9 +40,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
         isClosing ? "modal-exit" : "modal-enter"
       }`}
       onClick={handleClose}
-      style={{
-        cursor: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 32' width='128' height='32'><rect x='6' y='6' width='122' height='26' rx='1' fill='%23EBE9D1'/><rect x='3' y='3' width='122' height='26' rx='1' fill='%23FF685B'/><g stroke='%23131313' stroke-linecap='square' stroke-width='3' fill='none'><path d='M20 16h18'></path><path d='m24 11l-6 5l6 5'></path></g><text x='75' y='22' fill='%23131313' text-anchor='middle' font-size='18' font-family='Helvetica' font-weight='900' stroke='%23131313' stroke-width='0.5'>${city}</text></svg>") 16 16, auto`,
-      }}
+      style={cursorStyle}
     >
       <div className="flex gap-6 max-w-[95vw]">
         <img
