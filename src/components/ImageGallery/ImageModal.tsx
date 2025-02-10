@@ -48,7 +48,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
           alt={image.caption || `Photo from ${city}`}
           className="max-h-[90vh] max-w-[70vw] object-contain cursor-default relative transform -translate-x-2 -translate-y-2"
           style={{
-            boxShadow: `6px 6px 0 ${COLORS.dark}`,
+            boxShadow: `6px 6px 0 ${COLORS.black}`,
           }}
           onClick={(e) => e.stopPropagation()}
         />
@@ -56,7 +56,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
           className="p-6 w-[300px] text-white self-center cursor-default relative transform -translate-x-2 -translate-y-2"
           style={{
             backgroundColor: COLORS.dark,
-            boxShadow: `6px 6px 0 ${COLORS.coral}`,
+            boxShadow: `6px 6px 0 ${COLORS.black}`,
           }}
           onClick={(e) => e.stopPropagation()}
         >
