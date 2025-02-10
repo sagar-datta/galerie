@@ -1,7 +1,7 @@
 import { GalleryImage } from "../../types/gallery.types";
 import { COLORS } from "../../constants/colors";
 import { getCloudinaryUrl } from "./utils";
-import { useState, useEffect, useMemo, memo } from "react";
+import { useState, useEffect, memo } from "react";
 
 interface ImageModalProps {
   image: GalleryImage | null;
@@ -9,19 +9,8 @@ interface ImageModalProps {
   city: string;
 }
 
-// Move SVG cursor URL generation outside component
-const createCursorUrl = (city: string) =>
-  `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='110' height='24' viewBox='0 0 110 24'><rect width='110' height='24' rx='2' fill='%23ff685b'/><text x='50%' y='50%' fill='%231a1a1a' font-family='Arial' font-size='12' font-weight='bold' letter-spacing='1' text-anchor='middle' dominant-baseline='middle'>BACK TO ${city.toUpperCase()}</text></svg>") 55 12, auto`;
-
 export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
   const [isClosing, setIsClosing] = useState(false);
-
-  // Move all hooks to the top level
-  const cursorUrl = useMemo(() => createCursorUrl(city), [city]);
-  const aspectRatio = useMemo(
-    () => (image ? (image.width / image.height).toFixed(2) : "0"),
-    [image?.width, image?.height]
-  );
 
   useEffect(() => {
     if (image) {
@@ -31,10 +20,12 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
 
   const handleClose = () => {
     setIsClosing(true);
-    setTimeout(onClose, 50); // Match the animation duration
+    setTimeout(onClose, 50);
   };
 
   if (!image) return null;
+
+  const aspectRatio = (image.width / image.height).toFixed(2);
 
   return (
     <div
@@ -42,7 +33,9 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
         isClosing ? "modal-exit" : "modal-enter"
       }`}
       onClick={handleClose}
-      style={{ cursor: cursorUrl }}
+      style={{
+        cursor: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='110' height='24' viewBox='0 0 110 24'><rect width='110' height='24' rx='2' fill='%23ff685b'/><text x='55' y='16' fill='%231a1a1a' font-family='Arial' font-size='12' font-weight='bold' letter-spacing='1' text-anchor='middle'>BACK TO ${city.toUpperCase()}</text></svg>") 55 12, auto`,
+      }}
     >
       <div className="flex gap-6 max-w-[95vw]">
         <img
