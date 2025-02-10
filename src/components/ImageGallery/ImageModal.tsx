@@ -50,7 +50,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
 
   return (
     <div
-      className={`fixed inset-0 bg-[#131313]/90 flex z-50 backdrop-blur-sm ${
+      className={`fixed inset-0 bg-[#131313]/75 flex z-50 backdrop-blur-sm ${
         isClosing ? "modal-exit" : "modal-enter"
       }`}
       onClick={handleClose}
@@ -61,7 +61,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
           <img
             src={getCloudinaryUrl(image.publicId)}
             alt={image.caption || `Photo from ${city}`}
-            className="max-h-[85vh] max-w-[95vw] object-contain cursor-default"
+            className="max-h-[85vh] max-w-[95vw] object-contain cursor-default border-15 border-[#EBE9D1]"
             onClick={(e) => e.stopPropagation()}
           />
         </div>
