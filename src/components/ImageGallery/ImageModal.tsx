@@ -34,7 +34,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
       }`}
       onClick={handleClose}
       style={{
-        cursor: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 32' width='128' height='32'><rect x='3' y='3' width='122' height='26' rx='1' fill='%23ff685b'/><g stroke='black' stroke-linecap='square' stroke-width='3' fill='none'><path d='M20 16h18'></path><path d='m24 11l-6 5l6 5'></path></g><text x='75' y='22' fill='black' text-anchor='middle' font-size='18' font-family='Helvetica' font-weight='900' stroke='black' stroke-width='0.5'>${city}</text></svg>") 16 16, auto`,
+        cursor: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 32' width='128' height='32'><rect x='6' y='6' width='122' height='26' rx='1' fill='%23EBE9D1'/><rect x='3' y='3' width='122' height='26' rx='1' fill='%23FF685B'/><g stroke='%23131313' stroke-linecap='square' stroke-width='3' fill='none'><path d='M20 16h18'></path><path d='m24 11l-6 5l6 5'></path></g><text x='75' y='22' fill='%23131313' text-anchor='middle' font-size='18' font-family='Helvetica' font-weight='900' stroke='%23131313' stroke-width='0.5'>${city}</text></svg>") 16 16, auto`,
       }}
     >
       <div className="flex gap-6 max-w-[95vw]">
