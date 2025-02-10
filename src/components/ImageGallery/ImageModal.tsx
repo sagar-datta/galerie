@@ -34,7 +34,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
       }`}
       onClick={handleClose}
       style={{
-        cursor: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='110' height='24' viewBox='0 0 110 24'><rect width='110' height='24' rx='2' fill='%23ff685b'/><text x='55' y='16' fill='%231a1a1a' font-family='Arial' font-size='12' font-weight='bold' letter-spacing='1' text-anchor='middle'>BACK TO ${city.toUpperCase()}</text></svg>") 55 12, auto`,
+        cursor: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='110' height='24' viewBox='0 0 110 24'><rect width='110' height='24' fill='%23ff685b'/><text x='55' y='16' fill='%231a1a1a' font-family='Arial' font-size='12' font-weight='bold' letter-spacing='1' text-anchor='middle'>BACK TO ${city.toUpperCase()}</text></svg>") 55 12, auto`,
       }}
     >
       <div className="flex gap-6 max-w-[95vw]">
