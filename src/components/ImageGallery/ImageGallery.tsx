@@ -29,7 +29,10 @@ function ImageModal({ image, onClose, city }: ModalProps) {
           onClick={(e) => e.stopPropagation()}
         />
         <div
-          className="bg-[#1a1a1a] p-6 w-[300px] text-white self-center cursor-default"
+          className="bg-[#1a1a1a] p-6 w-[300px] text-white self-center cursor-default relative transform -translate-x-2 -translate-y-2"
+          style={{
+            boxShadow: "6px 6px 0 #ff685b",
+          }}
           onClick={(e) => e.stopPropagation()}
         >
           {image.caption && (
