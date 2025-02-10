@@ -76,14 +76,29 @@
   animation: fadeIn 50ms ease-out reverse forwards;
 }
 
-.return-button-enter {
-  opacity: 1;
-  filter: blur(0);
-  transform: scale(1);
+/* Use GPU-accelerated properties for better performance */
+.return-button {
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  z-index: 50;
+  transition: opacity 50ms ease-out, transform 50ms ease-out;
+  transform-origin: center center;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
-.return-button-exit {
+.return-button-hidden {
   opacity: 0;
-  filter: blur(4px);
   transform: scale(0.98);
+  pointer-events: none;
+}
+
+.return-button-visible {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
 }
