@@ -25,6 +25,17 @@ export function SelectedCity({
   const [footerHeight, setFooterHeight] = useState("h-[6rem]");
   const [showGalleryTransition, setShowGalleryTransition] = useState(false);
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
+  const [cityWidth, setCityWidth] = useState(0);
+
+  useEffect(() => {
+    const selectedCityElement = document.getElementById(
+      "selected-city-element"
+    );
+    if (selectedCityElement && showGalleryTransition) {
+      const width = selectedCityElement.getBoundingClientRect().width;
+      setCityWidth(width);
+    }
+  }, [showGalleryTransition]);
 
   // Find city gallery once
   const cityGallery =
@@ -136,7 +147,28 @@ export function SelectedCity({
       <div
         className={`fixed bottom-0 left-0 w-full transition-height duration-300 ease-in-out ${footerHeight}`}
         style={{ backgroundColor: COLORS.coral }}
-      />
+      >
+        {city.toLowerCase() === "paris" && showGalleryTransition && (
+          <div
+            className="absolute top-1/2 transform -translate-y-1/2 w-full"
+            style={{
+              color: COLORS.dark,
+              fontSize: showGalleryTransition
+                ? "clamp(1.25rem,4vh,2.5rem)"
+                : "2rem",
+              lineHeight: "1.3",
+              fontWeight: 600,
+              paddingLeft: `${cityWidth + 48}px`,
+              maxWidth: "calc(100% - 4rem)",
+            }}
+          >
+            <p>
+              The City of Light. An eternal symbol of romance and artistic
+              excellence.
+            </p>
+          </div>
+        )}
+      </div>
 
       <div
         className={`tracking-widest font-bold ${
