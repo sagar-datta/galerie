@@ -148,7 +148,7 @@ export function SelectedCity({
         className={`fixed bottom-0 left-0 w-full transition-height duration-300 ease-in-out ${footerHeight}`}
         style={{ backgroundColor: COLORS.coral }}
       >
-        {city.toLowerCase() === "paris" && showGalleryTransition && (
+        {showGalleryTransition && (
           <div
             className="absolute top-1/2 transform -translate-y-1/2 w-full"
             style={{
@@ -163,8 +163,32 @@ export function SelectedCity({
             }}
           >
             <p>
-              The City of Light. An eternal symbol of romance and artistic
-              excellence.
+              {(() => {
+                switch (city.toLowerCase()) {
+                  case "paris":
+                    return "The City of Light. An eternal symbol of romance and artistic excellence.";
+                  case "new york":
+                    return "The City That Never Sleeps. A melting pot of culture and dreams.";
+                  case "london":
+                    return "Where tradition meets innovation. A timeless metropolis.";
+                  case "chicago":
+                    return "The Windy City. Architecture that touches the sky.";
+                  case "miami":
+                    return "Vibrant rhythms. Where art deco meets azure waters.";
+                  case "shanghai":
+                    return "Pearl of the Orient. Where future meets tradition.";
+                  case "berlin":
+                    return "A canvas of history. The heart of European reinvention.";
+                  case "vienna":
+                    return "Imperial grandeur. The city of music and dreams.";
+                  case "melbourne":
+                    return "Cultural capital. Where lanes tell stories.";
+                  case "tokyo":
+                    return "Neon dreams. Where tradition flows into tomorrow.";
+                  default:
+                    return "A world of endless possibilities.";
+                }
+              })()}
             </p>
           </div>
         )}
