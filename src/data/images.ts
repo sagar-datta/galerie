@@ -10,6 +10,13 @@ export const cityGalleries: Record<string, CityGallery> = {
         caption: "Barcelona Image 1",
         width: 5669,
         height: 7559,
+        metadata: {
+          dateTaken: "2024:12:27 13:44:49",
+          make: "Apple",
+          model: "iPhone 14 Pro Max",
+          gpsLatitude: "41 deg 23' 30.53\" N",
+          gpsLongitude: "2 deg 9' 54.54\" E",
+        },
       },
       {
         id: "barcelona_image_2",

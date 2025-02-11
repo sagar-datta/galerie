@@ -90,6 +90,42 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
               </span>
             </p>
           </div>
+          {image.metadata && (
+            <>
+              {image.metadata.dateTaken && (
+                <div className="flex-none">
+                  <h3 className="text-sm uppercase tracking-wide text-gray-400">
+                    Date Taken
+                  </h3>
+                  <p className="text-base">{image.metadata.dateTaken}</p>
+                </div>
+              )}
+              {(image.metadata.make || image.metadata.model) && (
+                <div className="flex-none">
+                  <h3 className="text-sm uppercase tracking-wide text-gray-400">
+                    Device
+                  </h3>
+                  <p className="text-base">
+                    {[image.metadata.make, image.metadata.model]
+                      .filter(Boolean)
+                      .join(" ")}
+                  </p>
+                </div>
+              )}
+              {(image.metadata.gpsLatitude || image.metadata.gpsLongitude) && (
+                <div className="flex-none">
+                  <h3 className="text-sm uppercase tracking-wide text-gray-400">
+                    GPS Location
+                  </h3>
+                  <p className="text-base">
+                    {[image.metadata.gpsLatitude, image.metadata.gpsLongitude]
+                      .filter(Boolean)
+                      .join(", ")}
+                  </p>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>
