@@ -110,6 +110,23 @@ function MainApp() {
   }, [navigate]);
 
   // Cleanup on unmount
+  // Update document title when city changes
+  // Helper function to properly capitalize city name
+  const formatCityName = (city: string) => {
+    return city
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
+  useEffect(() => {
+    document.title = state.selectedCity
+      ? `Galerie de Sagar - ${formatCityName(state.selectedCity)}`
+      : "Galerie de Sagar";
+  }, [state.selectedCity]);
+
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
       timeoutRef.current && clearTimeout(timeoutRef.current);
