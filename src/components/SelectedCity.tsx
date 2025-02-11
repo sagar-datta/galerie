@@ -173,7 +173,7 @@ export function SelectedCity({
               {(() => {
                 switch (city.toLowerCase()) {
                   case "barcelona":
-                    return "WINTER • MMXXIV  ·  DEC 25-30  ·  JAN 26-28";
+                    return "WINTER • MMXXIV-V  ·  DEC 25-30  ·  JAN 26-28";
                   case "paris":
                     return "SPRING • MMXXIV  ·  MAR 15-22  ·  APR 03-10";
                   case "new york":
