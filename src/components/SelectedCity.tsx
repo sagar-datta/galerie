@@ -166,7 +166,7 @@ export function SelectedCity({
               fontWeight: 600,
               paddingLeft: `${cityWidth + 96}px`,
               maxWidth: "calc(100% - 4rem)",
-              letterSpacing: "0.15em",
+              letterSpacing: "0.08em",
             }}
           >
             <p>
