@@ -7,7 +7,7 @@ export const cityGalleries: Record<string, CityGallery> = {
       {
         id: "barcelona_image_1",
         publicId: "miezioeluyfultukcrrm",
-        caption: "Barcelona Image 1",
+        caption: "Chandelier at Casa Batlló",
         width: 5669,
         height: 7559,
         metadata: {

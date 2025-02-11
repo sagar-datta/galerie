@@ -1,5 +1,10 @@
 import { GalleryImage } from "../../types/gallery.types";
-import { getCloudinaryUrl } from "./utils";
+import {
+  getCloudinaryUrl,
+  formatDateTime,
+  getGoogleMapsUrl,
+  formatGpsCoordinates,
+} from "./utils";
 import { memo, useMemo } from "react";
 
 interface ImageModalProps {
@@ -40,9 +45,16 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
     };
   }, [city]);
 
-  if (!image) return null;
+  const mapsUrl = useMemo(() => {
+    if (!image?.metadata?.gpsLatitude || !image?.metadata?.gpsLongitude)
+      return null;
+    return getGoogleMapsUrl(
+      image.metadata.gpsLatitude,
+      image.metadata.gpsLongitude
+    );
+  }, [image?.metadata?.gpsLatitude, image?.metadata?.gpsLongitude]);
 
-  const aspectRatio = (image.width / image.height).toFixed(2);
+  if (!image) return null;
 
   return (
     <div
@@ -73,23 +85,6 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
               <p className="text-base">{image.caption}</p>
             </div>
           )}
-          <div className="flex-none">
-            <h3 className="text-sm uppercase tracking-wide text-gray-400">
-              Location
-            </h3>
-            <p className="text-base">{city}</p>
-          </div>
-          <div className="flex-none">
-            <h3 className="text-sm uppercase tracking-wide text-gray-400">
-              Dimensions
-            </h3>
-            <p className="text-base">
-              {image.width} × {image.height}
-              <span className="text-sm text-gray-400 ml-2">
-                ({aspectRatio}:1)
-              </span>
-            </p>
-          </div>
           {image.metadata && (
             <>
               {image.metadata.dateTaken && (
@@ -97,7 +92,9 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
                   <h3 className="text-sm uppercase tracking-wide text-gray-400">
                     Date Taken
                   </h3>
-                  <p className="text-base">{image.metadata.dateTaken}</p>
+                  <p className="text-base">
+                    {formatDateTime(image.metadata.dateTaken)}
+                  </p>
                 </div>
               )}
               {(image.metadata.make || image.metadata.model) && (
@@ -112,18 +109,27 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
                   </p>
                 </div>
               )}
-              {(image.metadata.gpsLatitude || image.metadata.gpsLongitude) && (
-                <div className="flex-none">
-                  <h3 className="text-sm uppercase tracking-wide text-gray-400">
-                    GPS Location
-                  </h3>
-                  <p className="text-base">
-                    {[image.metadata.gpsLatitude, image.metadata.gpsLongitude]
-                      .filter(Boolean)
-                      .join(", ")}
-                  </p>
-                </div>
-              )}
+              {image.metadata.gpsLatitude &&
+                image.metadata.gpsLongitude &&
+                mapsUrl && (
+                  <div className="flex-none">
+                    <h3 className="text-sm uppercase tracking-wide text-gray-400">
+                      Coordinates
+                    </h3>
+                    <a
+                      href={mapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-base font-mono text-[#FF685B] hover:text-[#ff8672] transition-colors"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {formatGpsCoordinates(
+                        image.metadata.gpsLatitude,
+                        image.metadata.gpsLongitude
+                      )}
+                    </a>
+                  </div>
+                )}
             </>
           )}
         </div>
