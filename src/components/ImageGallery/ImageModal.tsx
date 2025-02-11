@@ -89,14 +89,16 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
           }`}
         >
           {isFullscreen ? (
-            <img
-              src={getCloudinaryUrl(image.publicId)}
-              alt={image.caption || `Photo from ${city}`}
-              className="w-full h-full object-contain select-none"
-              onClick={handleImageClick}
-              onDragStart={(e) => e.preventDefault()}
-              style={{ cursor: "zoom-out" }}
-            />
+            <div className="w-screen h-screen flex items-center justify-center">
+              <img
+                src={getCloudinaryUrl(image.publicId)}
+                alt={image.caption || `Photo from ${city}`}
+                className="max-h-screen max-w-screen object-contain select-none"
+                onClick={handleImageClick}
+                onDragStart={(e) => e.preventDefault()}
+                style={{ cursor: "zoom-out" }}
+              />
+            </div>
           ) : (
             <div className="cursor-default border-15 border-[#EBE9D1]">
               <img
