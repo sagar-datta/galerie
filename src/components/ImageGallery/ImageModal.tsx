@@ -9,8 +9,6 @@ interface ImageModalProps {
 }
 
 export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
-  const [isClosing, setIsClosing] = useState(false);
-
   const cursorStyle = useMemo(() => {
     const minWidth = 128;
     const maxWidth = 300; // Maximum width to avoid browser issues
@@ -32,27 +30,14 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
     };
   }, [city]);
 
-  useEffect(() => {
-    if (image) {
-      setIsClosing(false);
-    }
-  }, [image]);
-
-  const handleClose = () => {
-    setIsClosing(true);
-    setTimeout(onClose, 50);
-  };
-
   if (!image) return null;
 
   const aspectRatio = (image.width / image.height).toFixed(2);
 
   return (
     <div
-      className={`fixed inset-0 bg-[#131313]/75 flex z-50 backdrop-blur-sm ${
-        isClosing ? "modal-exit" : "modal-enter"
-      }`}
-      onClick={handleClose}
+      className="fixed inset-0 bg-[#131313]/75 flex z-50 backdrop-blur-sm modal-enter"
+      onClick={onClose}
       style={cursorStyle}
     >
       <div className="w-full flex flex-col h-screen">
