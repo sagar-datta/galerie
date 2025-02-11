@@ -50,7 +50,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
     const textY = fontSize === 18 ? 22 : 20;
 
     return {
-      cursor: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${calculatedWidth} 32' width='${calculatedWidth}' height='32'><rect x='6' y='6' width='${
+      cursor: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg" viewBox='0 0 ${calculatedWidth} 32' width='${calculatedWidth}' height='32'><rect x='6' y='6' width='${
         calculatedWidth - 8
       }' height='26' rx='1' fill='%23EBE9D1'/><rect x='3' y='3' width='${
         calculatedWidth - 8
@@ -84,7 +84,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
     >
       <div className="w-full flex flex-col h-screen">
         <div
-          className={`flex-1 min-h-0 flex items-center justify-center ${
+          className={`relative flex-1 min-h-0 flex items-center justify-center ${
             !isFullscreen ? "p-8" : ""
           }`}
         >
@@ -92,11 +92,11 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
             src={getCloudinaryUrl(image.publicId)}
             alt={image.caption || `Photo from ${city}`}
             className={`
-              transition-[width,height] duration-500 ease-out select-none
+              select-none object-contain
               ${
                 isFullscreen
-                  ? "w-full h-full object-contain"
-                  : "max-h-full max-w-[95vw] object-contain border-15 border-[#EBE9D1]"
+                  ? "w-full h-full"
+                  : "max-h-full max-w-[95vw] border-15 border-[#EBE9D1]"
               }
             `}
             onClick={handleImageClick}
