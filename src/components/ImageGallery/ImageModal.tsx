@@ -1,5 +1,4 @@
 import { GalleryImage } from "../../types/gallery.types";
-import { COLORS } from "../../constants/colors";
 import { getCloudinaryUrl } from "./utils";
 import { useState, useEffect, memo, useMemo } from "react";
 
