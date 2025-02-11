@@ -1,5 +1,5 @@
 import { COLORS } from "./constants/colors";
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { CitiesTicker } from "./components/CitiesTicker";
 import { MainFooter } from "./components/MainFooter";
 import { SelectedCity } from "./components/SelectedCity";
@@ -49,8 +49,9 @@ function MainApp() {
   // Handle URL-based city selection
   useEffect(() => {
     if (cityName && state.isDirectAccess) {
+      const cityNameNormalized = cityName.replace(/-/g, " ");
       const validCity = Object.keys(cityGalleries).find(
-        (key) => key.toUpperCase() === cityName.toUpperCase()
+        (key) => key.toUpperCase() === cityNameNormalized.toUpperCase()
       );
       if (validCity) {
         setState((prev) => ({
@@ -71,7 +72,7 @@ function MainApp() {
   // Event handlers
   const handleCityClick = useCallback(
     (city: string, rect: DOMRect) => {
-      navigate(`/${city.toLowerCase()}`);
+      navigate(`/${city.toLowerCase().replace(/\s+/g, "-")}`);
       setState((prev) => ({
         ...prev,
         selectedCity: city.toUpperCase(),
@@ -111,20 +112,22 @@ function MainApp() {
 
   // Cleanup on unmount
   // Update document title when city changes
-  // Helper function to properly capitalize city name
-  const formatCityName = (city: string) => {
-    return city
+  // Memoize the formatted city name to prevent unnecessary recalculations
+  const formattedCity = useMemo(() => {
+    if (!state.selectedCity) return null;
+    return state.selectedCity
       .toLowerCase()
       .split(" ")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
-  };
-
-  useEffect(() => {
-    document.title = state.selectedCity
-      ? `Galerie de Sagar - ${formatCityName(state.selectedCity)}`
-      : "Galerie de Sagar";
   }, [state.selectedCity]);
+
+  // Update document title when formatted city changes
+  useEffect(() => {
+    document.title = formattedCity
+      ? `Galerie de Sagar - ${formattedCity}`
+      : "Galerie de Sagar";
+  }, [formattedCity]);
 
   // Cleanup on unmount
   useEffect(() => {
