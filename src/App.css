@@ -29,7 +29,6 @@ button {
 
 .city-text:hover {
   color: #ff685b !important;
-  transform: scale(1.05);
 }
 
 #selected-city-element {
