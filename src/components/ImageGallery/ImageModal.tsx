@@ -76,39 +76,43 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
 
   return (
     <div
-      className={`fixed inset-0 flex z-50 backdrop-blur-sm modal-enter transition-colors duration-500 ${
-        isFullscreen ? "bg-[#131313]/90" : "bg-[#131313]/75"
+      className={`fixed inset-0 z-50 backdrop-blur-sm modal-enter transition-colors duration-500 ${
+        isFullscreen ? "bg-[#131313]/95" : "bg-[#131313]/75"
       }`}
       onClick={onClose}
       style={cursorStyle}
     >
-      <div className="w-full flex flex-col h-screen">
+      <div className="h-screen flex flex-col">
         <div
-          className={`relative flex-1 min-h-0 flex items-center justify-center ${
+          className={`flex-1 flex items-center justify-center ${
             !isFullscreen ? "p-8" : ""
           }`}
         >
-          <img
-            src={getCloudinaryUrl(image.publicId)}
-            alt={image.caption || `Photo from ${city}`}
-            className={`
-              select-none object-contain
-              ${
-                isFullscreen
-                  ? "w-full h-full"
-                  : "max-h-full max-w-[95vw] border-15 border-[#EBE9D1]"
-              }
-            `}
-            onClick={handleImageClick}
-            onDragStart={(e) => e.preventDefault()}
-            style={{
-              cursor: isFullscreen ? "zoom-out" : "zoom-in",
-            }}
-          />
+          {isFullscreen ? (
+            <img
+              src={getCloudinaryUrl(image.publicId)}
+              alt={image.caption || `Photo from ${city}`}
+              className="w-full h-full object-contain select-none"
+              onClick={handleImageClick}
+              onDragStart={(e) => e.preventDefault()}
+              style={{ cursor: "zoom-out" }}
+            />
+          ) : (
+            <div className="cursor-default border-15 border-[#EBE9D1]">
+              <img
+                src={getCloudinaryUrl(image.publicId)}
+                alt={image.caption || `Photo from ${city}`}
+                className="max-h-[calc(100vh-12rem)] max-w-[95vw] object-contain select-none"
+                onClick={handleImageClick}
+                onDragStart={(e) => e.preventDefault()}
+                style={{ cursor: "zoom-in" }}
+              />
+            </div>
+          )}
         </div>
         {!isFullscreen && (
           <div
-            className="flex-shrink-0 bg-[#131313] text-white p-4 cursor-default flex items-center gap-8 overflow-x-auto transition-opacity duration-500"
+            className="flex-shrink-0 bg-[#131313] text-white p-4 cursor-default flex items-center gap-8 overflow-x-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {image.caption && (
