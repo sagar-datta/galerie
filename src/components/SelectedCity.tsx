@@ -175,27 +175,27 @@ export function SelectedCity({
                   case "barcelona":
                     return "WINTER • MMXXIV  ·  DEC 25-30  ·  JAN 26-28";
                   case "paris":
-                    return "The City of Light. An eternal symbol of romance and artistic excellence.";
+                    return "SPRING • MMXXIV  ·  MAR 15-22  ·  APR 03-10";
                   case "new york":
-                    return "The City That Never Sleeps. A melting pot of culture and dreams.";
+                    return "AUTUMN • MMXXIII  ·  OCT 12-20  ·  NOV 05-15";
                   case "london":
-                    return "Where tradition meets innovation. A timeless metropolis.";
+                    return "SUMMER • MMXXIV  ·  JUN 28-JUL 05  ·  AUG 18-25";
                   case "chicago":
-                    return "The Windy City. Architecture that touches the sky.";
+                    return "SPRING • MMXXIV  ·  APR 15-22";
                   case "miami":
-                    return "Vibrant rhythms. Where art deco meets azure waters.";
+                    return "WINTER • MMXXIII  ·  DEC 18-28";
                   case "shanghai":
-                    return "Pearl of the Orient. Where future meets tradition.";
+                    return "AUTUMN • MMXXIV  ·  SEP 10-20  ·  OCT 15-25";
                   case "berlin":
-                    return "A canvas of history. The heart of European reinvention.";
+                    return "SUMMER • MMXXIV  ·  JUL 08-15  ·  AUG 01-10";
                   case "vienna":
-                    return "Imperial grandeur. The city of music and dreams.";
+                    return "SPRING • MMXXIV  ·  MAY 01-08";
                   case "melbourne":
-                    return "Cultural capital. Where lanes tell stories.";
+                    return "SUMMER • MMXXIV  ·  JAN 05-15  ·  FEB 01-10";
                   case "tokyo":
-                    return "Neon dreams. Where tradition flows into tomorrow.";
+                    return "SPRING • MMXXIV  ·  MAR 25-APR 05";
                   default:
-                    return "A world of endless possibilities.";
+                    return "VISIT DATES TO BE ANNOUNCED";
                 }
               })()}
             </p>
