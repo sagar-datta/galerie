@@ -158,8 +158,9 @@ export function SelectedCity({
                 : "2rem",
               lineHeight: "1.3",
               fontWeight: 600,
-              paddingLeft: `${cityWidth + 48}px`,
+              paddingLeft: `${cityWidth + 96}px`,
               maxWidth: "calc(100% - 4rem)",
+              letterSpacing: "0.15em",
             }}
           >
             <p>
