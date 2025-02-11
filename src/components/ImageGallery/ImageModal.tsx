@@ -1,6 +1,6 @@
 import { GalleryImage } from "../../types/gallery.types";
 import { getCloudinaryUrl } from "./utils";
-import { useState, useEffect, memo, useMemo } from "react";
+import { memo, useMemo } from "react";
 
 interface ImageModalProps {
   image: GalleryImage | null;
