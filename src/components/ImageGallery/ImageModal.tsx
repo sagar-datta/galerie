@@ -77,7 +77,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
   return (
     <div
       className={`fixed inset-0 z-50 backdrop-blur-sm modal-enter transition-colors duration-500 ${
-        isFullscreen ? "bg-black/93" : "bg-[#131313]/75"
+        isFullscreen ? "bg-black/92" : "bg-[#131313]/75"
       }`}
       onClick={onClose}
       style={cursorStyle}
@@ -100,7 +100,10 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
               />
             </div>
           ) : (
-            <div className="cursor-default border-15 border-[#EBE9D1]">
+            <div
+              className="cursor-default border-15 border-[#EBE9D1]"
+              onClick={(e) => e.stopPropagation()}
+            >
               <img
                 src={getCloudinaryUrl(image.publicId)}
                 alt={image.caption || `Photo from ${city}`}
@@ -160,7 +163,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
                         href={mapsUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-base font-mono text-[#FF685B] hover:text-[#ff8672] transition-colors"
+                        className="text-base font-mono text-[#FF685B] hover:text-[#ff8672] active:text-[#FF3420] transition-colors"
                         onClick={(e) => e.stopPropagation()}
                       >
                         {formatGpsCoordinates(
