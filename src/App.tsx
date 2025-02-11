@@ -13,6 +13,10 @@ import {
 } from "react-router-dom";
 import { cityGalleries } from "./data/images";
 
+// URL formatting utility
+const formatCityUrl = (city: string) => city.toLowerCase().replace(/\s+/g, "-");
+const normalizeCityName = (cityUrl: string) => cityUrl.replace(/-/g, " ");
+
 // Main App wrapper with router
 function App() {
   return (
@@ -49,9 +53,8 @@ function MainApp() {
   // Handle URL-based city selection
   useEffect(() => {
     if (cityName && state.isDirectAccess) {
-      const cityNameNormalized = cityName.replace(/-/g, " ");
       const validCity = Object.keys(cityGalleries).find(
-        (key) => key.toUpperCase() === cityNameNormalized.toUpperCase()
+        (key) => key.toUpperCase() === normalizeCityName(cityName).toUpperCase()
       );
       if (validCity) {
         setState((prev) => ({
@@ -72,7 +75,7 @@ function MainApp() {
   // Event handlers
   const handleCityClick = useCallback(
     (city: string, rect: DOMRect) => {
-      navigate(`/${city.toLowerCase().replace(/\s+/g, "-")}`);
+      navigate(`/${formatCityUrl(city)}`);
       setState((prev) => ({
         ...prev,
         selectedCity: city.toUpperCase(),
