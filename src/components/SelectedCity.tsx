@@ -150,9 +150,15 @@ export function SelectedCity({
       >
         {showGalleryTransition && (
           <div
-            className="absolute top-1/2 transform -translate-y-1/2 w-full"
+            className="absolute top-1/2 w-full"
             style={{
               color: COLORS.dark,
+              transform: showGalleryTransition
+                ? "translateY(-50%)"
+                : "translateY(20px)",
+              opacity: showGalleryTransition ? 1 : 0,
+              transition:
+                "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease-in-out",
               fontSize: showGalleryTransition
                 ? "clamp(1.25rem,4vh,2.5rem)"
                 : "2rem",
