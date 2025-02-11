@@ -54,8 +54,8 @@ export function SelectedCity({
         selectedCityElement.style.transition =
           "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)";
         selectedCityElement.style.top = "91.66%";
-        selectedCityElement.style.left = "50%";
-        selectedCityElement.style.transform = "translate(-50%, -50%)";
+        selectedCityElement.style.left = "2rem";
+        selectedCityElement.style.transform = "translateY(-50%)";
         selectedCityElement.style.color = COLORS.white;
         setShowGalleryTransition(true);
       });
@@ -145,8 +145,8 @@ export function SelectedCity({
         style={{
           position: "fixed",
           top: isDirectAccess ? "91.66%" : `${position.top}px`,
-          left: isDirectAccess ? "50%" : `${position.left}px`,
-          transform: isDirectAccess ? "translate(-50%, -50%)" : "none",
+          left: isDirectAccess ? "2rem" : `${position.left}px`,
+          transform: isDirectAccess ? "translateY(-50%)" : "none",
           color: isDirectAccess ? COLORS.white : COLORS.dark,
           fontFamily: "Helvetica, Arial, sans-serif",
           opacity: isDirectAccess ? 0 : 1,
