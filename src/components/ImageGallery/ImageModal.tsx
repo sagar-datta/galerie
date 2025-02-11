@@ -10,21 +10,25 @@ interface ImageModalProps {
 
 export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
   const cursorStyle = useMemo(() => {
-    // Adjust font size based on city
-    const fontSize = city.toUpperCase() === "BARCELONA" ? 12 : 18;
-
-    // Calculate dimensions
+    // Conservative dimensions for browser compatibility
     const minWidth = 128;
-    const maxWidth = 300;
-    const charWidth = fontSize === 18 ? 10 : 7; // Even smaller char width for 12px font
+    const maxWidth = 180; // Reduced maximum width
+    const arrowSpace = 40; // Slightly reduced arrow space
+
+    // Calculate font size based on city length
+    const fontSize = city.length > 6 ? 12 : 18;
+
+    // Calculate dimensions with fixed proportions
+    const charWidth = fontSize === 18 ? 10 : 7;
     const textWidth = city.length * charWidth;
-    const padding = Math.max(16, textWidth * 0.2);
+    const padding = Math.max(16, Math.min(24, textWidth * 0.15));
     const calculatedWidth = Math.min(
-      Math.max(minWidth, textWidth + 2 * padding),
+      Math.max(minWidth, textWidth + arrowSpace + padding),
       maxWidth
     );
+
+    // Position text
     const textX = calculatedWidth / 2 + 16;
-    // Adjust y position based on font size
     const textY = fontSize === 18 ? 22 : 20;
 
     return {
