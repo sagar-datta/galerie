@@ -93,7 +93,6 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
             alt={image.caption || `Photo from ${city}`}
             className={`
               select-none object-contain
-              transition-all duration-500 ease-out
               ${
                 isFullscreen
                   ? "w-full h-full"
@@ -109,7 +108,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
         </div>
         {!isFullscreen && (
           <div
-            className="flex-shrink-0 bg-[#131313] text-white p-4 cursor-default flex items-center gap-8 overflow-x-auto"
+            className="flex-shrink-0 bg-[#131313] text-white p-4 cursor-default flex items-center gap-8 overflow-x-auto transition-opacity duration-500"
             onClick={(e) => e.stopPropagation()}
           >
             {image.caption && (
