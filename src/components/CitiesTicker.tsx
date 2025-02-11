@@ -4,16 +4,17 @@ import { cityGalleries } from "../data/images";
 
 // Move constants outside component to prevent recreation
 const CITIES = [
+  "BARCELONA",
+  "BERLIN",
+  "CHICAGO",
+  "LONDON",
+  "MELBOURNE",
+  "MIAMI",
   "NEW YORK",
   "PARIS",
-  "LONDON",
-  "CHICAGO",
-  "MIAMI",
   "SHANGHAI",
-  "BERLIN",
-  "VIENNA",
-  "MELBOURNE",
   "TOKYO",
+  "VIENNA",
 ];
 
 const MIN_ROW_HEIGHT = 120; // Increased for better spacing

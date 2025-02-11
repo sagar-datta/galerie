@@ -1,6 +1,46 @@
 import { CityGallery } from "../types/gallery.types";
 
 export const cityGalleries: Record<string, CityGallery> = {
+  Barcelona: {
+    city: "Barcelona",
+    images: [
+      {
+        id: "barcelona_1",
+        publicId: "v1739093365/cld-sample-5.jpg",
+        caption: "Barcelona Sample 1",
+        width: 1920,
+        height: 1080,
+      },
+      {
+        id: "barcelona_2",
+        publicId: "v1739093365/cld-sample-4.jpg",
+        caption: "Barcelona Sample 2",
+        width: 1920,
+        height: 1080,
+      },
+      {
+        id: "barcelona_3",
+        publicId: "v1739093365/cld-sample-3.jpg",
+        caption: "Barcelona Sample 3",
+        width: 1920,
+        height: 1080,
+      },
+      {
+        id: "barcelona_4",
+        publicId: "v1739093365/cld-sample-2.jpg",
+        caption: "Barcelona Sample 4",
+        width: 1920,
+        height: 1080,
+      },
+      {
+        id: "barcelona_5",
+        publicId: "v1739093365/cld-sample.jpg",
+        caption: "Barcelona Sample 5",
+        width: 1920,
+        height: 1080,
+      },
+    ],
+  },
   Paris: {
     city: "Paris",
     images: [
