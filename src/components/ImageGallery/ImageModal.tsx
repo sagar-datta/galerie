@@ -5,7 +5,14 @@ import {
   getGoogleMapsUrl,
   formatGpsCoordinates,
 } from "./utils";
-import { memo, useMemo } from "react";
+import {
+  memo,
+  useMemo,
+  useState,
+  useCallback,
+  MouseEvent,
+  useEffect,
+} from "react";
 
 interface ImageModalProps {
   image: GalleryImage | null;
@@ -14,6 +21,12 @@ interface ImageModalProps {
 }
 
 export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    setIsFullscreen(false);
+  }, [image]);
+
   const cursorStyle = useMemo(() => {
     // Conservative dimensions for browser compatibility
     const minWidth = 128;
@@ -54,85 +67,107 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
     );
   }, [image?.metadata?.gpsLatitude, image?.metadata?.gpsLongitude]);
 
+  const handleImageClick = useCallback((e: MouseEvent) => {
+    e.stopPropagation();
+    setIsFullscreen((prev) => !prev);
+  }, []);
+
   if (!image) return null;
 
   return (
     <div
-      className="fixed inset-0 bg-[#131313]/75 flex z-50 backdrop-blur-sm modal-enter"
+      className={`fixed inset-0 flex z-50 backdrop-blur-sm modal-enter transition-colors duration-500 ${
+        isFullscreen ? "bg-[#131313]/90" : "bg-[#131313]/75"
+      }`}
       onClick={onClose}
       style={cursorStyle}
     >
       <div className="w-full flex flex-col h-screen">
-        <div className="flex-1 min-h-0 flex items-center justify-center p-8">
-          <div className="relative w-full h-full flex items-center justify-center">
-            <img
-              src={getCloudinaryUrl(image.publicId)}
-              alt={image.caption || `Photo from ${city}`}
-              className="max-h-full max-w-[95vw] object-contain cursor-default border-15 border-[#EBE9D1]"
-              onClick={(e) => e.stopPropagation()}
-            />
-          </div>
-        </div>
         <div
-          className="flex-shrink-0 bg-[#131313] text-white p-4 cursor-default flex items-center gap-8 overflow-x-auto"
-          onClick={(e) => e.stopPropagation()}
+          className={`flex-1 min-h-0 flex items-center justify-center ${
+            !isFullscreen ? "p-8" : ""
+          }`}
         >
-          {image.caption && (
-            <div className="flex-1">
-              <h3 className="text-sm uppercase tracking-wide text-gray-400">
-                Caption
-              </h3>
-              <p className="text-base">{image.caption}</p>
-            </div>
-          )}
-          {image.metadata && (
-            <>
-              {image.metadata.dateTaken && (
-                <div className="flex-none">
-                  <h3 className="text-sm uppercase tracking-wide text-gray-400">
-                    Date Taken
-                  </h3>
-                  <p className="text-base">
-                    {formatDateTime(image.metadata.dateTaken)}
-                  </p>
-                </div>
-              )}
-              {(image.metadata.make || image.metadata.model) && (
-                <div className="flex-none">
-                  <h3 className="text-sm uppercase tracking-wide text-gray-400">
-                    Device
-                  </h3>
-                  <p className="text-base">
-                    {[image.metadata.make, image.metadata.model]
-                      .filter(Boolean)
-                      .join(" ")}
-                  </p>
-                </div>
-              )}
-              {image.metadata.gpsLatitude &&
-                image.metadata.gpsLongitude &&
-                mapsUrl && (
+          <img
+            src={getCloudinaryUrl(image.publicId)}
+            alt={image.caption || `Photo from ${city}`}
+            className={`
+              transition-[width,height] duration-500 ease-out select-none
+              ${
+                isFullscreen
+                  ? "w-full h-full object-contain"
+                  : "max-h-full max-w-[95vw] object-contain border-15 border-[#EBE9D1]"
+              }
+            `}
+            onClick={handleImageClick}
+            onDragStart={(e) => e.preventDefault()}
+            style={{
+              cursor: isFullscreen ? "zoom-out" : "zoom-in",
+            }}
+          />
+        </div>
+        {!isFullscreen && (
+          <div
+            className="flex-shrink-0 bg-[#131313] text-white p-4 cursor-default flex items-center gap-8 overflow-x-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {image.caption && (
+              <div className="flex-1">
+                <h3 className="text-sm uppercase tracking-wide text-gray-400">
+                  Caption
+                </h3>
+                <p className="text-base">{image.caption}</p>
+              </div>
+            )}
+            {image.metadata && (
+              <>
+                {image.metadata.dateTaken && (
                   <div className="flex-none">
                     <h3 className="text-sm uppercase tracking-wide text-gray-400">
-                      Coordinates
+                      Date Taken
                     </h3>
-                    <a
-                      href={mapsUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-base font-mono text-[#FF685B] hover:text-[#ff8672] transition-colors"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      {formatGpsCoordinates(
-                        image.metadata.gpsLatitude,
-                        image.metadata.gpsLongitude
-                      )}
-                    </a>
+                    <p className="text-base">
+                      {formatDateTime(image.metadata.dateTaken)}
+                    </p>
                   </div>
                 )}
-            </>
-          )}
-        </div>
+                {(image.metadata.make || image.metadata.model) && (
+                  <div className="flex-none">
+                    <h3 className="text-sm uppercase tracking-wide text-gray-400">
+                      Device
+                    </h3>
+                    <p className="text-base">
+                      {[image.metadata.make, image.metadata.model]
+                        .filter(Boolean)
+                        .join(" ")}
+                    </p>
+                  </div>
+                )}
+                {image.metadata.gpsLatitude &&
+                  image.metadata.gpsLongitude &&
+                  mapsUrl && (
+                    <div className="flex-none">
+                      <h3 className="text-sm uppercase tracking-wide text-gray-400">
+                        Coordinates
+                      </h3>
+                      <a
+                        href={mapsUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-base font-mono text-[#FF685B] hover:text-[#ff8672] transition-colors"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {formatGpsCoordinates(
+                          image.metadata.gpsLatitude,
+                          image.metadata.gpsLongitude
+                        )}
+                      </a>
+                    </div>
+                  )}
+              </>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
