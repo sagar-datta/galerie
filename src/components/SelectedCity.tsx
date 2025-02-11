@@ -172,6 +172,8 @@ export function SelectedCity({
             <p>
               {(() => {
                 switch (city.toLowerCase()) {
+                  case "barcelona":
+                    return "WINTER • MMXXIV  ·  DEC 25-30  ·  JAN 26-28";
                   case "paris":
                     return "The City of Light. An eternal symbol of romance and artistic excellence.";
                   case "new york":
