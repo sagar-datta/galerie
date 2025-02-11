@@ -93,7 +93,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
               <img
                 src={getCloudinaryUrl(image.publicId)}
                 alt={image.caption || `Photo from ${city}`}
-                className="max-h-screen max-w-screen object-contain select-none"
+                className="w-auto h-screen object-contain select-none"
                 onClick={handleImageClick}
                 onDragStart={(e) => e.preventDefault()}
                 style={{ cursor: "zoom-out" }}
@@ -107,7 +107,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
               <img
                 src={getCloudinaryUrl(image.publicId)}
                 alt={image.caption || `Photo from ${city}`}
-                className="max-h-[calc(100vh-12rem)] max-w-[95vw] object-contain select-none"
+                className="h-[calc(100vh-12rem)] w-auto max-w-[95vw] object-contain select-none"
                 onClick={handleImageClick}
                 onDragStart={(e) => e.preventDefault()}
                 style={{ cursor: "zoom-in" }}
