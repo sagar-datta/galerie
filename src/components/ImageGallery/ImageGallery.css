@@ -138,24 +138,21 @@
 /* Loading-related styles */
 @keyframes shimmer {
   0% {
-    background-position: 200% 0;
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
   }
   100% {
-    background-position: -200% 0;
+    opacity: 1;
   }
 }
 
 .image-skeleton {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 104, 91, 0.05) 25%,
-    rgba(255, 104, 91, 0.15) 50%,
-    rgba(255, 104, 91, 0.05) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  background: #131313;
+  animation: shimmer 1.5s ease-in-out infinite;
 }
 
 .blur-up {
