@@ -7,16 +7,8 @@ export default defineConfig({
   base: "/galerie/", // Base URL for GitHub Pages
   plugins: [react(), tailwindcss()],
   build: {
-    // Enable minification
-    minify: "terser",
-    terserOptions: {
-      compress: {
-        // Remove console.logs in production
-        drop_console: true,
-        // Remove debugger statements in production
-        drop_debugger: true,
-      },
-    },
+    // Enable minification with esbuild
+    minify: "esbuild",
     // Configure chunk splitting
     rollupOptions: {
       output: {
