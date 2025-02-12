@@ -1,22 +1,22 @@
-# City Photo Gallery
+# 🌆 City Photo Gallery
 
 A modern, responsive photo gallery application showcasing images from various cities around the world. Built with React, TypeScript, and Vite.
 
-## Features
+## ✨ Features
 
-- **Dynamic Image Gallery**: Responsive grid layout with modal view for detailed image viewing
-- **Cities Ticker**: Interactive horizontal ticker displaying available cities
-- **City Selection**: Filter gallery by selecting specific cities
-- **Responsive Design**: Seamless experience across desktop and mobile devices
+- **🖼️ Dynamic Image Gallery**: Responsive grid layout with modal view for detailed image viewing
+- **🏃‍♂️ Cities Ticker**: Interactive horizontal ticker displaying available cities
+- **🎯 City Selection**: Filter gallery by selecting specific cities
+- **📱 Responsive Design**: Seamless experience across desktop and mobile devices
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-- **Framework**: React with TypeScript
-- **Build Tool**: Vite
-- **Styling**: CSS Modules + Tailwind CSS
-- **Development**: ESLint for code quality
+- **⚛️ Framework**: React with TypeScript
+- **⚡ Build Tool**: Vite
+- **🎨 Styling**: CSS Modules + Tailwind CSS
+- **🔍 Development**: ESLint for code quality
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 src/
@@ -41,14 +41,14 @@ src/
 └── main.tsx          # Application entry point
 ```
 
-## Getting Started
+## 🚀 Getting Started
 
-### Prerequisites
+### 📋 Prerequisites
 
 - Node.js (v16 or higher)
 - npm or yarn
 
-### Installation
+### 💻 Installation
 
 1. Clone the repository:
 
@@ -71,7 +71,7 @@ npm run dev
 
 The application will be available at `http://localhost:5173`
 
-### Building for Production
+### 🏗️ Building for Production
 
 ```bash
 npm run build
@@ -79,7 +79,7 @@ npm run build
 
 The built files will be in the `dist` directory.
 
-## Development Guidelines
+## 📝 Development Guidelines
 
 - Follow the established project structure when adding new features
 - Maintain type safety with TypeScript
@@ -87,7 +87,7 @@ The built files will be in the `dist` directory.
 - Follow React best practices and functional programming patterns
 - Ensure components are responsive and accessible
 
-### Adding New Cities
+### 🌍 Adding New Cities
 
 To add a new city to the gallery:
 
@@ -95,19 +95,19 @@ To add a new city to the gallery:
 2. Export the city data following the established type definitions
 3. Update the city index file to include the new city
 
-## Performance Considerations
+## ⚡ Performance Considerations
 
 - Images are optimized for web delivery
 - Components are structured for efficient rendering
 - Modular code structure enables code splitting
 - City data is organized for scalable management
 
-## Contributing
+## 🤝 Contributing
 
 1. Create a feature branch
 2. Make your changes
 3. Submit a pull request
 
-## License
+## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
