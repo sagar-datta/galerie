@@ -20,13 +20,16 @@ const normalizeCityName = (cityUrl: string) => cityUrl.replace(/-/g, " ");
 // Main App wrapper with router
 function App() {
   return (
-    <HashRouter>
-      <Routes>
-        <Route path="/" element={<MainApp />} />
-        <Route path="/:cityName" element={<MainApp />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </HashRouter>
+    // Use a wrapper div to maintain the app's context
+    <div className="app-wrapper">
+      <HashRouter basename="">
+        <Routes>
+          <Route path="/" element={<MainApp />} />
+          <Route path="/:cityName" element={<MainApp />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </HashRouter>
+    </div>
   );
 }
 
