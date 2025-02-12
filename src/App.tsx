@@ -4,7 +4,7 @@ import { CitiesTicker } from "./components/CitiesTicker";
 import { MainFooter } from "./components/MainFooter";
 import { SelectedCity } from "./components/SelectedCity";
 import {
-  HashRouter,
+  BrowserRouter,
   Routes,
   Route,
   useParams,
@@ -20,15 +20,15 @@ const normalizeCityName = (cityUrl: string) => cityUrl.replace(/-/g, " ");
 // Main App wrapper with router
 function App() {
   return (
-    // Use a wrapper div to maintain the app's context
+    // Use BrowserRouter with basename set to match GitHub Pages path
     <div className="app-wrapper">
-      <HashRouter basename="">
+      <BrowserRouter basename="/galerie">
         <Routes>
           <Route path="/" element={<MainApp />} />
           <Route path="/:cityName" element={<MainApp />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </HashRouter>
+      </BrowserRouter>
     </div>
   );
 }
