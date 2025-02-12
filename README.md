@@ -1,4 +1,4 @@
-# 🖼️ Galerie de Sagar <sub>_Sagar's Gallery_</sub>
+# 🖼️ Galerie de Sagar <sup>_Sagar's Gallery_</sup>
 
 A modern, responsive photo gallery application showcasing images from various cities around the world. This gallery, known as "Galerie de Sagar", is built with React, TypeScript, and Vite.
 
