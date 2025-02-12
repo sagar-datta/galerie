@@ -9,7 +9,13 @@ export const getCloudinaryUrl = (
   publicId: string,
   options?: CloudinaryOptions
 ) => {
+  // Access environment variables using import.meta.env
   const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+
+  if (!cloudName) {
+    console.error("Cloudinary cloud name is not defined");
+    return "";
+  }
 
   // Define transformation based on quality level
   let transformations = "";

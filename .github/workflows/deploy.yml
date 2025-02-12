@@ -33,13 +33,19 @@ jobs:
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
+      - name: Debug env
+        run: |
+          echo "Checking env variables (values redacted)"
+          echo "VITE_CLOUDINARY_CLOUD_NAME exists: ${{ secrets.VITE_CLOUDINARY_CLOUD_NAME != '' }}"
+          echo "VITE_CLOUDINARY_UPLOAD_PRESET exists: ${{ secrets.VITE_CLOUDINARY_UPLOAD_PRESET != '' }}"
+
       - name: Build
         env:
-          # workflow-lint-disable secrets
           VITE_CLOUDINARY_CLOUD_NAME: ${{ secrets.VITE_CLOUDINARY_CLOUD_NAME }}
           VITE_CLOUDINARY_UPLOAD_PRESET: ${{ secrets.VITE_CLOUDINARY_UPLOAD_PRESET }}
-          # workflow-lint-enable secrets
-        run: npm run build
+        run: |
+          echo "Using Cloudinary cloud name: $VITE_CLOUDINARY_CLOUD_NAME"
+          npm run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
