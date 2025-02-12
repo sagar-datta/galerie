@@ -28,10 +28,8 @@ export function ImageGallery({
 }: ImageGalleryProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [shouldCenter, setShouldCenter] = useState(true);
-  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
-  // New state to manage number of rows based on window height
+  const [loadedStates, setLoadedStates] = useState<Record<string, number>>({});
   const [numRows, setNumRows] = useState(2);
-  // Define a threshold for window height (in pixels) to switch row layout
   const WINDOW_HEIGHT_THRESHOLD = 700;
 
   const handleImageClick = useCallback(
@@ -48,7 +46,7 @@ export function ImageGallery({
     setShouldCenter(shouldCenterNew);
   }, []);
 
-  // Preload first 4 images
+  // Preload first 4 images at medium quality
   useEffect(() => {
     const preloadImages = images.slice(0, 4);
     const links: HTMLLinkElement[] = [];
@@ -56,7 +54,7 @@ export function ImageGallery({
       const link = document.createElement("link");
       link.rel = "preload";
       link.as = "image";
-      link.href = getCloudinaryUrl(image.publicId);
+      link.href = getCloudinaryUrl(image.publicId, { mediumQuality: true });
       document.head.appendChild(link);
       links.push(link);
     });
@@ -84,9 +82,6 @@ export function ImageGallery({
     return () => window.removeEventListener("resize", checkIfShouldCenter);
   }, [checkIfShouldCenter]);
 
-  // Update number of rows based on window height:
-  // For smaller screens (height < WINDOW_HEIGHT_THRESHOLD) collapse to 1 row to save space,
-  // for larger screens use 2 rows to show more images at once
   useEffect(() => {
     const updateNumRows = () => {
       if (window.innerHeight <= WINDOW_HEIGHT_THRESHOLD) {
@@ -100,10 +95,10 @@ export function ImageGallery({
     return () => window.removeEventListener("resize", updateNumRows);
   }, []);
 
-  // Create and use wheel handler directly in useEffect
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
+
     const wheelHandler = (e: WheelEvent) => {
       if (!container) return;
       e.preventDefault();
@@ -113,13 +108,20 @@ export function ImageGallery({
       }
       container.scrollLeft += e.deltaY * 2.5;
     };
+
     container.addEventListener("wheel", wheelHandler, { passive: false });
     return () => container.removeEventListener("wheel", wheelHandler);
   }, []);
 
-  const handleImageLoad = useCallback((imageId: string) => {
-    setLoadedImages((prev) => new Set(prev).add(imageId));
-  }, []);
+  const handleImageLoad = useCallback(
+    (imageId: string, quality: "medium" | "full") => {
+      setLoadedStates((prev) => ({
+        ...prev,
+        [imageId]: quality === "medium" ? 1 : 2,
+      }));
+    },
+    []
+  );
 
   // Memoize image rows calculation with dynamic number of rows
   const imageRows = useMemo(
@@ -163,16 +165,30 @@ export function ImageGallery({
                   }}
                   onClick={() => handleImageClick(image)}
                 >
+                  {/* Medium quality image */}
                   <img
-                    src={getCloudinaryUrl(image.publicId)}
+                    src={getCloudinaryUrl(image.publicId, {
+                      mediumQuality: true,
+                    })}
                     alt={image.caption || `Photo from ${city}`}
                     className={`w-full h-full object-cover transition-opacity duration-300 ${
-                      loadedImages.has(image.id) ? "opacity-100" : "opacity-0"
+                      loadedStates[image.id] >= 1 ? "opacity-100" : "opacity-0"
                     }`}
                     loading={
                       rowIndex === 0 || imageIndex < 2 ? "eager" : "lazy"
                     }
-                    onLoad={() => handleImageLoad(image.id)}
+                    onLoad={() => handleImageLoad(image.id, "medium")}
+                  />
+
+                  {/* Full quality image */}
+                  <img
+                    src={getCloudinaryUrl(image.publicId)}
+                    alt={image.caption || `Photo from ${city}`}
+                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
+                      loadedStates[image.id] === 2 ? "opacity-100" : "opacity-0"
+                    }`}
+                    loading="lazy"
+                    onLoad={() => handleImageLoad(image.id, "full")}
                     onError={(e) => {
                       console.error("Image load error for:", image.publicId);
                       const imgElement = e.target as HTMLImageElement;
