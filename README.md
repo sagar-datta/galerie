@@ -97,10 +97,10 @@ To add a new city to the gallery:
 
 ## ⚡ Performance Considerations
 
-- Images are optimized for web delivery
+- Images are optimised for web delivery
 - Components are structured for efficient rendering
 - Modular code structure enables code splitting
-- City data is organized for scalable management
+- City data is organised for scalable management
 
 ## 🤝 Contributing
 
