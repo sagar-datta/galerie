@@ -23,8 +23,6 @@ export default defineConfig({
         manualChunks: {
           // Split vendor code into separate chunks
           vendor: ["react", "react-dom"],
-          // Split common utilities into a shared chunk
-          utils: ["./src/utils", "./src/constants"],
         },
       },
     },
