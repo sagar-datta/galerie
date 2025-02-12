@@ -1,6 +1,7 @@
 import { useRef, useCallback, useMemo, useEffect, useState } from "react";
 import { COLORS } from "../constants/colors";
 import { cityGalleries } from "../data/images";
+import { getCloudinaryUrl } from "../services/cloudinary";
 
 // Move constants outside component to prevent recreation
 const CITIES = [
@@ -20,17 +21,6 @@ const CITIES = [
 const MIN_ROW_HEIGHT = 120; // Increased for better spacing
 const ROW_MARGIN = 32; // 8rem margin between rows
 const DUPLICATE_COUNT = 200; // Significantly increased for an even longer, smoother animation
-
-const getCloudinaryUrl = (
-  publicId: string,
-  options?: { lowQuality?: boolean }
-) => {
-  const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-  const transformations = options?.lowQuality
-    ? "w_100,e_blur:1000,q_1,f_auto" // Tiny placeholder
-    : "q_auto:good,f_auto,w_800"; // Full quality image
-  return `https://res.cloudinary.com/${cloudName}/image/upload/${transformations}/${publicId}`;
-};
 
 // Preload both full quality and low quality versions of images
 const preloadImagesForCity = (cityName: string) => {
