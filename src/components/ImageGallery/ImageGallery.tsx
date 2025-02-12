@@ -30,6 +30,10 @@ export function ImageGallery({
   const [shouldCenter, setShouldCenter] = useState(true);
   const [loadedStates, setLoadedStates] = useState<Record<string, number>>({});
   const [numRows, setNumRows] = useState(2);
+  const lastScrollLeft = useRef(0);
+  const [scrollDirection, setScrollDirection] = useState<
+    "left" | "right" | null
+  >(null);
   const WINDOW_HEIGHT_THRESHOLD = 700;
 
   const handleImageClick = useCallback(
@@ -46,22 +50,91 @@ export function ImageGallery({
     setShouldCenter(shouldCenterNew);
   }, []);
 
-  // Preload first 4 images at medium quality
+  // Enhanced preloading logic
+  const preloadImage = useCallback(
+    (publicId: string, quality: "medium" | "full") => {
+      const img = new Image();
+      img.src = getCloudinaryUrl(publicId, {
+        ...(quality === "medium" ? { mediumQuality: true } : {}),
+        priority: true,
+      });
+    },
+    []
+  );
+
+  // Preload first 4 images at medium quality and first 2 at full quality
   useEffect(() => {
     const preloadImages = images.slice(0, 4);
     const links: HTMLLinkElement[] = [];
-    preloadImages.forEach((image) => {
-      const link = document.createElement("link");
-      link.rel = "preload";
-      link.as = "image";
-      link.href = getCloudinaryUrl(image.publicId, { mediumQuality: true });
-      document.head.appendChild(link);
-      links.push(link);
+
+    preloadImages.forEach((image, index) => {
+      // Medium quality preload
+      const mediumLink = document.createElement("link");
+      mediumLink.rel = "preload";
+      mediumLink.as = "image";
+      mediumLink.href = getCloudinaryUrl(image.publicId, {
+        mediumQuality: true,
+        priority: true,
+      });
+      document.head.appendChild(mediumLink);
+      links.push(mediumLink);
+
+      // Full quality preload for first 2 images
+      if (index < 2) {
+        const fullLink = document.createElement("link");
+        fullLink.rel = "preload";
+        fullLink.as = "image";
+        fullLink.href = getCloudinaryUrl(image.publicId, { priority: true });
+        document.head.appendChild(fullLink);
+        links.push(fullLink);
+      }
     });
+
     return () => {
       links.forEach((link) => document.head.removeChild(link));
     };
   }, [images]);
+
+  // Detect scroll direction and preload accordingly
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const currentScrollLeft = container.scrollLeft;
+      setScrollDirection(
+        currentScrollLeft > lastScrollLeft.current ? "right" : "left"
+      );
+      lastScrollLeft.current = currentScrollLeft;
+
+      // Find visible images
+      const visibleElements = document.elementsFromPoint(
+        window.innerWidth / 2,
+        window.innerHeight / 2
+      );
+      const visibleImages = visibleElements.filter((el) =>
+        el.classList.contains("gallery-image")
+      );
+
+      if (visibleImages.length > 0) {
+        const lastVisibleIndex = parseInt(
+          visibleImages[visibleImages.length - 1].getAttribute("data-index") ||
+            "0"
+        );
+        // Preload next few images
+        const nextImages = images.slice(
+          lastVisibleIndex + 1,
+          lastVisibleIndex + 4
+        );
+        nextImages.forEach((image) => {
+          preloadImage(image.publicId, "medium");
+        });
+      }
+    };
+
+    container.addEventListener("scroll", handleScroll);
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, [images, preloadImage]);
 
   useEffect(() => {
     const observer = new ResizeObserver(checkIfShouldCenter);
@@ -156,23 +229,42 @@ export function ImageGallery({
                   style={{
                     marginTop: "auto",
                     marginBottom: "auto",
-                    background: `url(${getCloudinaryUrl(image.publicId, {
-                      lowQuality: true,
-                    })})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    cursor: "pointer",
                   }}
+                  data-index={rowIndex * row.length + imageIndex}
                   onClick={() => handleImageClick(image)}
                 >
+                  {/* Skeleton loader */}
+                  <div
+                    className={`image-skeleton ${
+                      loadedStates[image.id] >= 1 ? "opacity-0" : "opacity-100"
+                    }`}
+                  />
+
+                  {/* Low quality placeholder */}
+                  <div
+                    className={`absolute inset-0 ${
+                      loadedStates[image.id] >= 1 ? "opacity-0" : "opacity-100"
+                    }`}
+                    style={{
+                      background: `url(${getCloudinaryUrl(image.publicId, {
+                        lowQuality: true,
+                      })})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  />
+
                   {/* Medium quality image */}
                   <img
                     src={getCloudinaryUrl(image.publicId, {
                       mediumQuality: true,
+                      priority: rowIndex === 0 && imageIndex < 2,
                     })}
                     alt={image.caption || `Photo from ${city}`}
-                    className={`w-full h-full object-cover transition-opacity duration-300 ${
-                      loadedStates[image.id] >= 1 ? "opacity-100" : "opacity-0"
+                    className={`gallery-image w-full h-full object-cover transition-opacity duration-300 blur-up ${
+                      loadedStates[image.id] >= 1
+                        ? "opacity-100 loaded"
+                        : "opacity-0"
                     }`}
                     loading={
                       rowIndex === 0 || imageIndex < 2 ? "eager" : "lazy"
@@ -182,9 +274,11 @@ export function ImageGallery({
 
                   {/* Full quality image */}
                   <img
-                    src={getCloudinaryUrl(image.publicId)}
+                    src={getCloudinaryUrl(image.publicId, {
+                      priority: rowIndex === 0 && imageIndex < 2,
+                    })}
                     alt={image.caption || `Photo from ${city}`}
-                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
+                    className={`gallery-image absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
                       loadedStates[image.id] === 2 ? "opacity-100" : "opacity-0"
                     }`}
                     loading="lazy"
