@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+/* Base styles */
+@import "./base/variables.css";
+@import "./base/reset.css";
+
+/* Animations */
+@import "./animations/keyframes.css";
+
+/* Component styles */
+@import "./components/ticker.css";
+@import "./components/gallery.css";
+@import "./components/modal.css";

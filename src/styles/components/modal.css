@@ -1,0 +1,24 @@
+/* Modal transitions */
+.modal-enter {
+  animation: modalBackdropIn 150ms ease-out forwards;
+}
+
+.modal-enter img,
+.modal-enter > div > div:last-child {
+  animation: modalContentIn 150ms ease-out forwards;
+}
+
+.modal-exit {
+  display: none;
+}
+
+/* Dynamic cursor with city name */
+:root {
+  --modal-city: "BACK TO CITY";
+}
+
+.modal-cursor {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='24' viewBox='0 0 140 24'%3E%3Crect width='140' height='24' rx='2' fill='%23ff685b'/%3E%3Ctext x='70' y='12' fill='%231a1a1a' font-family='Arial' font-size='12' font-weight='bold' letter-spacing='1' text-anchor='middle' dominant-baseline='middle'%3E")
+      70 12,
+    auto !important;
+}

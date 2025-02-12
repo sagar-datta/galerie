@@ -1,0 +1,32 @@
+/* Base reset and global styles */
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Utility classes */
+.relative {
+  position: relative;
+}
+
+.inline-flex {
+  display: inline-flex;
+}
+
+/* Global button styles */
+button {
+  z-index: var(--z-modal);
+  contain: layout style;
+  transition: var(--transition-fast);
+  cursor: pointer;
+}
+
+/* Performance optimizations */
+.optimize-gpu {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  will-change: transform;
+}

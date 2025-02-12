@@ -1,0 +1,74 @@
+/* Ticker base styles */
+.ticker-row {
+  display: flex;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-duration: var(--ticker-duration);
+  width: fit-content;
+  min-width: 100%;
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  contain: layout style paint;
+  transition: gap var(--transition-smooth);
+}
+
+/* City text styles */
+.city-text {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: transform var(--transition-smooth);
+}
+
+.city-text:hover {
+  color: var(--color-primary) !important;
+}
+
+/* Selected city element */
+#selected-city-element {
+  opacity: 0;
+  pointer-events: auto;
+  will-change: transform, opacity, top, left;
+  transform-origin: center center;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Ticker row gaps */
+.ticker-row[data-rows="1"] {
+  gap: 2rem;
+}
+
+.ticker-row[data-rows="2"] {
+  gap: 3rem;
+}
+
+.ticker-row[data-rows="3"] {
+  gap: 4rem;
+}
+
+/* Animation states */
+.ticker-row.paused {
+  animation-play-state: paused !important;
+}
+
+/* Performance optimizations */
+.ticker-row > * {
+  contain: style layout;
+  will-change: transform;
+}
+
+/* Row spacing */
+.ticker-row {
+  transition: margin-bottom var(--transition-smooth);
+}
+
+.ticker-row:last-child {
+  margin-bottom: 0 !important;
+}

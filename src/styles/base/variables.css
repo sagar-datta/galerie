@@ -1,0 +1,19 @@
+:root {
+  /* Colors */
+  --color-primary: #ff685b;
+  --color-primary-dark: #ff3420;
+  --color-background: #131313;
+  --color-text: #ebe9d1;
+
+  /* Transitions */
+  --transition-fast: 0.1s ease-out;
+  --transition-default: 0.2s ease;
+  --transition-smooth: 0.3s ease;
+
+  /* Z-indices */
+  --z-modal: 70;
+  --z-return-button: 50;
+
+  /* Animations */
+  --ticker-duration: 14400s; /* 4 hours */
+}
