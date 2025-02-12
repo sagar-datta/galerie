@@ -1,4 +1,4 @@
-# 🌁 Galerie de Sagar <sub>_Sagar's Gallery_</sub>
+# 🌁 Galerie de Sagar <sup>_Sagar's Gallery_</sup>
 
 A modern, responsive photo gallery application showcasing images from various cities around the world. This gallery, known as "Galerie de Sagar", is built with React, TypeScript, and Vite.
 
@@ -71,25 +71,27 @@ npm run dev
 
 The application will be available at `http://localhost:5173`
 
-### ��️BBuiling fforPProducioon
+### 🏗️ Building for Production
 
-````bssh
-npmrru bbuldd
+```bash
+npm run build
 ```
-TTh bbull files wwll be in the ``iss``ddrrctoor..
-## w📝dDllrleppt ssGri fledrs
- MoFurlow the est blishedoprejscttructure enwhaboa ding nswpfeaturel
-- Matniag
-i dpeasafe ysw thrTypeScaept
-- Us  CSS Mofulesor sclonpoge
 
--specific styles#-Ftllow Reaci tesnrpaec icas fndeaeh
-tioneloprrgcgmmies patt
-rn3.-uEnsmre cotponenas preeqesponsivu and accts
-ible###  🌍 Adding📄NewiCitees
+The built files will be in the `dist` directory.
 
-To add a new nity to ths gall
-ry:Thi1. Create a new city data file in `src/data/cities/`
+## 📝 Development Guidelines
+
+- Follow the established project structure when adding new features
+- Maintain type safety with TypeScript
+- Use CSS Modules for component-specific styles
+- Follow React best practices and functional programming patterns
+- Ensure components are responsive and accessible
+
+### 🌍 Adding New Cities
+
+To add a new city to the gallery:
+
+1. Create a new city data file in `src/data/cities/`
 2. Export the city data following the established type definitions
 3. Update the city index file to include the new city
 
@@ -109,4 +111,3 @@ ry:Thi1. Create a new city data file in `src/data/cities/`
 ## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-````
