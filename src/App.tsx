@@ -10,6 +10,7 @@ import {
   useParams,
   useNavigate,
   Navigate,
+  useLocation,
 } from "react-router-dom";
 import { cityGalleries } from "./data/images";
 
@@ -36,6 +37,7 @@ function App() {
 function MainApp() {
   const { cityName } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Batch state updates using a single state object
   const [state, setState] = useState({
@@ -54,7 +56,7 @@ function MainApp() {
 
   // Handle URL-based city selection
   useEffect(() => {
-    if (cityName && state.isDirectAccess) {
+    if (location.pathname !== "/" && cityName && state.isDirectAccess) {
       const validCity = Object.keys(cityGalleries).find(
         (key) => key.toUpperCase() === normalizeCityName(cityName).toUpperCase()
       );
@@ -72,7 +74,7 @@ function MainApp() {
         navigate("/", { replace: true });
       }
     }
-  }, [cityName, navigate, state.isDirectAccess]);
+  }, [cityName, navigate, state.isDirectAccess, location]);
 
   // Event handlers
   const handleCityClick = useCallback(

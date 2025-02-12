@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting to app</title>
+    <script>
+      const path = window.location.pathname;
+      const baseUrl = "/galerie";
+      // If the path starts with our base URL, handle it
+      if (path.startsWith(baseUrl)) {
+        // Remove the base URL from the path to get the route
+        const route = path.slice(baseUrl.length);
+        // Redirect to the main app with a hash route if there's a path
+        if (route && route !== "/") {
+          window.location.replace(`${baseUrl}/#${route}`);
+        } else {
+          window.location.replace(baseUrl);
+        }
+      } else {
+        window.location.replace(baseUrl);
+      }
+    </script>
+  </head>
+  <body>
+    Redirecting...
+  </body>
+</html>

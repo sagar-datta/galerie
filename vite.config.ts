@@ -31,6 +31,10 @@ export default defineConfig({
     },
     // Asset handling
     assetsInlineLimit: 4096, // 4kb
+    assetsDir: "assets",
+    // Ensure correct public path for nested routes
+    outDir: "dist",
+    emptyOutDir: true,
   },
   // Optimize server performance
   server: {
