@@ -32,11 +32,9 @@ src/
 ├── constants/           # Application constants
 │   └── colors.ts
 ├── data/               # Data management
-│   ├── cities/         # City-specific data
-│   │   ├── barcelona.ts
-│   │   ├── paris.ts
-│   │   └── index.ts
-│   └── images.ts
+│   ├── cities/         # City-specific data files
+│   │   └── index.ts    # City data aggregation
+│   └── images.ts       # Image data management
 ├── types/              # TypeScript type definitions
 │   └── gallery.types.ts
 ├── App.tsx            # Main application component
@@ -88,6 +86,14 @@ The built files will be in the `dist` directory.
 - Use CSS Modules for component-specific styles
 - Follow React best practices and functional programming patterns
 - Ensure components are responsive and accessible
+
+### Adding New Cities
+
+To add a new city to the gallery:
+
+1. Create a new city data file in `src/data/cities/`
+2. Export the city data following the established type definitions
+3. Update the city index file to include the new city
 
 ## Performance Considerations
 
