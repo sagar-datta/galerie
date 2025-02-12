@@ -77,7 +77,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
   return (
     <div
       className={`fixed inset-0 z-50 backdrop-blur-sm modal-enter transition-colors duration-500 ${
-        isFullscreen ? "bg-black/92" : "bg-[#131313]/75"
+        isFullscreen ? "bg-black/92" : "bg-black/75"
       }`}
       onClick={onClose}
       style={cursorStyle}
