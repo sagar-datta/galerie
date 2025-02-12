@@ -1,4 +1,4 @@
-import { CityGallery } from "../../types/gallery.types";
+import { CityGallery } from "../../features/gallery/types/gallery.types";
 
 export const paris: CityGallery = {
   city: "Paris",

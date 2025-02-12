@@ -1,10 +1,8 @@
-import { GalleryImage } from "../../types/gallery.types";
-import {
-  getCloudinaryUrl,
-  formatDateTime,
-  getGoogleMapsUrl,
-  formatGpsCoordinates,
-} from "./utils";
+import { GalleryImage } from "../types/gallery.types";
+import { getCloudinaryUrl } from "../../../services/cloudinary";
+import { formatDateTime } from "../../../utils/date/format";
+import { getGoogleMapsUrl } from "../../../services/maps";
+import { formatGpsCoordinates } from "../../../utils/geo/coordinates";
 import {
   memo,
   useMemo,

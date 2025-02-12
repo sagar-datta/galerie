@@ -1,7 +1,8 @@
 import { useRef, useCallback, useMemo, useEffect, useState } from "react";
-import { COLORS } from "../constants/colors";
-import { cityGalleries } from "../data/images";
-import { getCloudinaryUrl } from "../services/cloudinary";
+import { COLORS } from "../../../constants/colors";
+import { cityGalleries } from "../../../data";
+import { getCloudinaryUrl } from "../../../services/cloudinary";
+import { GalleryImage } from "../../gallery/types/gallery.types";
 
 // Move constants outside component to prevent recreation
 const CITIES = [
@@ -31,7 +32,7 @@ const preloadImagesForCity = (cityName: string) => {
   if (!cityKey) return;
 
   const gallery = cityGalleries[cityKey];
-  gallery.images.forEach((image) => {
+  gallery.images.forEach((image: GalleryImage) => {
     // Preload full quality version
     const fullQualityImg = new Image();
     fullQualityImg.src = getCloudinaryUrl(image.publicId);

@@ -1,7 +1,7 @@
-import { GalleryImage } from "../../types/gallery.types";
+import { GalleryImage } from "../types/gallery.types";
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { ImageModal } from "./ImageModal";
-import { getCloudinaryUrl } from "./utils";
+import { getCloudinaryUrl } from "../../../services/cloudinary";
 
 // Updated createImageRows to allow dynamic number of rows
 const createImageRows = (images: GalleryImage[], numRows: number = 2) => {

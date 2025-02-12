@@ -1,8 +1,8 @@
 import { COLORS } from "./constants/colors";
 import { useState, useCallback, useEffect, useRef, useMemo } from "react";
-import { CitiesTicker } from "./components/CitiesTicker";
-import { MainFooter } from "./components/MainFooter";
-import { SelectedCity } from "./components/SelectedCity";
+import { CitiesTicker } from "./features/cities/components/CitiesTicker";
+import { MainFooter } from "./components/layout/MainFooter";
+import { SelectedCity } from "./features/cities/components/SelectedCity";
 import {
   BrowserRouter,
   Routes,
@@ -12,17 +12,17 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
-import { cityGalleries } from "./data/images";
+import { cityGalleries } from "./data";
+import { formatCityUrl, normalizeCityName } from "./utils/string/format";
 
-// URL formatting utility
-const formatCityUrl = (city: string) => city.toLowerCase().replace(/\s+/g, "-");
-const normalizeCityName = (cityUrl: string) => cityUrl.replace(/-/g, " ");
+// Get base path based on environment
+const basePath = import.meta.env.PROD ? "/galerie" : "";
 
 // Main App wrapper with router
 function App() {
   return (
     <div className="app-wrapper">
-      <BrowserRouter basename="/galerie">
+      <BrowserRouter basename={basePath}>
         <Routes>
           <Route path="/" element={<MainApp />} />
           <Route path="/:cityName" element={<MainApp />} />
@@ -117,8 +117,6 @@ function MainApp() {
     }, 350);
   }, [navigate]);
 
-  // Cleanup on unmount
-  // Update document title when city changes
   // Memoize the formatted city name to prevent unnecessary recalculations
   const formattedCity = useMemo(() => {
     if (!state.selectedCity) return null;

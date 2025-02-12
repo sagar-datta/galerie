@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState, memo } from "react";
-import { COLORS } from "../constants/colors";
-import { ImageGallery } from "./ImageGallery/ImageGallery";
-import { cityGalleries } from "../data/images";
-import { GalleryImage } from "../types/gallery.types";
+import { COLORS } from "../../../constants/colors";
+import { ImageGallery } from "../../../features/gallery/components/ImageGallery";
+import { cityGalleries } from "../../../data";
+import { GalleryImage } from "../../../features/gallery/types/gallery.types";
+import { formatVisitDates } from "../../../data/metadata/cities";
 
 interface SelectedCityProps {
   city: string;
@@ -169,36 +170,7 @@ export function SelectedCity({
               letterSpacing: "0.08em",
             }}
           >
-            <p>
-              {(() => {
-                switch (city.toLowerCase()) {
-                  case "barcelona":
-                    return "WINTER • MMXXIV-V  ·  DEC 25-30  ·  JAN 26-28";
-                  case "paris":
-                    return "SPRING • MMXXIV  ·  MAR 15-22  ·  APR 03-10";
-                  case "new york":
-                    return "AUTUMN • MMXXIII  ·  OCT 12-20  ·  NOV 05-15";
-                  case "london":
-                    return "SUMMER • MMXXIV  ·  JUN 28-JUL 05  ·  AUG 18-25";
-                  case "chicago":
-                    return "SPRING • MMXXIV  ·  APR 15-22";
-                  case "miami":
-                    return "WINTER • MMXXIII  ·  DEC 18-28";
-                  case "shanghai":
-                    return "AUTUMN • MMXXIV  ·  SEP 10-20  ·  OCT 15-25";
-                  case "berlin":
-                    return "SUMMER • MMXXIV  ·  JUL 08-15  ·  AUG 01-10";
-                  case "vienna":
-                    return "SPRING • MMXXIV  ·  MAY 01-08";
-                  case "melbourne":
-                    return "SUMMER • MMXXIV  ·  JAN 05-15  ·  FEB 01-10";
-                  case "tokyo":
-                    return "SPRING • MMXXIV  ·  MAR 25-APR 05";
-                  default:
-                    return "VISIT DATES TO BE ANNOUNCED";
-                }
-              })()}
-            </p>
+            <p>{formatVisitDates(city)}</p>
           </div>
         )}
       </div>

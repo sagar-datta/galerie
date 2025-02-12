@@ -3,8 +3,8 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 
 // https://vite.dev/config/
-export default defineConfig({
-  base: "/galerie/",
+export default defineConfig(({ mode }) => ({
+  base: mode === "production" ? "/galerie/" : "/",
   plugins: [react(), tailwindcss()],
   build: {
     // Enable minification
@@ -51,4 +51,4 @@ export default defineConfig({
   esbuild: {
     treeShaking: true,
   },
-});
+}));
