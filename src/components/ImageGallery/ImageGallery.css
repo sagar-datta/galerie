@@ -64,7 +64,6 @@
 @keyframes modalBackdropIn {
   from {
     opacity: 0;
-    backdrop-filter: blur(0);
   }
   to {
     opacity: 1;
@@ -75,21 +74,19 @@
 @keyframes modalContentIn {
   from {
     opacity: 0;
-    transform: scale(0.98);
   }
   to {
     opacity: 1;
-    transform: scale(1);
   }
 }
 
 .modal-enter {
-  animation: modalBackdropIn 200ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: modalBackdropIn 150ms ease-out forwards;
 }
 
 .modal-enter img,
 .modal-enter > div > div:last-child {
-  animation: modalContentIn 200ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: modalContentIn 150ms ease-out forwards;
 }
 
 .modal-exit {
@@ -117,14 +114,14 @@
 
 .return-button-hidden {
   opacity: 0;
-  transform: scale(0.98);
   pointer-events: none;
+  transition: opacity 300ms ease-out;
 }
 
 .return-button-visible {
   opacity: 1;
-  transform: scale(1);
   pointer-events: auto;
+  transition: opacity 300ms ease-in;
 }
 
 /* Dynamic cursor with city name */
