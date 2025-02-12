@@ -30,10 +30,6 @@ export function ImageGallery({
   const [shouldCenter, setShouldCenter] = useState(true);
   const [loadedStates, setLoadedStates] = useState<Record<string, number>>({});
   const [numRows, setNumRows] = useState(2);
-  const lastScrollLeft = useRef(0);
-  const [scrollDirection, setScrollDirection] = useState<
-    "left" | "right" | null
-  >(null);
   const WINDOW_HEIGHT_THRESHOLD = 700;
 
   const handleImageClick = useCallback(
@@ -101,12 +97,6 @@ export function ImageGallery({
     if (!container) return;
 
     const handleScroll = () => {
-      const currentScrollLeft = container.scrollLeft;
-      setScrollDirection(
-        currentScrollLeft > lastScrollLeft.current ? "right" : "left"
-      );
-      lastScrollLeft.current = currentScrollLeft;
-
       // Find visible images
       const visibleElements = document.elementsFromPoint(
         window.innerWidth / 2,
@@ -117,14 +107,15 @@ export function ImageGallery({
       );
 
       if (visibleImages.length > 0) {
-        const lastVisibleIndex = parseInt(
+        const currentVisibleIndex = parseInt(
           visibleImages[visibleImages.length - 1].getAttribute("data-index") ||
             "0"
         );
+
         // Preload next few images
         const nextImages = images.slice(
-          lastVisibleIndex + 1,
-          lastVisibleIndex + 4
+          currentVisibleIndex + 1,
+          currentVisibleIndex + 4
         );
         nextImages.forEach((image) => {
           preloadImage(image.publicId, "medium");
