@@ -1,7 +1,7 @@
-export { getCloudinaryUrl } from "../../services/cloudinary";
+export { getCloudinaryUrl } from "../../../services/cloudinary";
+export { formatDateTime } from "../../../utils/date/format";
 export {
-  formatDateTime,
   formatGpsCoordinates,
   parseGpsCoordinate,
-  getGoogleMapsUrl,
-} from "../../utils/format";
+} from "../../../utils/geo/coordinates";
+export { getGoogleMapsUrl } from "../../../services/maps";

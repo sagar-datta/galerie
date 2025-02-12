@@ -1,2 +1,2 @@
 // Re-export everything from cities directory
-export * from "./cities";
+export * from "./metadata/cities";
