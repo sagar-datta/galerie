@@ -9,6 +9,7 @@ export default defineConfig(({ mode }) => ({
   build: {
     // Enable minification
     minify: "esbuild",
+    target: "esnext", // Modern browsers for better optimization
     // Configure chunk splitting
     rollupOptions: {
       output: {
