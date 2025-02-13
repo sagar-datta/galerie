@@ -2,6 +2,17 @@
 
 A modern, responsive photo gallery application showcasing images from various cities around the world. This gallery, known as "Galerie de Sagar", is built with React, TypeScript, and Vite.
 
+## 🎯 Design Inspiration
+
+The design of this gallery is inspired by the specimen of Neue Helvetica shown in the [Helvetica Wikipedia page](https://upload.wikimedia.org/wikipedia/commons/2/28/HelveticaSpecimenCH.svg). Created in January 2008, this public domain specimen has influenced:
+
+- Typography: Heavy use of Helvetica font family
+- Color Palette: Clean, minimal colors based on the specimen
+- Layout Structure: Grid-based organization reminiscent of type specimens
+- Visual Hierarchy: Clear, structured presentation of information
+
+This inspiration ties the gallery to the rich history of Swiss typography while providing a clean, modern presentation for photography.
+
 ## ✨ Features
 
 - **🖼️ Dynamic Image Gallery**: Responsive grid layout with modal view for detailed image viewing
@@ -10,7 +21,7 @@ A modern, responsive photo gallery application showcasing images from various ci
 - **📱 Responsive Design**: Seamless experience across desktop and mobile devices
 - **🎞️ Image Loading**: Progressive image loading with blur-up effect
 - **🗺️ Location Data**: Integration with Google Maps for location information
-- **📷 EXIF Data**: Display of image metadata including camera information
+- **📷 Image Metadata**: Display of associated image information (camera details, date taken, location)
 
 ## 🛠️ Tech Stack
 
