@@ -36,28 +36,28 @@ This inspiration ties the gallery to the rich history of Swiss typography while 
 
 ```
 src/
-├── assets/           # Static assets and styles
-│   └── styles/      # Global styles and animations
-├── components/       # Shared components
-│   └── layout/      # Layout components
-├── features/        # Feature-based modules
-│   ├── cities/      # Cities feature
+├── assets/                     # Static assets and styles
+│   └── styles/                 # Global styles and animations
+├── components/                 # Shared components
+│   └── layout/                 # Layout components
+├── features/                   # Feature-based modules
+│   ├── cities/                 # Cities feature
 │   │   ├── components/
 │   │   ├── hooks/
 │   │   ├── utils/
 │   │   └── types/
-│   └── gallery/     # Gallery feature
+│   └── gallery/                # Gallery feature
 │       ├── components/
 │       ├── hooks/
 │       ├── utils/
 │       └── types/
-├── lib/            # Shared libraries and data
-│   ├── cloudinary/ # Cloudinary integration
-│   ├── maps/      # Google Maps integration
-│   └── data/      # Application data
+├── lib/                        # Shared libraries and data
+│   ├── cloudinary/             # Cloudinary integration
+│   ├── maps/                   # Google Maps integration
+│   └── data/                   # Application data
 │       ├── galleries/
 │       └── metadata/
-└── types/         # Global type definitions
+└── types/                      # Global type definitions
 ```
 
 ## 🎨 Creating Your Own Gallery
