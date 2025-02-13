@@ -1,16 +1,14 @@
+import { useRef, useCallback, useMemo, useState } from "react";
 import { GalleryImage } from "../types/gallery.types";
-import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { ImageModal } from "./ImageModal";
-import { getCloudinaryUrl } from "../../../services/cloudinary";
-
-// Updated createImageRows to allow dynamic number of rows
-const createImageRows = (images: GalleryImage[], numRows: number = 2) => {
-  const rows: GalleryImage[][] = Array.from({ length: numRows }, () => []);
-  images.forEach((image, index) => {
-    rows[index % numRows].push(image);
-  });
-  return rows;
-};
+import { getCloudinaryUrl, createImageRows } from "../utils";
+import {
+  useImagePreload,
+  useLoadedStates,
+  useGalleryCentering,
+  useResponsiveRows,
+  useGalleryScroll,
+} from "../hooks";
 
 interface ImageGalleryProps {
   city: string;
@@ -27,9 +25,22 @@ export function ImageGallery({
 }: ImageGalleryProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [shouldCenter, setShouldCenter] = useState(true);
-  const [loadedStates, setLoadedStates] = useState<Record<string, number>>({});
-  const [numRows, setNumRows] = useState(2);
-  const WINDOW_HEIGHT_THRESHOLD = 700;
+
+  // Custom hooks for gallery functionality
+  const { preloadImage } = useImagePreload(images);
+  const { loadedStates, handleImageLoad } = useLoadedStates();
+  const numRows = useResponsiveRows();
+
+  useGalleryCentering({
+    containerRef: scrollContainerRef,
+    onCenteringChange: setShouldCenter,
+  });
+
+  useGalleryScroll({
+    containerRef: scrollContainerRef,
+    images,
+    onImagePreload: preloadImage,
+  });
 
   const handleImageClick = useCallback(
     (image: GalleryImage) => {
@@ -38,155 +49,7 @@ export function ImageGallery({
     [onImageSelect]
   );
 
-  const checkIfShouldCenter = useCallback(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-    const shouldCenterNew = container.scrollWidth <= container.clientWidth;
-    setShouldCenter(shouldCenterNew);
-  }, []);
-
-  // Enhanced preloading logic
-  const preloadImage = useCallback(
-    (publicId: string, quality: "medium" | "full") => {
-      const img = new Image();
-      img.src = getCloudinaryUrl(publicId, {
-        ...(quality === "medium" ? { mediumQuality: true } : {}),
-        priority: true,
-      });
-    },
-    []
-  );
-
-  // Preload first 4 images at medium quality and first 2 at full quality
-  useEffect(() => {
-    const preloadImages = images.slice(0, 4);
-    const links: HTMLLinkElement[] = [];
-
-    preloadImages.forEach((image, index) => {
-      // Medium quality preload
-      const mediumLink = document.createElement("link");
-      mediumLink.rel = "preload";
-      mediumLink.as = "image";
-      mediumLink.href = getCloudinaryUrl(image.publicId, {
-        mediumQuality: true,
-        priority: true,
-      });
-      document.head.appendChild(mediumLink);
-      links.push(mediumLink);
-
-      // Full quality preload for first 2 images
-      if (index < 2) {
-        const fullLink = document.createElement("link");
-        fullLink.rel = "preload";
-        fullLink.as = "image";
-        fullLink.href = getCloudinaryUrl(image.publicId, { priority: true });
-        document.head.appendChild(fullLink);
-        links.push(fullLink);
-      }
-    });
-
-    return () => {
-      links.forEach((link) => document.head.removeChild(link));
-    };
-  }, [images]);
-
-  // Detect scroll direction and preload accordingly
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    const handleScroll = () => {
-      // Find visible images
-      const visibleElements = document.elementsFromPoint(
-        window.innerWidth / 2,
-        window.innerHeight / 2
-      );
-      const visibleImages = visibleElements.filter((el) =>
-        el.classList.contains("gallery-image")
-      );
-
-      if (visibleImages.length > 0) {
-        const currentVisibleIndex = parseInt(
-          visibleImages[visibleImages.length - 1].getAttribute("data-index") ||
-            "0"
-        );
-
-        // Preload next few images
-        const nextImages = images.slice(
-          currentVisibleIndex + 1,
-          currentVisibleIndex + 4
-        );
-        nextImages.forEach((image) => {
-          preloadImage(image.publicId, "medium");
-        });
-      }
-    };
-
-    container.addEventListener("scroll", handleScroll);
-    return () => container.removeEventListener("scroll", handleScroll);
-  }, [images, preloadImage]);
-
-  useEffect(() => {
-    const observer = new ResizeObserver(checkIfShouldCenter);
-    const container = scrollContainerRef.current;
-    if (container) {
-      observer.observe(container);
-    }
-    return () => {
-      if (container) {
-        observer.unobserve(container);
-      }
-      observer.disconnect();
-    };
-  }, [checkIfShouldCenter]);
-
-  useEffect(() => {
-    window.addEventListener("resize", checkIfShouldCenter);
-    return () => window.removeEventListener("resize", checkIfShouldCenter);
-  }, [checkIfShouldCenter]);
-
-  useEffect(() => {
-    const updateNumRows = () => {
-      if (window.innerHeight <= WINDOW_HEIGHT_THRESHOLD) {
-        setNumRows(1);
-      } else {
-        setNumRows(2);
-      }
-    };
-    updateNumRows();
-    window.addEventListener("resize", updateNumRows);
-    return () => window.removeEventListener("resize", updateNumRows);
-  }, []);
-
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    const wheelHandler = (e: WheelEvent) => {
-      if (!container) return;
-      e.preventDefault();
-      if (Math.abs(e.deltaX) > 0) {
-        container.scrollLeft += e.deltaX;
-        return;
-      }
-      container.scrollLeft += e.deltaY * 2.5;
-    };
-
-    container.addEventListener("wheel", wheelHandler, { passive: false });
-    return () => container.removeEventListener("wheel", wheelHandler);
-  }, []);
-
-  const handleImageLoad = useCallback(
-    (imageId: string, quality: "medium" | "full") => {
-      setLoadedStates((prev) => ({
-        ...prev,
-        [imageId]: quality === "medium" ? 1 : 2,
-      }));
-    },
-    []
-  );
-
-  // Memoize image rows calculation with dynamic number of rows
+  // Memoize image rows calculation
   const imageRows = useMemo(
     () => createImageRows(images, numRows),
     [images, numRows]

@@ -1,16 +1,11 @@
+import { memo, MouseEvent } from "react";
 import { GalleryImage } from "../types/gallery.types";
-import { getCloudinaryUrl } from "../../../services/cloudinary";
-import { formatDateTime } from "../../../utils/date/format";
-import { getGoogleMapsUrl } from "../../../services/maps";
-import { formatGpsCoordinates } from "../../../utils/geo/coordinates";
+import { useImageModal } from "../hooks";
 import {
-  memo,
-  useMemo,
-  useState,
-  useCallback,
-  MouseEvent,
-  useEffect,
-} from "react";
+  getCloudinaryUrl,
+  formatDateTime,
+  formatGpsCoordinates,
+} from "../utils";
 
 interface ImageModalProps {
   image: GalleryImage | null;
@@ -19,56 +14,16 @@ interface ImageModalProps {
 }
 
 export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const { isFullscreen, cursorStyle, mapsUrl, toggleFullscreen } =
+    useImageModal({
+      image,
+      city,
+    });
 
-  useEffect(() => {
-    setIsFullscreen(false);
-  }, [image]);
-
-  const cursorStyle = useMemo(() => {
-    // Conservative dimensions for browser compatibility
-    const minWidth = 128;
-    const maxWidth = 180; // Reduced maximum width
-    const arrowSpace = 40; // Slightly reduced arrow space
-
-    // Calculate font size based on city length
-    const fontSize = city.length > 6 ? 12 : 18;
-
-    // Calculate dimensions with fixed proportions
-    const charWidth = fontSize === 18 ? 10 : 7;
-    const textWidth = city.length * charWidth;
-    const padding = Math.max(16, Math.min(24, textWidth * 0.15));
-    const calculatedWidth = Math.min(
-      Math.max(minWidth, textWidth + arrowSpace + padding),
-      maxWidth
-    );
-
-    // Position text
-    const textX = calculatedWidth / 2 + 16;
-    const textY = fontSize === 18 ? 22 : 20;
-
-    return {
-      cursor: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${calculatedWidth} 32' width='${calculatedWidth}' height='32'><rect x='6' y='6' width='${
-        calculatedWidth - 8
-      }' height='26' rx='1' fill='%23EBE9D1'/><rect x='3' y='3' width='${
-        calculatedWidth - 8
-      }' height='26' rx='1' fill='%23FF685B'/><g stroke='%23131313' stroke-linecap='square' stroke-width='3' fill='none'><path d='M20 16h18'></path><path d='m24 11l-6 5l6 5'></path></g><text x='${textX}' y='${textY}' fill='%23131313' text-anchor='middle' font-size='${fontSize}' font-family='Helvetica' font-weight='900' stroke='%23131313' stroke-width='0.5'>${city}</text></svg>") 16 16, auto`,
-    };
-  }, [city]);
-
-  const mapsUrl = useMemo(() => {
-    if (!image?.metadata?.gpsLatitude || !image?.metadata?.gpsLongitude)
-      return null;
-    return getGoogleMapsUrl(
-      image.metadata.gpsLatitude,
-      image.metadata.gpsLongitude
-    );
-  }, [image?.metadata?.gpsLatitude, image?.metadata?.gpsLongitude]);
-
-  const handleImageClick = useCallback((e: MouseEvent) => {
+  const handleImageClick = (e: MouseEvent) => {
     e.stopPropagation();
-    setIsFullscreen((prev) => !prev);
-  }, []);
+    toggleFullscreen();
+  };
 
   if (!image) return null;
 
