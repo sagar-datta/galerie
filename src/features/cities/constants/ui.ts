@@ -1,5 +1,16 @@
 import { COLORS } from "../../../constants/colors";
 
+// Animation constants
+export const ANIMATION_CONFIG = {
+  defaultDuration: "0.5s",
+  quickDuration: "0.3s",
+  timing: {
+    ease: "ease-in-out",
+    bezier: "cubic-bezier(0.4, 0, 0.2, 1)",
+  },
+} as const;
+
+// Component styles
 export const selectedCityStyles = {
   container: {
     backgroundColor: COLORS.beige,
@@ -30,3 +41,10 @@ export const selectedCityStyles = {
     zIndex: 40,
   },
 };
+
+// Ticker styles and animations
+export const tickerAnimations = {
+  duration: "14400s",
+  timing: "linear",
+  iterations: "infinite",
+} as const;

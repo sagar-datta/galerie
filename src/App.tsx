@@ -13,7 +13,10 @@ import {
   useLocation,
 } from "react-router-dom";
 import { cityGalleries } from "./data";
-import { formatCityUrl, normalizeCityName } from "./utils/string/format";
+import {
+  formatCityUrl,
+  normalizeCityName,
+} from "./features/cities/utils/format";
 
 // Get base path based on environment
 const basePath = import.meta.env.PROD ? "/galerie" : "";

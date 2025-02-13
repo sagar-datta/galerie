@@ -4,8 +4,8 @@ import { ImageGallery } from "../../../features/gallery/components/ImageGallery"
 import { cityGalleries } from "../../../data";
 import { GalleryImage } from "../../../features/gallery/types/gallery.types";
 import { formatVisitDates } from "../../../data/metadata/cities";
-import { selectedCityStyles } from "../constants/styles";
-import { SelectedCityProps } from "../types/selected-city.types";
+import { selectedCityStyles } from "../constants/ui";
+import { SelectedCityProps } from "../types";
 import { useSelectedCityAnimation } from "../hooks/useSelectedCityAnimation";
 
 // Memoize gallery component to prevent unnecessary rerenders

@@ -1,6 +1,6 @@
 import { useRef, useCallback } from "react";
 import { COLORS } from "../../../constants/colors";
-import { CitiesTickerProps } from "../types/ticker.types";
+import { CitiesTickerProps } from "../types";
 import { TICKER_CONFIG } from "../constants/ticker";
 import { useResponsiveTicker } from "../hooks/useResponsiveTicker";
 import { useTickerAnimation } from "../hooks/useTickerAnimation";

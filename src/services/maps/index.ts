@@ -1,4 +1,4 @@
-import { parseGpsCoordinate } from "../../utils/geo/coordinates";
+import { parseGpsCoordinate } from "../../features/cities/utils/coordinates";
 
 export const getGoogleMapsUrl = (latitude: string, longitude: string) => {
   const lat = parseGpsCoordinate(latitude);
