@@ -1,6 +1,6 @@
 import { barcelona } from "./barcelona";
 import { paris } from "./paris";
-import { CityGallery } from "../../features/gallery/types/gallery.types";
+import { CityGallery } from "../../../features/gallery/types/gallery.types";
 
 export const cityGalleries: Record<string, CityGallery> = {
   Barcelona: barcelona,
