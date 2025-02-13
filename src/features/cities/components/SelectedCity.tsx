@@ -1,9 +1,9 @@
 import { useEffect, useState, memo } from "react";
 import { COLORS } from "../../../constants/colors";
 import { ImageGallery } from "../../../features/gallery/components/ImageGallery";
-import { cityGalleries } from "../../../data";
+import { cityGalleries } from "../../../lib/data";
 import { GalleryImage } from "../../../features/gallery/types/gallery.types";
-import { formatVisitDates } from "../../../data/metadata/cities";
+import { formatVisitDates } from "../../../lib/data/metadata/cities";
 import { selectedCityStyles } from "../constants/ui";
 import { SelectedCityProps } from "../types";
 import { useSelectedCityAnimation } from "../hooks/useSelectedCityAnimation";

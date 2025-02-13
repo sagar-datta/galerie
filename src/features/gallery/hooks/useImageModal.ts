@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { GalleryImage } from "../types/gallery.types";
-import { getGoogleMapsUrl } from "../../../services/maps";
+import { getGoogleMapsUrl } from "../../../lib/maps";
 import { calculateCursorStyle } from "../utils/layout";
 
 interface UseImageModalOptions {

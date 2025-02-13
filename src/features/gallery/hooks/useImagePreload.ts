@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
 import { GalleryImage } from "../types/gallery.types";
-import { getCloudinaryUrl } from "../../../services/cloudinary";
+import { getCloudinaryUrl } from "../../../lib/cloudinary";
 
 /**
  * Hook for managing image preloading in the gallery

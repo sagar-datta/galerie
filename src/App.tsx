@@ -12,7 +12,7 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
-import { cityGalleries } from "./data";
+import { cityGalleries } from "./lib/data";
 import {
   formatCityUrl,
   normalizeCityName,

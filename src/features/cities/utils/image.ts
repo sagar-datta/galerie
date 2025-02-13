@@ -1,5 +1,5 @@
-import { cityGalleries } from "../../../data";
-import { getCloudinaryUrl } from "../../../services/cloudinary";
+import { cityGalleries } from "../../../lib/data";
+import { getCloudinaryUrl } from "../../../lib/cloudinary";
 import { GalleryImage } from "../../gallery/types/gallery.types";
 
 export const preloadImagesForCity = (cityName: string) => {
