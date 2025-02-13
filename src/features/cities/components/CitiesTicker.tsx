@@ -1,108 +1,26 @@
-import { useRef, useCallback, useMemo, useEffect, useState } from "react";
+import { useRef, useCallback } from "react";
 import { COLORS } from "../../../constants/colors";
-import { cityGalleries } from "../../../data";
-import { getCloudinaryUrl } from "../../../services/cloudinary";
-import { GalleryImage } from "../../gallery/types/gallery.types";
-
-// Move constants outside component to prevent recreation
-const CITIES = [
-  "BARCELONA",
-  "BERLIN",
-  "CHICAGO",
-  "LONDON",
-  "MELBOURNE",
-  "MIAMI",
-  "NEW YORK",
-  "PARIS",
-  "SHANGHAI",
-  "TOKYO",
-  "VIENNA",
-];
-
-const MIN_ROW_HEIGHT = 120; // Increased for better spacing
-const ROW_MARGIN = 32; // 8rem margin between rows
-const DUPLICATE_COUNT = 200; // Significantly increased for an even longer, smoother animation
-
-// Preload both full quality and low quality versions of images
-const preloadImagesForCity = (cityName: string) => {
-  const cityKey = Object.keys(cityGalleries).find(
-    (key) => key.toLowerCase() === cityName.toLowerCase()
-  );
-
-  if (!cityKey) return;
-
-  const gallery = cityGalleries[cityKey];
-  gallery.images.forEach((image: GalleryImage) => {
-    // Preload full quality version
-    const fullQualityImg = new Image();
-    fullQualityImg.src = getCloudinaryUrl(image.publicId);
-
-    // Preload low quality version
-    const lowQualityImg = new Image();
-    lowQualityImg.src = getCloudinaryUrl(image.publicId, { lowQuality: true });
-  });
-};
-
-interface CitiesTickerProps {
-  onCityClick: (city: string, rect: DOMRect) => void;
-  isPaused: boolean;
-}
+import { CitiesTickerProps } from "../types/ticker.types";
+import { TICKER_CONFIG } from "../constants/ticker";
+import { useResponsiveTicker } from "../hooks/useResponsiveTicker";
+import { useTickerAnimation } from "../hooks/useTickerAnimation";
+import { preloadImagesForCity } from "../utils/image";
 
 export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
   const tickerRefs = useRef<(HTMLDivElement | null)[]>([]);
   const preloadedCities = useRef<Set<string>>(new Set());
-  const [availableRows, setAvailableRows] = useState(3); // Default to 3 rows
 
-  // Calculate rows based on available height
-  const calculateRows = useCallback(() => {
-    if (!containerRef.current) return;
+  // Custom hooks
+  const { availableRows, calculateRows, rowDuplicates } = useResponsiveTicker();
 
-    // Constants for spacing calculations
-    const SAFETY_BUFFER = 20;
-    const BOTTOM_MARGIN = 80;
-    const SPACE_PER_ROW = MIN_ROW_HEIGHT + ROW_MARGIN;
-
-    // Calculate available vertical space
-    const availableSpace =
-      window.innerHeight -
-      containerRef.current.getBoundingClientRect().top -
-      BOTTOM_MARGIN -
-      SAFETY_BUFFER;
-
-    // Calculate and set optimal number of rows
-    const maxRows = Math.max(
-      1,
-      Math.min(3, Math.floor(availableSpace / SPACE_PER_ROW))
-    );
-    setAvailableRows(maxRows);
-  }, []);
-
-  // Create dynamic rows based on available space
-  const rows = useMemo(() => {
-    const citiesPerRow = Math.ceil(CITIES.length / availableRows);
-    const calculatedRows: string[][] = [];
-
-    for (let i = 0; i < CITIES.length; i += citiesPerRow) {
-      calculatedRows.push(CITIES.slice(i, i + citiesPerRow));
-    }
-
-    return calculatedRows;
-  }, [availableRows]);
-
-  // Create duplicates for infinite scroll
-  const createDuplicates = useCallback((arr: string[]) => {
-    let duplicatedArr = [...arr];
-    for (let i = 0; i < DUPLICATE_COUNT; i++) {
-      duplicatedArr = [...duplicatedArr, ...arr];
-    }
-    return duplicatedArr;
-  }, []);
-
-  const rowDuplicates = useMemo(() => {
-    return rows.map(createDuplicates);
-  }, [rows, createDuplicates]);
+  useTickerAnimation({
+    containerRef,
+    tickerRefs,
+    calculateRows,
+    isPaused,
+  });
 
   // Event handlers with improved performance using event delegation
   const handleRowClick = useCallback(
@@ -124,49 +42,11 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
     }
   }, []);
 
-  // Initialize ResizeObserver and handle window resize
-  useEffect(() => {
-    let resizeObserver: ResizeObserver;
-
-    const handleResize = () => {
-      calculateRows();
-
-      requestAnimationFrame(() => {
-        tickerRefs.current.forEach((ref, index) => {
-          if (ref) {
-            const isRightToLeft = index % 2 === 0;
-            ref.style.animation = "none";
-            ref.offsetHeight; // Trigger reflow
-            ref.style.animation = `${
-              isRightToLeft ? "ticker-right-to-left" : "ticker-left-to-right"
-            } 14400s linear infinite ${isRightToLeft ? "normal" : "reverse"}`;
-          }
-        });
-      });
-    };
-
-    if (containerRef.current) {
-      resizeObserver = new ResizeObserver(handleResize);
-      resizeObserver.observe(containerRef.current);
-      resizeObserver.observe(document.body); // Observe body for footer changes
-    }
-
-    window.addEventListener("resize", handleResize);
-    handleResize(); // Initial calculation
-
-    return () => {
-      if (resizeObserver) {
-        resizeObserver.disconnect();
-      }
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [calculateRows]);
-
   return (
     <div
       ref={containerRef}
       className="max-w-full mx-auto py-20"
-      style={{ minHeight: `${MIN_ROW_HEIGHT * availableRows}px` }}
+      style={{ minHeight: `${TICKER_CONFIG.MIN_ROW_HEIGHT * availableRows}px` }}
     >
       {rowDuplicates.map((rowDuplicate: string[], rowIndex: number) => (
         <div

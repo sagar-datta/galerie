@@ -1,17 +1,12 @@
-import { useCallback, useEffect, useState, memo } from "react";
+import { useEffect, useState, memo } from "react";
 import { COLORS } from "../../../constants/colors";
 import { ImageGallery } from "../../../features/gallery/components/ImageGallery";
 import { cityGalleries } from "../../../data";
 import { GalleryImage } from "../../../features/gallery/types/gallery.types";
 import { formatVisitDates } from "../../../data/metadata/cities";
-
-interface SelectedCityProps {
-  city: string;
-  position: { top: number; left: number };
-  onReturn: () => void;
-  isReturning: boolean;
-  isDirectAccess?: boolean;
-}
+import { selectedCityStyles } from "../constants/styles";
+import { SelectedCityProps } from "../types/selected-city.types";
+import { useSelectedCityAnimation } from "../hooks/useSelectedCityAnimation";
 
 // Memoize gallery component to prevent unnecessary rerenders
 const MemoizedGallery = memo(ImageGallery);
@@ -23,10 +18,19 @@ export function SelectedCity({
   isReturning,
   isDirectAccess = false,
 }: SelectedCityProps) {
-  const [footerHeight, setFooterHeight] = useState("h-[6rem]");
-  const [showGalleryTransition, setShowGalleryTransition] = useState(false);
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
   const [cityWidth, setCityWidth] = useState(0);
+
+  const {
+    showGalleryTransition,
+    footerHeight,
+    setFooterHeight,
+    animateSelectedCityIn,
+    animateSelectedCityOut,
+  } = useSelectedCityAnimation({
+    position,
+    isDirectAccess,
+  });
 
   useEffect(() => {
     const selectedCityElement = document.getElementById(
@@ -46,55 +50,6 @@ export function SelectedCity({
       ) || ""
     ];
 
-  const animateSelectedCityIn = useCallback(() => {
-    const selectedCityElement = document.getElementById(
-      "selected-city-element"
-    );
-    if (!selectedCityElement) return;
-
-    if (isDirectAccess) {
-      selectedCityElement.style.transition = "opacity 0.5s ease-in-out";
-      selectedCityElement.style.opacity = "1";
-      selectedCityElement.style.color = COLORS.white;
-      setShowGalleryTransition(true);
-    } else {
-      selectedCityElement.style.transition = "none";
-      selectedCityElement.style.opacity = "1";
-      selectedCityElement.getBoundingClientRect();
-
-      requestAnimationFrame(() => {
-        selectedCityElement.style.transition =
-          "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)";
-        selectedCityElement.style.top = "91.66%";
-        selectedCityElement.style.left = "2rem";
-        selectedCityElement.style.transform = "translateY(-50%)";
-        selectedCityElement.style.color = COLORS.white;
-        setShowGalleryTransition(true);
-      });
-    }
-  }, [isDirectAccess]);
-
-  const animateSelectedCityOut = useCallback(() => {
-    setShowGalleryTransition(false);
-    const selectedCityElement = document.getElementById(
-      "selected-city-element"
-    );
-    if (!selectedCityElement) return;
-
-    if (isDirectAccess) {
-      selectedCityElement.style.transition = "opacity 0.3s ease-in-out";
-      selectedCityElement.style.opacity = "0";
-    } else {
-      setFooterHeight("h-[6rem]");
-      selectedCityElement.style.transition =
-        "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
-      selectedCityElement.style.top = `${position.top}px`;
-      selectedCityElement.style.left = `${position.left}px`;
-      selectedCityElement.style.transform = "none";
-      selectedCityElement.style.color = COLORS.dark;
-    }
-  }, [position, isDirectAccess]);
-
   useEffect(() => {
     if (isReturning) {
       animateSelectedCityOut();
@@ -105,12 +60,17 @@ export function SelectedCity({
       }, 16);
       return () => clearTimeout(timer);
     }
-  }, [animateSelectedCityIn, animateSelectedCityOut, isReturning]);
+  }, [
+    animateSelectedCityIn,
+    animateSelectedCityOut,
+    isReturning,
+    setFooterHeight,
+  ]);
 
   return (
     <div
       className="fixed top-0 left-0 w-full h-full z-50"
-      style={{ backgroundColor: COLORS.beige }}
+      style={selectedCityStyles.container}
     >
       <button
         onClick={onReturn}
@@ -119,10 +79,7 @@ export function SelectedCity({
             ? "return-button-visible"
             : "return-button-hidden"
         }`}
-        style={{
-          backgroundColor: COLORS.dark,
-          color: COLORS.beige,
-        }}
+        style={selectedCityStyles.returnButton}
       >
         <span>Return</span>
       </button>
@@ -130,11 +87,7 @@ export function SelectedCity({
       {cityGallery && showGalleryTransition && (
         <div
           className="absolute inset-x-0 bottom-[16.67vh] top-0 pt-28 pb-12"
-          style={{
-            opacity: showGalleryTransition ? 1 : 0,
-            transition: "opacity 0.5s ease",
-            overflow: "hidden",
-          }}
+          style={selectedCityStyles.galleryContainer}
         >
           <MemoizedGallery
             city={city}
@@ -147,27 +100,19 @@ export function SelectedCity({
 
       <div
         className={`fixed bottom-0 left-0 w-full transition-height duration-300 ease-in-out ${footerHeight}`}
-        style={{ backgroundColor: COLORS.coral }}
+        style={selectedCityStyles.footer}
       >
         {showGalleryTransition && (
           <div
             className="absolute top-1/2 w-full"
             style={{
-              color: COLORS.dark,
+              ...selectedCityStyles.footerText,
               transform: showGalleryTransition
                 ? "translateY(-50%)"
                 : "translateY(20px)",
               opacity: showGalleryTransition ? 1 : 0,
-              transition:
-                "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease-in-out",
-              fontSize: showGalleryTransition
-                ? "clamp(1.25rem,4vh,2.5rem)"
-                : "2rem",
-              lineHeight: "1.3",
-              fontWeight: 600,
               paddingLeft: `${cityWidth + 96}px`,
               maxWidth: "calc(100% - 4rem)",
-              letterSpacing: "0.08em",
             }}
           >
             <p>{formatVisitDates(city)}</p>
@@ -180,15 +125,14 @@ export function SelectedCity({
           showGalleryTransition ? "text-[clamp(1.75rem,8vh,5rem)]" : "text-6xl"
         }`}
         style={{
+          ...selectedCityStyles.cityText,
           position: "fixed",
           top: isDirectAccess ? "91.66%" : `${position.top}px`,
           left: isDirectAccess ? "2rem" : `${position.left}px`,
           transform: isDirectAccess ? "translateY(-50%)" : "none",
           color: isDirectAccess ? COLORS.white : COLORS.dark,
-          fontFamily: "Helvetica, Arial, sans-serif",
           opacity: isDirectAccess ? 0 : 1,
           transition: "none",
-          zIndex: 40,
         }}
         id="selected-city-element"
       >
