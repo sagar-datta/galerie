@@ -17,7 +17,8 @@ export const barcelona: CityGallery = {
       "aperture": "5.6",
       "focalLength": "210 mm",
       "iso": "100",
-      "lensModel": "Nikon AF-S DX Nikkor 18-140mm f/3.5-5.6G ED VR"
+      "lensModel": "Nikon AF-S DX Nikkor 18-140mm f/3.5-5.6G ED VR",
+      "caption": "Sagrada Família Tower"
     }
   },
   {

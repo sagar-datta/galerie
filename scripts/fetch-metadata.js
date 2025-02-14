@@ -152,22 +152,34 @@ async function getImagesInFolder(folderName, existingMetadata = new Map()) {
       for (const resource of resources) {
         const existingData = existingMetadata.get(resource.public_id);
 
-        const hasValidMetadata = existingData && (
-          existingData.dateTaken ||
-          existingData.model ||
-          existingData.gpsLatitude ||
-          existingData.gpsLongitude
+        // Define all required metadata fields
+        const requiredMetadata = [
+          'dateTaken',
+          'model',
+          'gpsLatitude',
+          'gpsLongitude',
+          'exposureTime',
+          'aperture',
+          'focalLength',
+          'iso',
+          'lensModel',
+          'caption'
+        ];
+
+        // Check if all required fields exist and are not null/undefined
+        const hasValidMetadata = existingData && requiredMetadata.every(field => 
+          existingData[field] !== undefined && existingData[field] !== null
         );
 
         if (hasValidMetadata) {
-          // Use existing metadata if it contains essential EXIF data
+          // Use existing metadata if it contains all required fields
           console.log(`Using existing metadata for ${resource.public_id}`);
           images.push({
             ...resource,
             metadata: existingData
           });
         } else {
-          // Fetch detailed metadata only for new images
+          // Fetch detailed metadata if any required field is missing
           console.log(`Fetching new metadata for ${resource.public_id}`);
           try {
             const detailedResource = await retry(
