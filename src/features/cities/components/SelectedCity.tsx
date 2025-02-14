@@ -7,6 +7,7 @@ import { formatVisitDates } from "../../../lib/data/metadata/cities";
 import { selectedCityStyles } from "../constants/ui";
 import { SelectedCityProps } from "../types";
 import { useSelectedCityAnimation } from "../hooks/useSelectedCityAnimation";
+import { formatCityDisplay } from "../utils/format";
 
 // Memoize gallery component to prevent unnecessary rerenders
 const MemoizedGallery = memo(ImageGallery);
@@ -136,7 +137,7 @@ export function SelectedCity({
         }}
         id="selected-city-element"
       >
-        {city}
+        {formatCityDisplay(city)}
       </div>
     </div>
   );

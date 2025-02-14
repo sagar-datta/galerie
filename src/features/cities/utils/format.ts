@@ -3,3 +3,5 @@ export const formatCityUrl = (city: string) =>
 
 export const normalizeCityName = (cityUrl: string) =>
   cityUrl.replace(/-/g, "_");
+
+export const formatCityDisplay = (city: string) => city.replace(/_+/g, " ");

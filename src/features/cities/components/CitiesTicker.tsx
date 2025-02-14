@@ -5,6 +5,7 @@ import { TICKER_CONFIG } from "../constants/ticker";
 import { useResponsiveTicker } from "../hooks/useResponsiveTicker";
 import { useTickerAnimation } from "../hooks/useTickerAnimation";
 import { preloadImagesForCity } from "../utils/image";
+import { formatCityDisplay } from "../utils/format";
 
 export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
   // Refs
@@ -27,7 +28,7 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
     (e: React.MouseEvent<HTMLDivElement>, _rowIndex: number) => {
       const target = e.target as HTMLElement;
       if (target.classList.contains("city-text")) {
-        const city = target.textContent || "";
+        const city = target.getAttribute("data-city") || "";
         const rect = target.getBoundingClientRect();
         onCityClick(city, rect);
       }
@@ -79,9 +80,10 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
                   color: COLORS.dark,
                   fontFamily: "Helvetica, Arial, sans-serif",
                 }}
+                data-city={city}
                 onMouseEnter={() => handleCityHover(city)}
               >
-                {city}
+                {formatCityDisplay(city)}
               </span>
             ))}
           </div>
