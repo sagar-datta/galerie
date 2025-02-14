@@ -30,7 +30,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
   // Original metadata panel (top)
   const TopMetadataPanel = ({ className }: { className: string }) => (
     <div
-      className={`flex-shrink-0 bg-[#131313] text-white p-4 cursor-default flex items-center gap-8 overflow-x-auto ${className}`}
+      className={`flex-shrink-0 bg-[#131313] text-white p-4 cursor-default flex items-center gap-8 overflow-x-auto ${!image.metadata?.caption ? 'justify-center' : ''} ${className}`}
       onClick={(e) => e.stopPropagation()}
     >
       {image.metadata?.caption && (
