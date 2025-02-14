@@ -11,17 +11,11 @@ export const preloadImagesForCity = (cityName: string) => {
 
   const gallery = cityGalleries[cityKey];
   gallery.images.forEach((image: GalleryImage) => {
-    // Preload exact same quality version that will be used in modal
-    const fullQualityImg = new Image();
-    fullQualityImg.src = getCloudinaryUrl(encodeURIComponent(image.publicId), {
-      width: 1600,
+    // Preload medium quality version for gallery thumbnails
+    const mediumQualityImg = new Image();
+    mediumQualityImg.src = getCloudinaryUrl(encodeURIComponent(image.publicId), {
+      mediumQuality: true,
       priority: true
-    });
-
-    // Preload low quality version
-    const lowQualityImg = new Image();
-    lowQualityImg.src = getCloudinaryUrl(encodeURIComponent(image.publicId), {
-      lowQuality: true,
     });
   });
 };

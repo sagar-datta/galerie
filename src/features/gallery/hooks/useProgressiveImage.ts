@@ -15,21 +15,21 @@ export function useProgressiveImage(publicId: string) {
 
   useEffect(() => {
     // Reset state when publicId changes
-    setState({
-      // Start with very low quality blurred placeholder
-      currentSrc: getCloudinaryUrl(encodeURIComponent(publicId), { 
-        lowQuality: true
-      }),
+    setState({ 
+      currentSrc: getCloudinaryUrl(encodeURIComponent(publicId), {
+        width: 1200,
+        mediumQuality: true
+      })
     })
 
     // Array of quality levels to load in sequence
     const qualityLevels = [
       { // Medium preview
-        width: 400,
+        width: 1200,
         priority: true
       },
       { 
-        width: 800,
+        width: 1200,
         priority: true
       }
     ]
@@ -42,20 +42,12 @@ export function useProgressiveImage(publicId: string) {
       img.onload = () => {
         // Only update if it's a higher quality than current
         setState(prev => {
-          // If current is low quality placeholder, always upgrade
-          const isCurrentLowQuality = prev.currentSrc.includes("w_20,e_blur:1000")
-          
-          if (isCurrentLowQuality) {
+          // Always update to higher quality versions
+          const currentQuality = prev.currentSrc.includes("mediumQuality")
+          if (currentQuality) {
             return {
               currentSrc: img.src
-            }
-          }
-          
-          const currentWidth = Number(prev.currentSrc.match(/w_(\d+)/)?.[1] || 0)
-          if (currentWidth === 0 || quality.width > currentWidth) {
-            return {
-              currentSrc: img.src
-            }
+            } 
           }
           return prev
         })
