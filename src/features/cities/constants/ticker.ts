@@ -2,6 +2,7 @@ export const CITIES = [
   "ANDALUSIA",
   "BARCELONA",
   "NULLARBOR",
+  "PORTUGAL",
   "VIETNAM"
 ];
 

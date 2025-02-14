@@ -70,6 +70,17 @@ export const citiesMetadata: Record<string, CityMetadata> = {
       ],
     },
   },
+  portugal: {
+    name: "portugal",
+    displayName: "PORTUGAL",
+    visitDates: {
+      season: "WINTER",
+      year: "MMXXV",
+      visits: [
+        { month: "JAN", year: "MMXXV" }
+      ],
+    },
+  },
  
 };
 

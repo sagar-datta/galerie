@@ -5,7 +5,7 @@ import { TICKER_CONFIG } from "../constants/ticker";
 import { useResponsiveTicker } from "../hooks/useResponsiveTicker";
 import { useTickerAnimation } from "../hooks/useTickerAnimation";
 import { preloadImagesForCity } from "../utils/image";
-import { formatCityDisplay } from "../utils/format";
+import { citiesMetadata } from "../../../lib/data/metadata/cities";
 
 export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
   // Refs
@@ -83,7 +83,7 @@ export function CitiesTicker({ onCityClick, isPaused }: CitiesTickerProps) {
                 data-city={city}
                 onMouseEnter={() => handleCityHover(city)}
               >
-                {formatCityDisplay(city)}
+                {citiesMetadata[city]?.displayName || city}
               </span>
             ))}
           </div>
