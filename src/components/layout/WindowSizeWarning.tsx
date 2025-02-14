@@ -1,8 +1,8 @@
 import { FC, useEffect, useState } from 'react'
 import { COLORS } from '../../constants/colors'
 
-const MIN_WIDTH = 960
-const MIN_HEIGHT = 410
+const MIN_WIDTH = 961
+const MIN_HEIGHT = 411
 
 export const WindowSizeWarning: FC = () => {
   const [dimensions, setDimensions] = useState({
@@ -65,7 +65,7 @@ export const WindowSizeWarning: FC = () => {
           className="mb-8"
           style={{ color: COLORS.dark, fontSize: `${1.25 * scaleFactor}rem` }}
         >
-          This photo gallery requires a minimum screen size of 960x410 pixels.
+          This photo gallery requires a minimum screen size of 961x411 pixels.
           Please view on a larger device or resize your window for the best experience.
         </p>
         <div className="space-y-4 text-lg">

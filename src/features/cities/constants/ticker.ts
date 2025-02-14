@@ -1,4 +1,5 @@
 export const CITIES = [
+  "ANDALUSIA",
   "BARCELONA",
   "NULLARBOR",
   "VIETNAM"
