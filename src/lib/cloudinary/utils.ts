@@ -25,7 +25,8 @@ export const getCloudinaryUrl = (
   } else {
     // Full quality image with responsive width
     const width = options?.width || 800;
-    transformations = `w_${width},q_auto:good,f_auto,c_scale,dpr_auto${
+    const qualityLevel = width > 1000 ? "best" : "good";
+    transformations = `w_${width},q_auto:${qualityLevel},f_auto,c_scale,dpr_auto${
       options?.priority ? ",fl_progressive:steep" : ""
     }`;
   }

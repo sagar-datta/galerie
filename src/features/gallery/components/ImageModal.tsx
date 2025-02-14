@@ -166,7 +166,10 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
           {isFullscreen ? (
             <div className="w-screen h-screen flex items-center justify-center">
               <img
-                src={getCloudinaryUrl(encodeURIComponent(image.publicId))}
+                src={getCloudinaryUrl(encodeURIComponent(image.publicId), { 
+                  width: 2048,
+                  priority: true
+                 })}
                 alt={image.metadata?.caption || `Photo from ${city}`}
                 className="w-auto h-screen object-contain select-none"
                 onClick={handleImageClick}
