@@ -58,6 +58,18 @@ export const citiesMetadata: Record<string, CityMetadata> = {
       ],
     },
   },
+  andalusia: {
+    name: "andalusia",
+    displayName: "ANDALUSIA",
+    visitDates: {
+      season: "WINTER",
+      year: "MMXXIV-V",
+      visits: [
+        { month: "DEC", year: "MMXXIV" },
+        { month: "JAN", year: "MMXXV" }
+      ],
+    },
+  },
  
 };
 
