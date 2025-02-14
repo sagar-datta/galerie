@@ -6,7 +6,7 @@ export interface ProgressiveImageState {
 }
 
 /**
- * Hook to handle progressive image loading from medium to high quality
+ * Hook to handle progressive image loading from low to standard quality
  */
 export function useProgressiveImage(publicId: string) {
   const [state, setState] = useState<ProgressiveImageState>({
@@ -20,21 +20,22 @@ export function useProgressiveImage(publicId: string) {
       currentSrc: getCloudinaryUrl(encodeURIComponent(publicId), { 
         lowQuality: true
       }),
-
     })
 
     // Array of quality levels to load in sequence
     const qualityLevels = [
       { // Medium preview
-        width: 800,
+        width: 400,
         priority: true
       },
-      { width: 1200, priority: true },
-      { width: 1600, priority: true }
+      { 
+        width: 800,
+        priority: true
+      }
     ]
 
     // Load each quality level immediately
-    qualityLevels.forEach((quality, _index) => {
+    qualityLevels.forEach((quality) => {
       const img = new Image()
       img.src = getCloudinaryUrl(encodeURIComponent(publicId), quality)
       

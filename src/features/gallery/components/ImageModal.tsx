@@ -15,7 +15,7 @@ interface ImageModalProps {
 }
 
 export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
-  const { currentSrc } = useProgressiveImage(image?.publicId || "");
+  const { currentSrc: standardSrc } = useProgressiveImage(image?.publicId || "");
   const { isFullscreen, cursorStyle, mapsUrl, toggleFullscreen } =
     useImageModal({
       image,
@@ -179,10 +179,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
           {isFullscreen ? (
             <div className="w-screen h-screen flex items-center justify-center">
               <img
-                src={getCloudinaryUrl(encodeURIComponent(image.publicId), { 
-                  width: 2048,
-                  priority: true
-                 })}
+                src={getCloudinaryUrl(encodeURIComponent(image.publicId), { width: 2048, priority: true })}
                 alt={image.metadata?.caption || `Photo from ${city}`}
                 className="w-auto h-screen object-contain select-none"
                 onClick={handleImageClick}
@@ -197,7 +194,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
                 onClick={(e) => e.stopPropagation()}
               >
                 <img
-                  src={currentSrc}
+                  src={standardSrc}
                   alt={image.metadata?.caption || `Photo from ${city}`}
                   className={`
                     max-w-[calc(100vw-4rem)] 
