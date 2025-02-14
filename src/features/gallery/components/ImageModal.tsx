@@ -1,4 +1,4 @@
-import { memo, MouseEvent, useEffect } from "react";
+import { memo, MouseEvent } from "react";
 import { GalleryImage } from "../types/gallery.types";
 import { useImageModal } from "../hooks";
 import {
@@ -19,12 +19,6 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
       image,
       city,
     });
-
-  useEffect(() => {
-    if (image?.metadata) {
-      console.log("Image metadata:", image.metadata);
-    }
-  }, [image]);
 
   const handleImageClick = (e: MouseEvent) => {
     e.stopPropagation();
