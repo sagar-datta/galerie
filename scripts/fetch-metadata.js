@@ -152,18 +152,10 @@ async function getImagesInFolder(folderName, existingMetadata = new Map()) {
       for (const resource of resources) {
         const existingData = existingMetadata.get(resource.public_id);
 
-        // Define all required metadata fields
+        // Only datetime and model are required fields
         const requiredMetadata = [
           'dateTaken',
-          'model',
-          'gpsLatitude',
-          'gpsLongitude',
-          'exposureTime',
-          'aperture',
-          'focalLength',
-          'iso',
-          'lensModel',
-          'caption'
+          'model'
         ];
 
         // Check if all required fields exist and are not null/undefined
