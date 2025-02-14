@@ -27,7 +27,7 @@ export function ImageGallery({
   const [shouldCenter, setShouldCenter] = useState(true);
 
   // Custom hooks for gallery functionality
-  const { preloadImage } = useImagePreload(images);
+  const { preloadImage, preloadFullscreenImage } = useImagePreload(images);
   const { loadedStates, handleImageLoad } = useLoadedStates();
   const numRows = useResponsiveRows();
 
@@ -85,6 +85,9 @@ export function ImageGallery({
                   }}
                   data-index={rowIndex * row.length + imageIndex}
                   onClick={() => handleImageClick(image)}
+                  onMouseEnter={() => {
+                    preloadFullscreenImage(image.publicId);
+                  }}
                 >
                   {/* Skeleton loader */}
                   <div className={`image-skeleton ${loadedStates[image.id] >= 1 ? 'loaded' : ''}`} />
