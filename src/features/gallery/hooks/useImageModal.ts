@@ -11,7 +11,7 @@ interface UseImageModalOptions {
 interface UseImageModalReturn {
   isFullscreen: boolean;
   cursorStyle: { cursor: string };
-  mapsUrl: string | null;
+  mapsUrl: string | undefined;
   toggleFullscreen: () => void;
 }
 
@@ -38,14 +38,14 @@ export function useImageModal({
   const cursorStyle = useMemo(() => calculateCursorStyle(city), [city]);
 
   const mapsUrl = useMemo(() => {
-    if (!image?.metadata?.gpsLatitude || !image?.metadata?.gpsLongitude) {
-      return null;
+    if (!image?.metadata?.GPSLatitude || !image?.metadata?.GPSLongitude) {
+      return undefined;
     }
     return getGoogleMapsUrl(
-      image.metadata.gpsLatitude,
-      image.metadata.gpsLongitude
+      image.metadata.GPSLatitude,
+      image.metadata.GPSLongitude
     );
-  }, [image?.metadata?.gpsLatitude, image?.metadata?.gpsLongitude]);
+  }, [image?.metadata?.GPSLatitude, image?.metadata?.GPSLongitude]);
 
   return {
     isFullscreen,

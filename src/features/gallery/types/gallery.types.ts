@@ -2,8 +2,12 @@ export interface ImageMetadata {
   dateTaken?: string;
   make?: string;
   model?: string;
-  gpsLatitude?: string;
-  gpsLongitude?: string;
+  GPSLatitude?: string;
+  GPSLongitude?: string;
+  exposure_time?: string;
+  aperture?: string;
+  focal_length?: string;
+  iso?: string;
 }
 
 export interface GalleryImage {

@@ -1,4 +1,6 @@
-export const formatDateTime = (dateTimeStr: string) => {
+export const formatDateTime = (dateTimeStr: string | undefined | null) => {
+  if (!dateTimeStr) return "";
+
   // Input format: "2024:12:27 13:44:49"
   const [date, time] = dateTimeStr.split(" ");
   const [year, month, day] = date.split(":");

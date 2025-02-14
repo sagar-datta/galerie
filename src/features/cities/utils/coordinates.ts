@@ -1,4 +1,6 @@
-const formatCoordinatePart = (coordinate: string) => {
+const formatCoordinatePart = (coordinate: string | undefined | null) => {
+  if (!coordinate) return null;
+
   // Input format: "41 deg 23' 30.53\" N"
   const regex = /(\d+)\s*deg\s*(\d+)'\s*([\d.]+)"\s*([NSEW])/;
   const match = coordinate.match(regex);
@@ -10,14 +12,19 @@ const formatCoordinatePart = (coordinate: string) => {
   return `${degrees}°${minutes}'${formattedSeconds}"${direction}`;
 };
 
-export const formatGpsCoordinates = (latitude: string, longitude: string) => {
+export const formatGpsCoordinates = (
+  latitude: string | undefined | null,
+  longitude: string | undefined | null
+) => {
   const lat = formatCoordinatePart(latitude);
   const long = formatCoordinatePart(longitude);
   if (!lat || !long) return "Unknown location";
   return `${lat} ${long}`;
 };
 
-export const parseGpsCoordinate = (coordinate: string) => {
+export const parseGpsCoordinate = (coordinate: string | undefined | null) => {
+  if (!coordinate) return null;
+
   // Input format: "41 deg 23' 30.53\" N"
   const regex = /(\d+)\s*deg\s*(\d+)'\s*([\d.]+)"\s*([NSEW])/;
   const match = coordinate.match(regex);

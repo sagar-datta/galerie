@@ -105,27 +105,25 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
                     </p>
                   </div>
                 )}
-                {image.metadata.gpsLatitude &&
-                  image.metadata.gpsLongitude &&
-                  mapsUrl && (
-                    <div className="flex-none">
-                      <h3 className="text-sm uppercase tracking-wide text-gray-400">
-                        Coordinates
-                      </h3>
-                      <a
-                        href={mapsUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-base font-mono text-[#FF685B] hover:text-[#ff8672] active:text-[#FF3420] transition-colors"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        {formatGpsCoordinates(
-                          image.metadata.gpsLatitude,
-                          image.metadata.gpsLongitude
-                        )}
-                      </a>
-                    </div>
-                  )}
+                {image.metadata.GPSLatitude && image.metadata.GPSLongitude && (
+                  <div className="flex-none">
+                    <h3 className="text-sm uppercase tracking-wide text-gray-400">
+                      Coordinates
+                    </h3>
+                    <a
+                      href={mapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-base font-mono text-[#FF685B] hover:text-[#ff8672] active:text-[#FF3420] transition-colors"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {formatGpsCoordinates(
+                        image.metadata.GPSLatitude,
+                        image.metadata.GPSLongitude
+                      )}
+                    </a>
+                  </div>
+                )}
               </>
             )}
           </div>
