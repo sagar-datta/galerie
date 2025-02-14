@@ -45,6 +45,19 @@ export const citiesMetadata: Record<string, CityMetadata> = {
       ],
     },
   },
+  vietnam: {
+    name: "vietnam",
+    displayName: "VIETNAM",
+    visitDates: {
+      season: "SUMMER",
+      year: "MMXXIII",
+      visits: [
+        {
+          month: "JUN", year: "MMXXIII"
+        }
+      ],
+    },
+  },
  
 };
 
