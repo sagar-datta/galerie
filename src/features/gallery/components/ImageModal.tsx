@@ -53,16 +53,12 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
               </p>
             </div>
           )}
-          {(image.metadata.make || image.metadata.model) && (
+          {image.metadata.model && (
             <div className="flex-none">
               <h3 className="text-sm uppercase tracking-wide text-gray-400">
                 Camera
               </h3>
-              <p className="text-base">
-                {[image.metadata.make, image.metadata.model]
-                  .filter(Boolean)
-                  .join(" ")}
-              </p>
+              <p className="text-base">{image.metadata.model}</p>
             </div>
           )}
           {image.metadata.gpsLatitude && image.metadata.gpsLongitude && (
@@ -139,7 +135,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
               </p>
             </div>
           )}
-            {image.metadata.lensModel && (
+          {image.metadata.lensModel && (
             <div className="flex-none">
               <h3 className="text-sm uppercase tracking-wide text-gray-400">
                 Lens Model

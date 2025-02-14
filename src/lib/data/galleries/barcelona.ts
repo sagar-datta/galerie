@@ -4,20 +4,20 @@ export const barcelona: CityGallery = {
   city: "Barcelona",
   images: [
   {
-    "id": "575fc8ea87e26de2fbcac6cbd5667f94",
-    "publicId": "vkh8u856zaajfqzmciws",
+    "id": "daa43a9e887d12f3f9e0396d6f727670",
+    "publicId": "qw8hy60suhtymj9evokf",
     "width": 3712,
     "height": 5568,
     "metadata": {
       "dateTaken": "2024:12:25 22:12:46",
-      "make": "NIKON CORPORATION",
       "model": "NIKON D7500",
+      "gpsLatitude": "41 deg 24' 12.96\" N",
+      "gpsLongitude": "2 deg 10' 27.59\" E",
       "exposureTime": "1/800",
       "aperture": "5.6",
       "focalLength": "210 mm",
       "iso": "100",
-      "lensModel": "Nikon AF-S DX Nikkor 18-140mm f/3.5-5.6G ED VR",
-      "caption": "Sagrada Família Tower"
+      "lensModel": "Nikon AF-S DX Nikkor 18-140mm f/3.5-5.6G ED VR"
     }
   },
   {
@@ -27,7 +27,6 @@ export const barcelona: CityGallery = {
     "height": 4032,
     "metadata": {
       "dateTaken": "2024:12:26 07:35:33",
-      "make": "Apple",
       "model": "iPhone 14 Pro Max",
       "gpsLatitude": "41 deg 24' 11.27\" N",
       "gpsLongitude": "2 deg 10' 22.24\" E",

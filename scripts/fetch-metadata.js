@@ -92,7 +92,6 @@ function extractImageMetadata(resource) {
 
   return {
     dateTaken: metadata.DateTimeOriginal,
-    make: metadata.Make,
     model: metadata.Model,
     gpsLatitude: metadata.GPSLatitude,
     gpsLongitude: metadata.GPSLongitude,
@@ -102,8 +101,6 @@ function extractImageMetadata(resource) {
     iso: metadata.ISO,
     lensModel: metadata.LensModel,
     caption: custom.caption || metadata.caption
-    ,
-   
   };
 }
 
@@ -157,7 +154,6 @@ async function getImagesInFolder(folderName, existingMetadata = new Map()) {
 
         const hasValidMetadata = existingData && (
           existingData.dateTaken ||
-          existingData.make ||
           existingData.model ||
           existingData.gpsLatitude ||
           existingData.gpsLongitude
@@ -230,7 +226,6 @@ async function buildCityImageData(folders) {
       .map((resource) => ({
         id: resource.asset_id,
         publicId: resource.public_id,
-        
         width: resource.width,
         height: resource.height,
         metadata: resource.metadata || extractImageMetadata(resource),

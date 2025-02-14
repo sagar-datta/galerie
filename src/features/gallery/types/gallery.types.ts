@@ -1,6 +1,5 @@
 export interface ImageMetadata {
   dateTaken?: string;
-  make?: string;
   model?: string;
   gpsLatitude?: string;
   gpsLongitude?: string;
@@ -11,7 +10,6 @@ export interface ImageMetadata {
   lensModel?: string;
   caption?: string;
 }
-
 
 export interface GalleryImage {
   id: string;
