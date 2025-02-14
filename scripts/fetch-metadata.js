@@ -2,61 +2,18 @@ import { v2 as cloudinary } from "cloudinary";
 import fs from "fs/promises";
 import path from "path";
 import dotenv from "dotenv";
+import { configureCloudinary } from "./utils/cloudinary.js";
+import { formatCityNames } from "./utils/formatting.js";
+import { loadExistingMetadata, extractImageMetadata, parseDateTime, sortImagesByDate } from "./utils/metadata.js";
+import { cleanupGalleryFiles, updateCitiesConstant, createGalleryFiles, updateGalleriesIndex } from "./utils/files.js";
+import { retry } from "./utils/retry.js";
 
 dotenv.config();
 
 console.log("Starting metadata fetch script...");
 
 // Configure Cloudinary
-const config = {
-  cloud_name: process.env.VITE_CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.VITE_CLOUDINARY_API_KEY,
-  api_secret: process.env.VITE_CLOUDINARY_API_SECRET,
-};
-
-console.log("Using Cloudinary config:", {
-  cloud_name: config.cloud_name,
-  api_key: config.api_key ? "present" : "missing",
-  api_secret: config.api_secret ? "present" : "missing",
-});
-
-cloudinary.config(config);
-
-// Retry utility function
-async function retry(fn, retries = 3, delay = 2000) {
-  let lastError;
-
-  for (let i = 0; i < retries; i++) {
-    try {
-      return await fn();
-    } catch (error) {
-      lastError = error;
-      console.log(`Attempt ${i + 1} failed, retrying in ${delay}ms...`);
-      await new Promise((resolve) => setTimeout(resolve, delay));
-    }
-  }
-
-  throw lastError;
-}
-
-function formatCityNames(folders) {
-  return folders.map((folder) => {
-    // Convert to title case format for display
-    const titleCase = folder
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(" ");
-
-    return {
-      display: titleCase, // For display (e.g., "New York")
-      file: titleCase.toLowerCase().replace(/\s+/g, "-"), // For filenames - lowercase with hyphens (e.g., "new-york")
-      variable: titleCase.toLowerCase().replace(/\s+/g, ""), // For variable names (e.g., "newyork")
-      constant: folder.toUpperCase().replace(/\s+/g, "_"), // For cities ticker constant (e.g., "NEW_YORK")
-      key: folder.toUpperCase().replace(/\s+/g, "_"), // For object keys (e.g., "NEW_YORK")
-      original: folder, // Keep original folder name for Cloudinary queries
-    };
-  });
-}
+configureCloudinary();
 
 async function getFolders() {
   try {
@@ -83,46 +40,6 @@ async function getFolders() {
       "Tokyo",
     ]);
   }
-}
-
-function extractImageMetadata(resource) {
-  const metadata = resource.image_metadata || {};
-  const context = resource.context || {};
-  const custom = context.custom || {};
-
-  return {
-    dateTaken: metadata.DateTimeOriginal,
-    model: metadata.Model,
-    gpsLatitude: metadata.GPSLatitude,
-    gpsLongitude: metadata.GPSLongitude,
-    exposureTime: metadata.ExposureTime,
-    aperture: metadata.FNumber,
-    focalLength: metadata.FocalLengthIn35mmFormat,
-    iso: metadata.ISO,
-    lensModel: metadata.LensModel,
-    caption: custom.caption || metadata.caption
-  };
-}
-
-async function loadExistingMetadata(folder) {
-  const galleryDir = "./src/lib/data/galleries";
-  const filePath = path.join(galleryDir, `${folder.file}.ts`);
-
-  try {
-    const content = await fs.readFile(filePath, 'utf-8');
-    // Extract the images array from the file content using regex
-    const match = content.match(/images:\s*(\[[\s\S]*?\])/);
-    if (match) {
-      const imagesJson = match[1];
-      const images = JSON.parse(imagesJson);
-      // Create a map of public_id to metadata
-      return new Map(images.map(img => [img.publicId, img.metadata]));
-    }
-  } catch (error) {
-    // File doesn't exist or can't be parsed, return empty map
-    return new Map();
-  }
-  return new Map();
 }
 
 async function getImagesInFolder(folderName, existingMetadata = new Map()) {
@@ -185,12 +102,6 @@ async function getImagesInFolder(folderName, existingMetadata = new Map()) {
                 })
             );
 
-            // Log all metadata to see available fields
-            console.log('Full metadata for', resource.public_id, ':');
-            console.log('EXIF:', JSON.stringify(detailedResource.exif, null, 2));
-            console.log('Image Metadata:', JSON.stringify(detailedResource.image_metadata, null, 2));
-            console.log('Context:', JSON.stringify(detailedResource.context, null, 2));
-
             images.push({
               ...resource,
               metadata: extractImageMetadata(detailedResource)
@@ -216,23 +127,6 @@ async function getImagesInFolder(folderName, existingMetadata = new Map()) {
   return images;
 }
 
-function parseDateTime(dateTimeStr) {
-  if (!dateTimeStr) return new Date(0); // Return earliest possible date if no date provided
-  
-  // Input format from Cloudinary: "YYYY:MM:DD HH:mm:ss"
-  const [date, time] = dateTimeStr.split(" ");
-  const [year, month, day] = date.split(":");
-  
-  // Create a date object (convert to YYYY-MM-DD format for Date constructor)
-  return new Date(`${year}-${month}-${day}T${time}`);
-}
-
-function sortImagesByDate(images) {
-  return images.sort((a, b) => {
-    return parseDateTime(a.metadata?.dateTaken) - parseDateTime(b.metadata?.dateTaken);
-  });
-}
-
 async function buildCityImageData(folders) {
   const cityImageData = {};
 
@@ -256,120 +150,6 @@ async function buildCityImageData(folders) {
   }
 
   return cityImageData;
-}
-
-async function cleanupGalleryFiles() {
-  const galleryDir = "./src/lib/data/galleries";
-  console.log("\nCleaning up existing gallery files...");
-
-  try {
-    const files = await fs.readdir(galleryDir);
-    for (const file of files) {
-      if (file !== "index.ts" && file.endsWith(".ts")) {
-        await fs.unlink(path.join(galleryDir, file));
-        console.log(`Deleted ${file}`);
-      }
-    }
-    console.log("Cleanup completed");
-  } catch (error) {
-    console.error("Error during cleanup:", error);
-    throw error;
-  }
-}
-
-async function updateCitiesConstant(folders) {
-  const citiesPath = "./src/features/cities/constants/ticker.ts";
-  console.log(`\nUpdating cities constant at ${citiesPath}`);
-
-  try {
-    // Create new content for ticker.ts
-    const content = `export const CITIES = ${JSON.stringify(
-      folders.map((f) => f.constant),
-      null,
-      2
-    )};
-
-export const TICKER_CONFIG = {
-  MIN_ROW_HEIGHT: 120,
-  ROW_MARGIN: 32,
-  DUPLICATE_COUNT: 200,
-  SAFETY_BUFFER: 20,
-  BOTTOM_MARGIN: 80,
-} as const;
-`;
-
-    await fs.writeFile(citiesPath, content, "utf-8");
-    console.log("Successfully updated cities constant");
-  } catch (error) {
-    console.error("Error updating cities constant:", error);
-    throw error;
-  }
-}
-
-async function createGalleryFiles(folders, cityImageData) {
-  const galleryDir = "./src/lib/data/galleries";
-
-  for (const folder of folders) {
-    const fileName = `${folder.file}.ts`;
-    const filePath = path.join(galleryDir, fileName);
-
-    console.log(`\nCreating gallery file for ${folder.display} at ${filePath}`);
-
-    try {
-      const images = cityImageData[folder.key] || [];
-
-      // Create gallery object with proper typing
-      const content = `import { CityGallery } from "../../../features/gallery/types/gallery.types";
-
-export const ${folder.variable}: CityGallery = {
-  city: "${folder.display}",
-  images: ${JSON.stringify(images, null, 2)}
-};
-`;
-
-      await fs.writeFile(filePath, content, "utf-8");
-      console.log(`Successfully created gallery file for ${folder.display}`);
-    } catch (error) {
-      console.error(
-        `Error creating gallery file for ${folder.display}:`,
-        error
-      );
-      throw error;
-    }
-  }
-}
-
-async function updateGalleriesIndex(folders) {
-  const indexPath = "./src/lib/data/galleries/index.ts";
-  console.log(`\nUpdating galleries index at ${indexPath}`);
-
-  try {
-    // Create import statements
-    const imports = folders
-      .map((folder) => `import { ${folder.variable} } from "./${folder.file}";`)
-      .join("\n");
-
-    // Create exports object with consistent formatting
-    const content = `import { CityGallery } from "../../../features/gallery/types/gallery.types";
-
-// Import individual gallery files
-${imports}
-
-// Export individual galleries
-export { ${folders.map((f) => f.variable).join(", ")} };
-
-// Export cityGalleries map
-export const cityGalleries: Record<string, CityGallery> = {
-${folders.map((f) => `  ${f.key}: ${f.variable},`).join("\n")}
-};
-`;
-
-    await fs.writeFile(indexPath, content, "utf-8");
-    console.log("Successfully updated galleries index");
-  } catch (error) {
-    console.error("Error updating galleries index:", error);
-    throw error;
-  }
 }
 
 // Main execution
