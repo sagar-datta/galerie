@@ -71,7 +71,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
               </p>
             </div>
           )}
-          {image.metadata.GPSLatitude && image.metadata.GPSLongitude && (
+          {image.metadata.gpsLatitude && image.metadata.gpsLongitude && (
             <div className="flex-none">
               <h3 className="text-sm uppercase tracking-wide text-gray-400">
                 Location
@@ -84,8 +84,8 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
                 onClick={(e) => e.stopPropagation()}
               >
                 {formatGpsCoordinates(
-                  image.metadata.GPSLatitude,
-                  image.metadata.GPSLongitude
+                  image.metadata.gpsLatitude,
+                  image.metadata.gpsLongitude
                 )}
               </a>
             </div>
@@ -103,14 +103,14 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
     >
       {image.metadata && (
         <>
-          {image.metadata.exposure_time && (
+          {image.metadata.exposureTime && (
             <div className="flex-none">
               <h3 className="text-sm uppercase tracking-wide text-gray-400">
                 Shutter Speed
               </h3>
               <p className="text-base">
                 <span className="font-mono">
-                  {image.metadata.exposure_time}s
+                  {image.metadata.exposureTime}s
                 </span>
               </p>
             </div>
@@ -125,13 +125,23 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
               </p>
             </div>
           )}
-          {image.metadata.focal_length && (
+          {image.metadata.focalLength && (
             <div className="flex-none">
               <h3 className="text-sm uppercase tracking-wide text-gray-400">
                 Focal Length
               </h3>
               <p className="text-base">
-                <span className="font-mono">{image.metadata.focal_length}</span>
+                <span className="font-mono">{image.metadata.focalLength}</span>
+              </p>
+            </div>
+          )}
+          {image.metadata.lensModel && (
+            <div className="flex-none">
+              <h3 className="text-sm uppercase tracking-wide text-gray-400">
+                Lens Model
+              </h3>
+              <p className="text-base">
+                <span className="font-mono">{image.metadata.lensModel}</span>
               </p>
             </div>
           )}

@@ -13,12 +13,13 @@ export const barcelona: CityGallery = {
         "dateTaken": "2024:12:26 07:35:33",
         "make": "Apple",
         "model": "iPhone 14 Pro Max",
-        "GPSLatitude": "41 deg 24' 11.27\" N",
-        "GPSLongitude": "2 deg 10' 22.24\" E",
-        "exposure_time": "1/20",
+        "gpsLatitude": "41 deg 24' 11.27\" N",
+        "gpsLongitude": "2 deg 10' 22.24\" E",
+        "exposureTime": "1/20",
         "aperture": "1.8",
-        "focal_length": "6.9 mm",
-        "iso": "1600"
+        "focalLength": "24 mm",
+        "iso": "1600",
+        "lensModel": "iPhone 14 Pro Max back triple camera 6.86mm f/1.78"
       }
     }
   ]

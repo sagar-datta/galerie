@@ -38,14 +38,14 @@ export function useImageModal({
   const cursorStyle = useMemo(() => calculateCursorStyle(city), [city]);
 
   const mapsUrl = useMemo(() => {
-    if (!image?.metadata?.GPSLatitude || !image?.metadata?.GPSLongitude) {
+    if (!image?.metadata?.gpsLatitude || !image?.metadata?.gpsLongitude) {
       return undefined;
     }
     return getGoogleMapsUrl(
-      image.metadata.GPSLatitude,
-      image.metadata.GPSLongitude
+      image.metadata.gpsLatitude,
+      image.metadata.gpsLongitude
     );
-  }, [image?.metadata?.GPSLatitude, image?.metadata?.GPSLongitude]);
+  }, [image?.metadata?.gpsLatitude, image?.metadata?.gpsLongitude]);
 
   return {
     isFullscreen,

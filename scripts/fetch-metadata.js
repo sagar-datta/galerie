@@ -40,12 +40,13 @@ async function fetchImageMetadata(publicId) {
       dateTaken: metadata.DateTimeOriginal || metadata.CreateDate,
       make: metadata.Make,
       model: metadata.Model,
-      GPSLatitude: metadata.GPSLatitude,
-      GPSLongitude: metadata.GPSLongitude,
-      exposure_time: metadata.ExposureTime,
+      gpsLatitude: metadata.GPSLatitude,
+      gpsLongitude: metadata.GPSLongitude,
+      exposureTime: metadata.ExposureTime,
       aperture: metadata.FNumber,
-      focal_length: metadata.FocalLength,
+      focalLength: metadata.FocalLengthIn35mmFormat,
       iso: metadata.ISO?.toString(),
+      lensModel: metadata.LensModel,
     };
   } catch (error) {
     console.error("Error fetching metadata:", error);
