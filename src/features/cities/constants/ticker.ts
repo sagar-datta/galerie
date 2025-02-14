@@ -1,6 +1,7 @@
 export const CITIES = [
   "BARCELONA",
-  "PARIS"
+  "HA_LONG_BAY",
+  "HANOI"
 ];
 
 export const TICKER_CONFIG = {

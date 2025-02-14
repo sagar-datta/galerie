@@ -1,6 +1,7 @@
 import { memo, MouseEvent } from "react";
 import { GalleryImage } from "../types/gallery.types";
 import { useImageModal } from "../hooks";
+import { useProgressiveImage } from "../hooks/useProgressiveImage";
 import {
   getCloudinaryUrl,
   formatDateTime,
@@ -14,6 +15,7 @@ interface ImageModalProps {
 }
 
 export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
+  const { currentSrc } = useProgressiveImage(image?.publicId || "");
   const { isFullscreen, cursorStyle, mapsUrl, toggleFullscreen } =
     useImageModal({
       image,
@@ -195,12 +197,14 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
                 onClick={(e) => e.stopPropagation()}
               >
                 <img
-                  src={getCloudinaryUrl(encodeURIComponent(image.publicId), {
-                    width: 1600,
-                    priority: true
-                  })}
+                  src={currentSrc}
                   alt={image.metadata?.caption || `Photo from ${city}`}
-                  className="max-w-[calc(100vw-4rem)] max-h-[calc(100vh-14rem)] w-auto h-auto object-contain select-none"
+                  className={`
+                    max-w-[calc(100vw-4rem)] 
+                    max-h-[calc(100vh-14rem)] 
+                    w-auto h-auto 
+                    object-contain select-none
+                  `}
                   onClick={handleImageClick}
                   onDragStart={(e) => e.preventDefault()}
                   style={{ cursor: "zoom-in" }}
