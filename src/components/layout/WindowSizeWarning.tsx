@@ -8,8 +8,8 @@ export const WindowSizeWarning: FC = () => {
           Screen Size Not Supported
         </h2>
         <p className="text-xl text-gray-600">
-          This photo gallery is designed for desktop and laptop screens.
-          Please view on a larger device for the best experience.
+          This photo gallery requires a minimum screen size of 960x410 pixels.
+          Please view on a larger device or resize your window for the best experience.
         </p>
       </div>
     </div>

@@ -13,9 +13,8 @@
   color: #374151;
 }
 
-/* Show warning and hide main content below specific width */
-/* Temporarily disabled for width testing
-@media (max-width: 1024px) {
+/* Show warning and hide main content below 960px width OR 410px height */
+@media (max-width: 960px), (max-height: 410px) {
   .window-size-warning {
     display: flex !important;
     flex-direction: column;
@@ -27,4 +26,3 @@
     display: none !important;
   }
 }
-*/
