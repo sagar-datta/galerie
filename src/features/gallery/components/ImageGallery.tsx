@@ -112,7 +112,7 @@ export function ImageGallery({
                       mediumQuality: true,
                       priority: rowIndex === 0 && imageIndex < 2,
                     })}
-                    alt={image.caption || `Photo from ${city}`}
+                    alt={image.metadata?.caption || `Photo from ${city}`}
                     className={`gallery-image w-full h-full object-cover transition-opacity duration-300 blur-up ${
                       loadedStates[image.id] >= 1
                         ? "opacity-100 loaded"
@@ -129,7 +129,7 @@ export function ImageGallery({
                     src={getCloudinaryUrl(encodeURIComponent(image.publicId), {
                       priority: rowIndex === 0 && imageIndex < 2,
                     })}
-                    alt={image.caption || `Photo from ${city}`}
+                    alt={image.metadata?.caption || `Photo from ${city}`}
                     className={`gallery-image absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
                       loadedStates[image.id] === 2 ? "opacity-100" : "opacity-0"
                     }`}

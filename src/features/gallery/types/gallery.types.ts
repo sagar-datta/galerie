@@ -10,15 +10,12 @@ export interface ImageMetadata {
   iso?: string;
   lensModel?: string;
   caption?: string;
-
 }
 
 
 export interface GalleryImage {
-  caption: string;
   id: string;
   publicId: string;
-
   width: number;
   height: number;
   metadata?: ImageMetadata;

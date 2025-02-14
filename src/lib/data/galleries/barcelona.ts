@@ -4,6 +4,23 @@ export const barcelona: CityGallery = {
   city: "Barcelona",
   images: [
   {
+    "id": "575fc8ea87e26de2fbcac6cbd5667f94",
+    "publicId": "vkh8u856zaajfqzmciws",
+    "width": 3712,
+    "height": 5568,
+    "metadata": {
+      "dateTaken": "2024:12:25 22:12:46",
+      "make": "NIKON CORPORATION",
+      "model": "NIKON D7500",
+      "exposureTime": "1/800",
+      "aperture": "5.6",
+      "focalLength": "210 mm",
+      "iso": "100",
+      "lensModel": "Nikon AF-S DX Nikkor 18-140mm f/3.5-5.6G ED VR",
+      "caption": "Sagrada Família Tower"
+    }
+  },
+  {
     "id": "5c5f57a47f7d35915e2c59679ebc83d0",
     "publicId": "sxcpt2godvbkdy7jywqt",
     "width": 3024,
@@ -19,7 +36,7 @@ export const barcelona: CityGallery = {
       "focalLength": "24 mm",
       "iso": "1600",
       "lensModel": "iPhone 14 Pro Max back triple camera 6.86mm f/1.78",
-      "caption": "Sagrada Família at Night"
+      "caption": "Sagrada Família Early Morning"
     }
   }
 ]
