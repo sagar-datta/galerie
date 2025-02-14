@@ -224,6 +224,23 @@ async function getImagesInFolder(folderName, existingMetadata = new Map()) {
   return images;
 }
 
+function parseDateTime(dateTimeStr) {
+  if (!dateTimeStr) return new Date(0); // Return earliest possible date if no date provided
+  
+  // Input format from Cloudinary: "YYYY:MM:DD HH:mm:ss"
+  const [date, time] = dateTimeStr.split(" ");
+  const [year, month, day] = date.split(":");
+  
+  // Create a date object (convert to YYYY-MM-DD format for Date constructor)
+  return new Date(`${year}-${month}-${day}T${time}`);
+}
+
+function sortImagesByDate(images) {
+  return images.sort((a, b) => {
+    return parseDateTime(a.metadata?.dateTaken) - parseDateTime(b.metadata?.dateTaken);
+  });
+}
+
 async function buildCityImageData(folders) {
   const cityImageData = {};
 
@@ -233,7 +250,9 @@ async function buildCityImageData(folders) {
     console.log(`Loaded ${existingMetadata.size} existing metadata entries for ${folder.display}`);
 
     const images = await getImagesInFolder(folder.original, existingMetadata);
-    cityImageData[folder.key] = images
+    // Sort images by date taken before processing
+    const sortedImages = sortImagesByDate(images);
+    cityImageData[folder.key] = sortedImages
       .filter((image) => image.asset_folder === folder.original)
       .map((resource) => ({
         id: resource.asset_id,
