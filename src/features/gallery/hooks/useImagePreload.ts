@@ -28,6 +28,7 @@ export function useImagePreload(images: GalleryImage[]) {
       const mediumLink = document.createElement("link");
       mediumLink.rel = "preload";
       mediumLink.as = "image";
+      mediumLink.fetchPriority = index < 2 ? "high" : "low";
       mediumLink.href = getCloudinaryUrl(image.publicId, {
         mediumQuality: true,
         priority: true,
@@ -40,6 +41,7 @@ export function useImagePreload(images: GalleryImage[]) {
         const fullLink = document.createElement("link");
         fullLink.rel = "preload";
         fullLink.as = "image";
+        fullLink.fetchPriority = "high";
         fullLink.href = getCloudinaryUrl(image.publicId, { priority: true });
         document.head.appendChild(fullLink);
         links.push(fullLink);
