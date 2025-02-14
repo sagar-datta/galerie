@@ -40,34 +40,40 @@ This inspiration ties the gallery to the rich history of Swiss typography while 
 
 ```
 src/
-├── assets/                    # Static assets and styles
+├── assets/                  # Static assets and styles
 │   └── styles/                 
-│       ├── animations/        # Keyframe animations
-│       ├── base/              # Reset, variables, window-size
-│       └── components/        # Component-specific styles
-├── components/                # Shared components
-│   └── layout/                # Layout components
-├── features/                  # Feature-based modules
-│   ├── cities/                # Cities feature
-│   │   ├── components/        # CitiesTicker, SelectedCity
-│   │   ├── constants/         # Ticker and UI constants
-│   │   ├── hooks/             # Animation and responsive hooks
-│   │   ├── types/             # Type definitions
-│   │   └── utils/             # Coordinates, formatting, image
-│   └── gallery/               # Gallery feature
-│       ├── components/        # ImageGallery, ImageModal
-│       ├── constants/         # Gallery constants
-│       ├── hooks/             # Gallery and image hooks
-│       ├── types/             # Gallery types
-│       └── utils/             # Layout, date, and image utils
-├── lib/                       # Shared libraries
-│   ├── cloudinary/            # Cloudinary integration
-│   ├── data/                  # Application data
-│   │   ├── galleries/         # City-specific galleries
-│   │   └── metadata/          # Cities metadata
-│   └── maps/                  # Maps integration
-└── scripts/                   # Utility scripts
-    └── fetch-metadata.js      # Metadata fetching utility
+│       ├── animations/      # Keyframe animations
+│       ├── base/            # Reset, variables, window-size
+│       └── components/      # Component-specific styles
+├── components/              # Shared components
+│   └── layout/              # Layout components
+├── features/                # Feature-based modules
+│   ├── cities/              # Cities feature
+│   │   ├── components/      # CitiesTicker, SelectedCity
+│   │   ├── constants/       # Ticker and UI constants
+│   │   ├── hooks/           # Animation and responsive hooks
+│   │   ├── types/           # Type definitions
+│   │   └── utils/           # Coordinates, formatting, image
+│   └── gallery/             # Gallery feature
+│       ├── components/      # ImageGallery, ImageModal
+│       ├── constants/       # Gallery constants
+│       ├── hooks/           # Gallery and image hooks
+│       ├── types/           # Gallery types
+│       └── utils/           # Layout, date, and image utils
+├── lib/                     # Shared libraries
+│   ├── cloudinary/          # Cloudinary integration
+│   ├── data/                # Application data
+│   │   ├── galleries/       # City-specific galleries
+│   │   └── metadata/        # Cities metadata
+│   └── maps/                # Maps integration
+└── scripts/                 # Utility scripts
+    ├── fetch-metadata.js    # Main metadata fetching script
+    └── utils/               # Script utilities
+        ├── cloudinary.js    # Cloudinary configuration
+        ├── files.js         # File system operations
+        ├── formatting.js    # City name formatting
+        ├── metadata.js      # Metadata processing
+        └── retry.js         # Operation retry utilities
 ```
 
 ## 🎨 Creating Your Own Gallery
@@ -153,7 +159,7 @@ The built files will be in the `dist` directory.
 
 ### 🌍 Adding New Cities
 
-The gallery uses an automated system to manage cities and their images:
+The gallery uses an automated system to manage cities and their images through a modular metadata fetching script:
 
 1. Create a new folder in your Cloudinary account with the city name
 2. Upload your images to the city folder in Cloudinary
@@ -163,7 +169,14 @@ The gallery uses an automated system to manage cities and their images:
    ```bash
    node scripts/fetch-metadata.js
    ```
-   This script will:
+   The script is organised into modular utilities:
+   - `cloudinary.js`: Handles Cloudinary API configuration
+   - `metadata.js`: Processes image metadata
+   - `formatting.js`: Manages city name formatting
+   - `files.js`: Handles file system operations
+   - `retry.js`: Provides operation retry capabilities
+
+   The script will:
    - Scan your Cloudinary folders to find cities
    - Create gallery data for each city
    - Extract and organise image metadata
