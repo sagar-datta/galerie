@@ -3,23 +3,30 @@ interface MonthYear {
   year: string;
 }
 
-interface CityVisitDates {
+interface CityVisit {
+  type: "city";
   season: string;
   year: string;
   visits: MonthYear[];
 }
 
-interface CityMetadata {
-  name: string;
-  displayName: string;
-  visitDates: CityVisitDates;
+interface Collection {
+  type: "collection";
+  description: string;
 }
 
-export const citiesMetadata: Record<string, CityMetadata> = {
+type GalleryMetadata = {
+  name: string;
+  displayName: string;
+  metadata: CityVisit | Collection;
+}
+
+export const citiesMetadata: Record<string, GalleryMetadata> = {
   barcelona: {
     name: "barcelona",
     displayName: "BARCELONA",
-    visitDates: {
+    metadata: {
+      type: "city",
       season: "WINTER",
       year: "MMXXIV-V",
       visits: [
@@ -35,7 +42,8 @@ export const citiesMetadata: Record<string, CityMetadata> = {
   nullarbor: {
     name: "nullarbor",
     displayName: "NULLARBOR",
-    visitDates: {
+    metadata: {
+      type: "city",
       season: "SUMMER",
       year: "MMXXIII",
       visits: [
@@ -48,7 +56,8 @@ export const citiesMetadata: Record<string, CityMetadata> = {
   vietnam: {
     name: "vietnam",
     displayName: "VIETNAM",
-    visitDates: {
+    metadata: {
+      type: "city",
       season: "SUMMER",
       year: "MMXXIII",
       visits: [
@@ -61,7 +70,8 @@ export const citiesMetadata: Record<string, CityMetadata> = {
   andalusia: {
     name: "andalusia",
     displayName: "ANDALUSIA",
-    visitDates: {
+    metadata: {
+      type: "city",
       season: "WINTER",
       year: "MMXXIV-V",
       visits: [
@@ -73,7 +83,8 @@ export const citiesMetadata: Record<string, CityMetadata> = {
   portugal: {
     name: "portugal",
     displayName: "PORTUGAL",
-    visitDates: {
+    metadata: {
+      type: "city",
       season: "WINTER",
       year: "MMXXV",
       visits: [
@@ -81,13 +92,25 @@ export const citiesMetadata: Record<string, CityMetadata> = {
       ],
     },
   },
- 
+  paintings: {
+    name: "paintings",
+    displayName: "PAINTINGS",
+    metadata: {
+      type: "collection",
+      description: "Assortment of photographed paintings",
+    },
+  },
 };
 
 export const formatVisitDates = (city: string): string => {
   const metadata = citiesMetadata[city.toLowerCase()];
   if (!metadata) return "VISIT DATES TO BE ANNOUNCED";
 
-  const { season, visits } = metadata.visitDates;
-  return `${season}  ·  ${visits.map(v => `${v.month} ${v.year}`).join("  ·  ")}`;
+  const data = metadata.metadata;
+  switch (data.type) {
+    case "city":
+      return `${data.season}  ·  ${data.visits.map(v => `${v.month} ${v.year}`).join("  ·  ")}`;
+    case "collection":
+      return data.description;
+  }
 };
