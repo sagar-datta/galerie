@@ -8,9 +8,12 @@
   height: 100vh;
   background-color: #fff;
   z-index: 9999;
-  padding: 2rem;
   text-align: center;
   color: #374151;
+  box-sizing: border-box;
+  padding: calc(2rem + 10px); /* 2rem padding + 10px for border */
+  max-height: 100vh;
+  overflow-y: auto;
 }
 
 /* Show warning and hide main content below 960px width OR 410px height */

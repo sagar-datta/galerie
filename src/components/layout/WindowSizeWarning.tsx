@@ -45,9 +45,13 @@ export const WindowSizeWarning: FC = () => {
   return (
     <div 
       className="window-size-warning"
-      style={{ backgroundColor: COLORS.beige, border: `10px solid ${COLORS.coral}` }}
+      style={{ 
+        backgroundColor: COLORS.beige, 
+        border: `10px solid ${COLORS.coral}`,
+        minHeight: '100vh'
+      }}
     >
-      <div className="max-w-md mx-auto">
+      <div className="max-w-md mx-auto w-full">
         <h2 
           className="font-bold mb-6"
           style={{ 
