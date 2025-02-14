@@ -185,7 +185,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
               >
                 <img
                   src={getCloudinaryUrl(encodeURIComponent(image.publicId), {
-                    width: 2048,
+                    width: 1600,
                     priority: true
                   })}
                   alt={image.metadata?.caption || `Photo from ${city}`}
