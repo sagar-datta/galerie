@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { CitiesTicker } from "./features/cities/components/CitiesTicker";
 import { MainFooter } from "./components/layout/MainFooter";
 import { SelectedCity } from "./features/cities/components/SelectedCity";
+import { WindowSizeWarning } from "./components/layout/WindowSizeWarning";
 import {
   BrowserRouter,
   Routes,
@@ -25,6 +26,7 @@ const basePath = import.meta.env.PROD ? "/galerie" : "";
 function App() {
   return (
     <div className="app-wrapper">
+      <WindowSizeWarning />
       <BrowserRouter basename={basePath}>
         <Routes>
           <Route path="/" element={<MainApp />} />

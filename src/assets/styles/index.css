@@ -3,6 +3,7 @@
 /* Base styles */
 @import "./base/variables.css";
 @import "./base/reset.css";
+@import "./base/window-size.css";
 
 /* Animations */
 @import "./animations/keyframes.css";

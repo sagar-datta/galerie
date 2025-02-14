@@ -1,0 +1,30 @@
+/* Hide warning by default */
+.window-size-warning {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #fff;
+  z-index: 9999;
+  padding: 2rem;
+  text-align: center;
+  color: #374151;
+}
+
+/* Show warning and hide main content below specific width */
+/* Temporarily disabled for width testing
+@media (max-width: 1024px) {
+  .window-size-warning {
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .app-wrapper > *:not(.window-size-warning) {
+    display: none !important;
+  }
+}
+*/

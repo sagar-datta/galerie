@@ -162,7 +162,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
         {!isFullscreen && (
           <TopMetadataPanel className="border-b border-[#272727]" />
         )}
-        <div className="flex-1 flex items-center justify-center">
+        <div className="flex-1 overflow-hidden flex items-center justify-center">
           {isFullscreen ? (
             <div className="w-screen h-screen flex items-center justify-center">
               <img
@@ -178,7 +178,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
               />
             </div>
           ) : (
-            <div className="p-8 flex items-center justify-center">
+            <div className="py-8 px-8 max-h-full flex items-center justify-center">
               <div
                 className="cursor-default border-15 border-[#EBE9D1]"
                 onClick={(e) => e.stopPropagation()}
@@ -186,7 +186,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
                 <img
                   src={getCloudinaryUrl(encodeURIComponent(image.publicId))}
                   alt={image.metadata?.caption || `Photo from ${city}`}
-                  className="max-h-[calc(100vh-16rem)] w-auto max-w-[95vw] object-contain select-none"
+                  className="max-w-[calc(100vw-4rem)] max-h-[calc(100vh-20rem)] w-auto h-auto object-contain select-none"
                   onClick={handleImageClick}
                   onDragStart={(e) => e.preventDefault()}
                   style={{ cursor: "zoom-in" }}
