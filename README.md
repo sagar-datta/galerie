@@ -7,28 +7,32 @@ A modern, responsive photo gallery application showcasing photos I have taken ov
 The design of this gallery is inspired by the specimen of Neue Helvetica shown in the [Helvetica Wikipedia page](https://upload.wikimedia.org/wikipedia/commons/2/28/HelveticaSpecimenCH.svg). Created in January 2008, this public domain specimen has influenced:
 
 - Typography: Heavy use of Helvetica font family
-- Color Palette: Clean, minimal colors based on the specimen
-- Layout Structure: Grid-based organization reminiscent of type specimens
+- Colour Palette: Clean, minimal colours based on the specimen
+- Layout Structure: Grid-based organisation reminiscent of type specimens
 - Visual Hierarchy: Clear, structured presentation of information
 
 This inspiration ties the gallery to the rich history of Swiss typography while providing a clean, modern presentation for photography.
 
 ## ✨ Features
 
-- **🖼️ Dynamic Image Gallery**: Responsive grid layout with modal view for detailed image viewing
-- **🏃‍♂️ Cities Ticker**: Interactive horizontal ticker displaying available cities
-- **🏙️ City Selection**: Animated city selection with smooth transitions
-- **📱 Responsive Design**: Seamless experience across desktop and mobile devices
-- **🎞️ Image Loading**: Progressive image loading with blur-up effect
-- **🗺️ Location Data**: Integration with Google Maps for location information
-- **📷 Image Metadata**: Display of associated image information (camera details, date taken, location)
+- **🖼️ Dynamic Image Gallery**: Responsive grid layout with advanced modal view for detailed image viewing
+- **🏃‍♂️ Cities Ticker**: Interactive horizontal ticker with responsive animations and smooth transitions
+- **🏙️ City Selection**: Dynamic city selection with coordinate-based animations and map integration
+- **📱 Responsive Design**: Adaptive layout with window size warnings and mobile optimisations
+- **🎞️ Image Loading**: Progressive image loading with blur-up effect and preloading system
+- **🗺️ Location Data**: Rich location data integration with coordinates and mapping utilities
+- **📷 Image Metadata**: Comprehensive metadata display with date formatting and gallery organisation
 
 ## 🛠️ Tech Stack
 
 - **⚛️ Framework**: React with TypeScript
 - **⚡ Build Tool**: Vite
-- **🎨 Styling**: Tailwind CSS with custom animations
-- **☁️ Image Hosting**: Cloudinary for optimized image delivery
+- **🎨 Styling**: 
+  - Tailwind CSS for utility classes
+  - Custom CSS modules for complex animations
+  - Keyframe animations for smooth transitions
+  - Base style variables for consistent theming
+- **☁️ Image Hosting**: Cloudinary with progressive loading strategy
 - **🔍 Development**: ESLint for code quality
 - **🚀 Deployment**: GitHub Actions + GitHub Pages
 
@@ -36,28 +40,34 @@ This inspiration ties the gallery to the rich history of Swiss typography while 
 
 ```
 src/
-├── assets/                     # Static assets and styles
-│   └── styles/                 # Global styles and animations
-├── components/                 # Shared components
-│   └── layout/                 # Layout components
-├── features/                   # Feature-based modules
-│   ├── cities/                 # Cities feature
-│   │   ├── components/
-│   │   ├── hooks/
-│   │   ├── utils/
-│   │   └── types/
-│   └── gallery/                # Gallery feature
-│       ├── components/
-│       ├── hooks/
-│       ├── utils/
-│       └── types/
-├── lib/                        # Shared libraries and data
-│   ├── cloudinary/             # Cloudinary integration
-│   ├── maps/                   # Google Maps integration
-│   └── data/                   # Application data
-│       ├── galleries/
-│       └── metadata/
-└── types/                      # Global type definitions
+├── assets/                    # Static assets and styles
+│   └── styles/                 
+│       ├── animations/        # Keyframe animations
+│       ├── base/              # Reset, variables, window-size
+│       └── components/        # Component-specific styles
+├── components/                # Shared components
+│   └── layout/                # Layout components
+├── features/                  # Feature-based modules
+│   ├── cities/                # Cities feature
+│   │   ├── components/        # CitiesTicker, SelectedCity
+│   │   ├── constants/         # Ticker and UI constants
+│   │   ├── hooks/             # Animation and responsive hooks
+│   │   ├── types/             # Type definitions
+│   │   └── utils/             # Coordinates, formatting, image
+│   └── gallery/               # Gallery feature
+│       ├── components/        # ImageGallery, ImageModal
+│       ├── constants/         # Gallery constants
+│       ├── hooks/             # Gallery and image hooks
+│       ├── types/             # Gallery types
+│       └── utils/             # Layout, date, and image utils
+├── lib/                       # Shared libraries
+│   ├── cloudinary/            # Cloudinary integration
+│   ├── data/                  # Application data
+│   │   ├── galleries/         # City-specific galleries
+│   │   └── metadata/          # Cities metadata
+│   └── maps/                  # Maps integration
+└── scripts/                   # Utility scripts
+    └── fetch-metadata.js      # Metadata fetching utility
 ```
 
 ## 🎨 Creating Your Own Gallery
@@ -67,9 +77,10 @@ To create your own version of this gallery:
 1. Fork or clone this repository
 2. Set up your own Cloudinary account for image hosting
 3. Configure environment variables
-4. Update the galleries in `src/lib/data/galleries/` with your own images
-5. Customize the styling and branding to match your preferences
-6. Deploy to your preferred hosting platform (e.g., GitHub Pages)
+4. Create folders in Cloudinary for each city
+5. Upload images to the corresponding city folders
+6. Run the metadata fetch script to automatically generate gallery data
+7. Customise the styling and branding to match your preferences
 
 ### 📋 Prerequisites
 
@@ -83,8 +94,12 @@ Create a `.env` file in the root directory:
 
 ```env
 VITE_CLOUDINARY_CLOUD_NAME=your_cloud_name
+VITE_CLOUDINARY_API_KEY=your_api_key
+VITE_CLOUDINARY_API_SECRET=your_api_secret
 VITE_CLOUDINARY_UPLOAD_PRESET=your_upload_preset
 ```
+
+These values can be found in your Cloudinary dashboard under Settings > Access Keys. The API key and secret are required for the metadata fetch script to access your Cloudinary account.
 
 ### 💻 Installation
 
@@ -120,30 +135,61 @@ The built files will be in the `dist` directory.
 ## 📝 Development Guidelines
 
 - Follow the feature-based project structure
-- Maintain type safety with TypeScript
-- Use Tailwind CSS for styling with custom CSS when needed
-- Follow React best practices and functional programming patterns
-- Ensure components are responsive and accessible
-- Use custom hooks for complex state management
+- Use custom hooks for complex functionality:
+  - `useImagePreload` for image loading management
+  - `useProgressiveImage` for blur-up effect
+  - `useLoadedStates` for loading state tracking
+  - `useImageModal` for modal interactions
+  - `useTickerAnimation` for smooth ticker animations
+- Implement responsive designs with:
+  - Window size warnings
+  - Adaptive layouts
+  - Mobile-first approach
+- Utilise utility functions for:
+  - Date formatting
+  - Coordinate calculations
+  - Image transformations
+  - Layout management
 
 ### 🌍 Adding New Cities
 
-To add a new city to the gallery:
+The gallery uses an automated system to manage cities and their images:
 
-1. Create a new city gallery file in `src/lib/data/galleries/`
-2. Export the gallery data following the `CityGallery` type
-3. Add the city to `src/lib/data/galleries/index.ts`
-4. Update metadata in `src/lib/data/metadata/cities.ts`
+1. Create a new folder in your Cloudinary account with the city name
+2. Upload your images to the city folder in Cloudinary
+   - Images should include metadata (location, date, camera details)
+   - Ensure images are high quality and properly oriented
+3. Run the metadata fetch script:
+   ```bash
+   node scripts/fetch-metadata.js
+   ```
+   This script will:
+   - Scan your Cloudinary folders to find cities
+   - Create gallery data for each city
+   - Extract and organise image metadata
+   - Generate all necessary city and image data files
+4. The changes will be automatically reflected in the application
 
 ## ⚡ Performance Considerations
 
-- Progressive image loading with low/medium/high quality versions
-- Image optimization through Cloudinary
-- Component-level code splitting
-- Build optimization with modern browser targeting
-- Efficient caching strategies
-- Modular code structure for better maintainability
+- Progressive image loading strategy:
+  - Blur-up effect for smooth transitions
+  - Preloading system for better UX
+  - Multiple quality versions (low/medium/high)
+- Responsive animation system:
+  - CSS keyframe animations
+  - Hardware-accelerated transforms
+  - Throttled event handlers
+- Optimised state management:
+  - Custom hooks for complex state
+  - Efficient re-render prevention
+  - Memoised calculations
+- Build and load optimisation:
+  - Component-level code splitting
+  - Modern browser targeting
+  - Efficient caching strategies
+  - Modular code structure
 
-## 📄 License
+## 📄 Licence
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT Licence - see the LICENCE file for details.
