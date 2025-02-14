@@ -4,7 +4,7 @@ export const CITIES = [
   "MELBOURNE",
   "NEW_YORK",
   "PARIS",
-  "TOKYO",
+  "TOKYO"
 ];
 
 export const TICKER_CONFIG = {

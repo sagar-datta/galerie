@@ -51,7 +51,7 @@ function formatCityNames(folders) {
       display: titleCase, // For display (e.g., "New York")
       file: titleCase.toLowerCase().replace(/\s+/g, "-"), // For filenames - lowercase with hyphens (e.g., "new-york")
       variable: titleCase.toLowerCase().replace(/\s+/g, ""), // For variable names (e.g., "newyork")
-      constant: folder.toUpperCase(), // For cities ticker constant (e.g., "NEW YORK")
+      constant: folder.toUpperCase().replace(/\s+/g, "_"), // For cities ticker constant (e.g., "NEW_YORK")
       key: folder.toUpperCase().replace(/\s+/g, "_"), // For object keys (e.g., "NEW_YORK")
       original: folder, // Keep original folder name for Cloudinary queries
     };
