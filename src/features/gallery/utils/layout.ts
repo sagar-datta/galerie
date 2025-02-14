@@ -1,5 +1,6 @@
 import { GalleryImage } from "../types/gallery.types";
 import { CURSOR_STYLE_CONFIG } from "../constants";
+import { formatCityDisplay } from "../../../features/cities/utils/format";
 
 /**
  * Creates an array of image rows for the gallery layout
@@ -31,18 +32,27 @@ export function calculateCursorStyle(city: string) {
     SMALL_CHAR_WIDTH,
   } = CURSOR_STYLE_CONFIG;
 
-  // Calculate font size based on city length
-  const fontSize = city.length > 6 ? SMALL_FONT_SIZE : LARGE_FONT_SIZE;
+  const formattedCity = formatCityDisplay(city);
 
-  // Calculate dimensions with fixed proportions
-  const charWidth =
-    fontSize === LARGE_FONT_SIZE ? LARGE_CHAR_WIDTH : SMALL_CHAR_WIDTH;
-  const textWidth = city.length * charWidth;
+  // Calculate font size based on text length
+  const fontSize = formattedCity.length > 8 ? SMALL_FONT_SIZE : LARGE_FONT_SIZE;
+
+  // Calculate dimensions with dynamic text fitting
+  const charWidth = fontSize === LARGE_FONT_SIZE ? LARGE_CHAR_WIDTH : SMALL_CHAR_WIDTH;
+  const textWidth = formattedCity.length * charWidth;
   const padding = Math.max(16, Math.min(24, textWidth * 0.15));
   const calculatedWidth = Math.min(
     Math.max(MIN_WIDTH, textWidth + ARROW_SPACE + padding),
     MAX_WIDTH
   );
+
+  // Calculate text area width (leaving space for arrow)
+  const textAreaWidth = calculatedWidth - ARROW_SPACE - padding;
+
+  // Only add textLength for long city names
+  const textLengthAttr = formattedCity.length > 8 
+    ? `textLength='${textAreaWidth}' lengthAdjust='spacingAndGlyphs'` 
+    : '';
 
   // Position text
   const textX = calculatedWidth / 2 + 16;
@@ -53,6 +63,6 @@ export function calculateCursorStyle(city: string) {
       calculatedWidth - 8
     }' height='26' rx='1' fill='%23EBE9D1'/><rect x='3' y='3' width='${
       calculatedWidth - 8
-    }' height='26' rx='1' fill='%23FF685B'/><g stroke='%23131313' stroke-linecap='square' stroke-width='3' fill='none'><path d='M20 16h18'></path><path d='m24 11l-6 5l6 5'></path></g><text x='${textX}' y='${textY}' fill='%23131313' text-anchor='middle' font-size='${fontSize}' font-family='Helvetica' font-weight='900' stroke='%23131313' stroke-width='0.5'>${city}</text></svg>") 16 16, auto`,
+    }' height='26' rx='1' fill='%23FF685B'/><g stroke='%23131313' stroke-linecap='square' stroke-width='3' fill='none'><path d='M20 16h18'></path><path d='m24 11l-6 5l6 5'></path></g><text x='${textX}' y='${textY}' fill='%23131313' text-anchor='middle' font-size='${fontSize}' font-family='Helvetica' font-weight='900' stroke='%23131313' stroke-width='0.5' ${textLengthAttr}>${formattedCity}</text></svg>") 16 16, auto`,
   };
 }
