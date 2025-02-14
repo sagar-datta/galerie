@@ -13,10 +13,12 @@ export const preloadImagesForCity = (cityName: string) => {
   gallery.images.forEach((image: GalleryImage) => {
     // Preload full quality version
     const fullQualityImg = new Image();
-    fullQualityImg.src = getCloudinaryUrl(image.publicId);
+    fullQualityImg.src = getCloudinaryUrl(encodeURIComponent(image.publicId));
 
     // Preload low quality version
     const lowQualityImg = new Image();
-    lowQualityImg.src = getCloudinaryUrl(image.publicId, { lowQuality: true });
+    lowQualityImg.src = getCloudinaryUrl(encodeURIComponent(image.publicId), {
+      lowQuality: true,
+    });
   });
 };

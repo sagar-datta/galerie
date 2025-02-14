@@ -53,6 +53,7 @@ function formatCityNames(folders) {
       variable: titleCase.toLowerCase().replace(/\s+/g, ""), // For variable names (e.g., "newyork")
       constant: folder.toUpperCase(), // For cities ticker constant (e.g., "NEW YORK")
       key: folder.toUpperCase().replace(/\s+/g, "_"), // For object keys (e.g., "NEW_YORK")
+      original: folder, // Keep original folder name for Cloudinary queries
     };
   });
 }
@@ -82,6 +83,82 @@ async function getFolders() {
       "Tokyo",
     ]);
   }
+}
+
+function extractImageMetadata(resource) {
+  const metadata = resource.image_metadata || {};
+  const context = resource.context || {};
+
+  return {
+    dateTaken: metadata.DateTimeOriginal || metadata.DateTime,
+    make: metadata.Make,
+    model: metadata.Model,
+    gpsLatitude: metadata.GPSLatitude,
+    gpsLongitude: metadata.GPSLongitude,
+    exposureTime: metadata.ExposureTime,
+    aperture: metadata.ApertureValue || metadata.FNumber,
+    focalLength: metadata.FocalLength,
+    iso: metadata.ISOSpeedRatings,
+    lensModel: metadata.LensModel,
+    ...context, // Include any additional context metadata
+  };
+}
+
+async function getImagesInFolder(folderName) {
+  console.log(`\nFetching images for ${folderName}...`);
+  let images = [];
+  let nextCursor = null;
+
+  do {
+    try {
+      // Use the resources API to get all resources
+      const result = await retry(
+        async () =>
+          await cloudinary.api.resources({
+            type: "upload",
+            max_results: 10, // limit to 10 images to avoid exceeding the hourly limit
+            next_cursor: nextCursor,
+            metadata: true,
+          })
+      );
+
+      const resources = result.resources || [];
+      console.log(`Found ${resources.length} images`);
+
+      // Log the raw resource data for inspection
+      resources.forEach((resource) => {
+        console.log(JSON.stringify(resource, null, 2));
+      });
+
+      images = images.concat(resources);
+      nextCursor = result.next_cursor;
+    } catch (error) {
+      console.error(`Error fetching images:`, error);
+      break;
+    }
+  } while (nextCursor);
+
+  return images;
+}
+
+async function buildCityImageData(folders) {
+  const cityImageData = {};
+
+  for (const folder of folders) {
+    const images = await getImagesInFolder(folder.original);
+    cityImageData[folder.key] = images
+      .filter((image) => image.asset_folder === folder.original)
+      .map((resource) => ({
+        id: resource.asset_id,
+        publicId: resource.public_id,
+        caption: resource.context?.caption,
+        width: resource.width,
+        height: resource.height,
+        metadata: extractImageMetadata(resource),
+      }));
+  }
+
+  return cityImageData;
 }
 
 async function cleanupGalleryFiles() {
@@ -132,37 +209,36 @@ export const TICKER_CONFIG = {
   }
 }
 
-async function createGalleryBoilerplate(folder) {
+async function createGalleryFiles(folders, cityImageData) {
   const galleryDir = "./src/lib/data/galleries";
-  const fileName = `${folder.file}.ts`;
-  const filePath = path.join(galleryDir, fileName);
 
-  console.log(
-    `\nCreating gallery boilerplate for ${folder.display} at ${filePath}`
-  );
+  for (const folder of folders) {
+    const fileName = `${folder.file}.ts`;
+    const filePath = path.join(galleryDir, fileName);
 
-  try {
-    // Create example gallery object
-    const gallery = {
-      city: folder.display,
-      images: [],
-    };
+    console.log(`\nCreating gallery file for ${folder.display} at ${filePath}`);
 
-    // Create the new file content
-    const content = `import { CityGallery } from "../../../features/gallery/types/gallery.types";
+    try {
+      const images = cityImageData[folder.key] || [];
 
-export const ${folder.variable}: CityGallery = ${JSON.stringify(
-      gallery,
-      null,
-      2
-    )};
+      // Create gallery object with proper typing
+      const content = `import { CityGallery } from "../../../features/gallery/types/gallery.types";
+
+export const ${folder.variable}: CityGallery = {
+  city: "${folder.display}",
+  images: ${JSON.stringify(images, null, 2)}
+};
 `;
 
-    await fs.writeFile(filePath, content, "utf-8");
-    console.log(`Successfully created gallery file for ${folder.display}`);
-  } catch (error) {
-    console.error(`Error creating gallery file for ${folder.display}:`, error);
-    throw error;
+      await fs.writeFile(filePath, content, "utf-8");
+      console.log(`Successfully created gallery file for ${folder.display}`);
+    } catch (error) {
+      console.error(
+        `Error creating gallery file for ${folder.display}:`,
+        error
+      );
+      throw error;
+    }
   }
 }
 
@@ -205,16 +281,19 @@ async function main() {
     // Get folders from Cloudinary
     const folders = await getFolders();
 
+    // Get image data for all cities
+    console.log("\nFetching image data for all cities...");
+    const cityImageData = await buildCityImageData(folders);
+    console.log("Successfully fetched all city image data");
+
     // Clean up existing gallery files
     await cleanupGalleryFiles();
 
     // Update cities constant
     await updateCitiesConstant(folders);
 
-    // Create gallery files for each folder
-    for (const folder of folders) {
-      await createGalleryBoilerplate(folder);
-    }
+    // Create gallery files with image data
+    await createGalleryFiles(folders, cityImageData);
 
     // Update galleries index
     await updateGalleriesIndex(folders);

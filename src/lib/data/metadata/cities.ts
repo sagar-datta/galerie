@@ -31,7 +31,7 @@ export const citiesMetadata: Record<string, CityMetadata> = {
   },
   newYork: {
     name: "new-york",
-    displayName: "NEW YORK",
+    displayName: "NEW_YORK",
     visitDates: {
       season: "AUTUMN",
       year: "MMXXIII",

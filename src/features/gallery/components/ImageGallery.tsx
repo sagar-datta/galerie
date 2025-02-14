@@ -99,9 +99,12 @@ export function ImageGallery({
                       loadedStates[image.id] >= 1 ? "opacity-0" : "opacity-100"
                     }`}
                     style={{
-                      background: `url(${getCloudinaryUrl(image.publicId, {
-                        lowQuality: true,
-                      })})`,
+                      background: `url(${getCloudinaryUrl(
+                        encodeURIComponent(image.publicId),
+                        {
+                          lowQuality: true,
+                        }
+                      )})`,
                       backgroundSize: "cover",
                       backgroundPosition: "center",
                     }}
@@ -109,7 +112,7 @@ export function ImageGallery({
 
                   {/* Medium quality image */}
                   <img
-                    src={getCloudinaryUrl(image.publicId, {
+                    src={getCloudinaryUrl(encodeURIComponent(image.publicId), {
                       mediumQuality: true,
                       priority: rowIndex === 0 && imageIndex < 2,
                     })}
@@ -127,7 +130,7 @@ export function ImageGallery({
 
                   {/* Full quality image */}
                   <img
-                    src={getCloudinaryUrl(image.publicId, {
+                    src={getCloudinaryUrl(encodeURIComponent(image.publicId), {
                       priority: rowIndex === 0 && imageIndex < 2,
                     })}
                     alt={image.caption || `Photo from ${city}`}

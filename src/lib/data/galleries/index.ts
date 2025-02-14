@@ -13,10 +13,10 @@ export { barcelona, london, melbourne, newyork, paris, tokyo };
 
 // Export cityGalleries map
 export const cityGalleries: Record<string, CityGallery> = {
-  BARCELONA: barcelona,
-  LONDON: london,
-  MELBOURNE: melbourne,
-  NEW_YORK: newyork,
-  PARIS: paris,
-  TOKYO: tokyo,
+  BARCELONA: { ...barcelona, city: "BARCELONA" },
+  LONDON: { ...london, city: "LONDON" },
+  MELBOURNE: { ...melbourne, city: "MELBOURNE" },
+  NEW_YORK: { ...newyork, city: "NEW_YORK" },
+  PARIS: { ...paris, city: "PARIS" },
+  TOKYO: { ...tokyo, city: "TOKYO" },
 };

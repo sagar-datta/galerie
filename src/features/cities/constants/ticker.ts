@@ -2,9 +2,9 @@ export const CITIES = [
   "BARCELONA",
   "LONDON",
   "MELBOURNE",
-  "NEW YORK",
+  "NEW_YORK",
   "PARIS",
-  "TOKYO"
+  "TOKYO",
 ];
 
 export const TICKER_CONFIG = {

@@ -176,7 +176,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
           {isFullscreen ? (
             <div className="w-screen h-screen flex items-center justify-center">
               <img
-                src={getCloudinaryUrl(image.publicId)}
+                src={getCloudinaryUrl(encodeURIComponent(image.publicId))}
                 alt={image.caption || `Photo from ${city}`}
                 className="w-auto h-screen object-contain select-none"
                 onClick={handleImageClick}
@@ -191,7 +191,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
                 onClick={(e) => e.stopPropagation()}
               >
                 <img
-                  src={getCloudinaryUrl(image.publicId)}
+                  src={getCloudinaryUrl(encodeURIComponent(image.publicId))}
                   alt={image.caption || `Photo from ${city}`}
                   className="max-h-[calc(100vh-16rem)] w-auto max-w-[95vw] object-contain select-none"
                   onClick={handleImageClick}

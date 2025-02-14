@@ -11,7 +11,7 @@ export function useImagePreload(images: GalleryImage[]) {
   const preloadImage = useCallback(
     (publicId: string, quality: "medium" | "full") => {
       const img = new Image();
-      img.src = getCloudinaryUrl(publicId, {
+      img.src = getCloudinaryUrl(encodeURIComponent(publicId), {
         ...(quality === "medium" ? { mediumQuality: true } : {}),
         priority: true,
       });

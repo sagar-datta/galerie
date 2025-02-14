@@ -1,5 +1,5 @@
 export const formatCityUrl = (city: string) =>
-  city.toLowerCase().replace(/\s+/g, "-");
+  city.toLowerCase().replace(/_+/g, "-");
 
 export const normalizeCityName = (cityUrl: string) =>
-  cityUrl.replace(/-/g, " ");
+  cityUrl.replace(/-/g, "_");
