@@ -88,49 +88,124 @@ async function getFolders() {
 function extractImageMetadata(resource) {
   const metadata = resource.image_metadata || {};
   const context = resource.context || {};
+  const custom = context.custom || {};
 
   return {
-    dateTaken: metadata.DateTimeOriginal || metadata.DateTime,
+    dateTaken: metadata.DateTimeOriginal,
     make: metadata.Make,
     model: metadata.Model,
     gpsLatitude: metadata.GPSLatitude,
     gpsLongitude: metadata.GPSLongitude,
     exposureTime: metadata.ExposureTime,
-    aperture: metadata.ApertureValue || metadata.FNumber,
-    focalLength: metadata.FocalLength,
-    iso: metadata.ISOSpeedRatings,
+    aperture: metadata.FNumber,
+    focalLength: metadata.FocalLengthIn35mmFormat,
+    iso: metadata.ISO,
     lensModel: metadata.LensModel,
-    ...context, // Include any additional context metadata
+    caption: custom.caption || metadata.caption
+    ,
+   
   };
 }
 
-async function getImagesInFolder(folderName) {
+async function loadExistingMetadata(folder) {
+  const galleryDir = "./src/lib/data/galleries";
+  const filePath = path.join(galleryDir, `${folder.file}.ts`);
+
+  try {
+    const content = await fs.readFile(filePath, 'utf-8');
+    // Extract the images array from the file content using regex
+    const match = content.match(/images:\s*(\[[\s\S]*?\])/);
+    if (match) {
+      const imagesJson = match[1];
+      const images = JSON.parse(imagesJson);
+      // Create a map of public_id to metadata
+      return new Map(images.map(img => [img.publicId, img.metadata]));
+    }
+  } catch (error) {
+    // File doesn't exist or can't be parsed, return empty map
+    return new Map();
+  }
+  return new Map();
+}
+
+async function getImagesInFolder(folderName, existingMetadata = new Map()) {
   console.log(`\nFetching images for ${folderName}...`);
   let images = [];
   let nextCursor = null;
 
   do {
     try {
-      // Use the resources API to get all resources
+      // First, get a list of all resources
       const result = await retry(
         async () =>
           await cloudinary.api.resources({
             type: "upload",
-            max_results: 10, // limit to 10 images to avoid exceeding the hourly limit
-            next_cursor: nextCursor,
-            metadata: true,
+            max_results: 500,
+            next_cursor: nextCursor
           })
       );
 
-      const resources = result.resources || [];
-      console.log(`Found ${resources.length} images`);
+      const resources = (result.resources || []).filter(
+        (resource) => resource.asset_folder === folderName
+      );
 
-      // Log the raw resource data for inspection
-      resources.forEach((resource) => {
-        console.log(JSON.stringify(resource, null, 2));
-      });
+      console.log(`Found ${resources.length} images for ${folderName}`);
 
-      images = images.concat(resources);
+      // Process each resource
+      for (const resource of resources) {
+        const existingData = existingMetadata.get(resource.public_id);
+
+        const hasValidMetadata = existingData && (
+          existingData.dateTaken ||
+          existingData.make ||
+          existingData.model ||
+          existingData.gpsLatitude ||
+          existingData.gpsLongitude
+        );
+
+        if (hasValidMetadata) {
+          // Use existing metadata if it contains essential EXIF data
+          console.log(`Using existing metadata for ${resource.public_id}`);
+          images.push({
+            ...resource,
+            metadata: existingData
+          });
+        } else {
+          // Fetch detailed metadata only for new images
+          console.log(`Fetching new metadata for ${resource.public_id}`);
+          try {
+            const detailedResource = await retry(
+              async () =>
+                await cloudinary.api.resource(resource.public_id, {
+                  exif: true,
+                  colors: true,
+                  image_metadata: true,
+                  coordinates: true,
+                  context: true,
+                })
+            );
+
+            // Log all metadata to see available fields
+            console.log('Full metadata for', resource.public_id, ':');
+            console.log('EXIF:', JSON.stringify(detailedResource.exif, null, 2));
+            console.log('Image Metadata:', JSON.stringify(detailedResource.image_metadata, null, 2));
+            console.log('Context:', JSON.stringify(detailedResource.context, null, 2));
+
+            images.push({
+              ...resource,
+              metadata: extractImageMetadata(detailedResource)
+            });
+          } catch (error) {
+            console.error(
+              `Error fetching details for ${resource.public_id}:`,
+              error
+            );
+            // Add the resource without metadata rather than skipping it
+            images.push(resource);
+          }
+        }
+      }
+
       nextCursor = result.next_cursor;
     } catch (error) {
       console.error(`Error fetching images:`, error);
@@ -145,16 +220,20 @@ async function buildCityImageData(folders) {
   const cityImageData = {};
 
   for (const folder of folders) {
-    const images = await getImagesInFolder(folder.original);
+    // Load existing metadata for this city
+    const existingMetadata = await loadExistingMetadata(folder);
+    console.log(`Loaded ${existingMetadata.size} existing metadata entries for ${folder.display}`);
+
+    const images = await getImagesInFolder(folder.original, existingMetadata);
     cityImageData[folder.key] = images
       .filter((image) => image.asset_folder === folder.original)
       .map((resource) => ({
         id: resource.asset_id,
         publicId: resource.public_id,
-        caption: resource.context?.caption,
+        
         width: resource.width,
         height: resource.height,
-        metadata: extractImageMetadata(resource),
+        metadata: resource.metadata || extractImageMetadata(resource),
       }));
   }
 

@@ -2,7 +2,7 @@ import { CloudinaryOptions } from "./types";
 
 export const getCloudinaryUrl = (
   publicId: string,
-  options?: CloudinaryOptions
+  options?: CloudinaryOptions & { includeExif?: boolean }
 ) => {
   // Access environment variables using import.meta.env
   const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
@@ -28,6 +28,11 @@ export const getCloudinaryUrl = (
     transformations = `w_${width},q_auto:good,f_auto,c_scale,dpr_auto${
       options?.priority ? ",fl_progressive:steep" : ""
     }`;
+  }
+
+  // Add EXIF data retrieval if requested
+  if (options?.includeExif) {
+    transformations = `${transformations},fl_getinfo`;
   }
 
   return `https://res.cloudinary.com/${cloudName}/image/upload/${transformations}/${publicId}`;

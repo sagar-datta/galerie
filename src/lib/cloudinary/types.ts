@@ -3,6 +3,7 @@ export interface CloudinaryOptions {
   mediumQuality?: boolean;
   width?: number;
   priority?: boolean;
+  includeExif?: boolean;
 }
 
 export interface CloudinaryExifData {

@@ -87,11 +87,7 @@ export function ImageGallery({
                   onClick={() => handleImageClick(image)}
                 >
                   {/* Skeleton loader */}
-                  <div
-                    className={`image-skeleton ${
-                      loadedStates[image.id] >= 1 ? "opacity-0" : "opacity-100"
-                    }`}
-                  />
+                  <div className={`image-skeleton ${loadedStates[image.id] >= 1 ? 'loaded' : ''}`} />
 
                   {/* Low quality placeholder */}
                   <div

@@ -39,12 +39,12 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
       className={`flex-shrink-0 bg-[#131313] text-white p-4 cursor-default flex items-center gap-8 overflow-x-auto ${className}`}
       onClick={(e) => e.stopPropagation()}
     >
-      {image.caption && (
+      {image.metadata?.caption && (
         <div className="flex-1">
           <h3 className="text-sm uppercase tracking-wide text-gray-400">
             Caption
           </h3>
-          <p className="text-base">{image.caption}</p>
+          <p className="text-base">{image.metadata.caption}</p>
         </div>
       )}
       {image.metadata && (
@@ -135,16 +135,6 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
               </p>
             </div>
           )}
-          {image.metadata.lensModel && (
-            <div className="flex-none">
-              <h3 className="text-sm uppercase tracking-wide text-gray-400">
-                Lens Model
-              </h3>
-              <p className="text-base">
-                <span className="font-mono">{image.metadata.lensModel}</span>
-              </p>
-            </div>
-          )}
           {image.metadata.iso && (
             <div className="flex-none">
               <h3 className="text-sm uppercase tracking-wide text-gray-400">
@@ -152,6 +142,16 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
               </h3>
               <p className="text-base">
                 <span className="font-mono">{image.metadata.iso}</span>
+              </p>
+            </div>
+          )}
+            {image.metadata.lensModel && (
+            <div className="flex-none">
+              <h3 className="text-sm uppercase tracking-wide text-gray-400">
+                Lens Model
+              </h3>
+              <p className="text-base">
+                <span className="font-mono">{image.metadata.lensModel}</span>
               </p>
             </div>
           )}
@@ -177,7 +177,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
             <div className="w-screen h-screen flex items-center justify-center">
               <img
                 src={getCloudinaryUrl(encodeURIComponent(image.publicId))}
-                alt={image.caption || `Photo from ${city}`}
+                alt={image.metadata?.caption || `Photo from ${city}`}
                 className="w-auto h-screen object-contain select-none"
                 onClick={handleImageClick}
                 onDragStart={(e) => e.preventDefault()}
@@ -192,7 +192,7 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
               >
                 <img
                   src={getCloudinaryUrl(encodeURIComponent(image.publicId))}
-                  alt={image.caption || `Photo from ${city}`}
+                  alt={image.metadata?.caption || `Photo from ${city}`}
                   className="max-h-[calc(100vh-16rem)] w-auto max-w-[95vw] object-contain select-none"
                   onClick={handleImageClick}
                   onDragStart={(e) => e.preventDefault()}

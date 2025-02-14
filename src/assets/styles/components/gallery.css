@@ -102,6 +102,12 @@
   animation: shimmer 1.5s ease-in-out infinite;
 }
 
+.image-skeleton.loaded {
+  animation: none;
+  opacity: 0.1;
+  background: var(--color-text);
+}
+
 .blur-up {
   filter: blur(5px);
   transition: filter var(--transition-smooth);

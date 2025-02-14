@@ -9,12 +9,16 @@ export interface ImageMetadata {
   focalLength?: string;
   iso?: string;
   lensModel?: string;
+  caption?: string;
+
 }
 
+
 export interface GalleryImage {
+  caption: string;
   id: string;
   publicId: string;
-  caption?: string;
+
   width: number;
   height: number;
   metadata?: ImageMetadata;
