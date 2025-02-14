@@ -317,6 +317,126 @@ export const hanoi: CityGallery = {
       "iso": "800",
       "lensModel": "iPhone 14 Pro Max back camera 6.86mm f/1.78"
     }
+  },
+  {
+    "id": "ee98273293e7f04bd04f6c9643e6718d",
+    "publicId": "dnd1e3c69fb10qxrztt7",
+    "width": 6048,
+    "height": 8064,
+    "metadata": {
+      "dateTaken": "2023:06:21 16:03:02",
+      "model": "iPhone 14 Pro Max",
+      "exposureTime": "1/50",
+      "aperture": "1.8",
+      "focalLength": "24 mm",
+      "iso": "320",
+      "lensModel": "iPhone 14 Pro Max back camera 6.86mm f/1.78"
+    }
+  },
+  {
+    "id": "cda35d7baf60dc5a6ace36fb5c20031a",
+    "publicId": "cal90jxuldq3qruiuo5v",
+    "width": 6048,
+    "height": 8064,
+    "metadata": {
+      "dateTaken": "2023:06:21 18:25:42",
+      "model": "iPhone 14 Pro Max",
+      "exposureTime": "1/50",
+      "aperture": "1.8",
+      "focalLength": "24 mm",
+      "iso": "200",
+      "lensModel": "iPhone 14 Pro Max back camera 6.86mm f/1.78"
+    }
+  },
+  {
+    "id": "2adb1959d1b2004b314092c337262ddd",
+    "publicId": "qkwdk6khpma11lqvzox6",
+    "width": 4442,
+    "height": 5553,
+    "metadata": {
+      "dateTaken": "2023:06:25 07:27:59",
+      "model": "iPhone 14 Pro Max",
+      "exposureTime": "1/2900",
+      "aperture": "1.8",
+      "focalLength": "24 mm",
+      "iso": "100",
+      "lensModel": "iPhone 14 Pro Max back camera 6.86mm f/1.78"
+    }
+  },
+  {
+    "id": "8ee6fd5fdf370d26bc989ca23a639ead",
+    "publicId": "sgorjidis1akcbkolimj",
+    "width": 6048,
+    "height": 8064,
+    "metadata": {
+      "dateTaken": "2023:06:25 07:47:25",
+      "model": "iPhone 14 Pro Max",
+      "exposureTime": "1/1400",
+      "aperture": "1.8",
+      "focalLength": "24 mm",
+      "iso": "100",
+      "lensModel": "iPhone 14 Pro Max back camera 6.86mm f/1.78"
+    }
+  },
+  {
+    "id": "ce34b53511705084471981f5bfbaf4af",
+    "publicId": "xcqvxvik6ftdwvm6nhit",
+    "width": 6048,
+    "height": 8064,
+    "metadata": {
+      "dateTaken": "2023:06:25 07:52:06",
+      "model": "iPhone 14 Pro Max",
+      "exposureTime": "1/220",
+      "aperture": "1.8",
+      "focalLength": "24 mm",
+      "iso": "80",
+      "lensModel": "iPhone 14 Pro Max back camera 6.86mm f/1.78"
+    }
+  },
+  {
+    "id": "b2de2f7f9a3047b5dbd5a1dfcc027554",
+    "publicId": "ruc8wt8yrqqzy6cw5yao",
+    "width": 6048,
+    "height": 8064,
+    "metadata": {
+      "dateTaken": "2023:06:26 15:51:08",
+      "model": "iPhone 14 Pro Max",
+      "exposureTime": "1/710",
+      "aperture": "1.8",
+      "focalLength": "24 mm",
+      "iso": "80",
+      "lensModel": "iPhone 14 Pro Max back triple camera 6.86mm f/1.78"
+    }
+  },
+  {
+    "id": "a4a4795e15759ede9470fc63512dc3ae",
+    "publicId": "jj1csvhi9iappltt8uum",
+    "width": 6048,
+    "height": 8064,
+    "metadata": {
+      "dateTaken": "2023:06:26 15:52:02",
+      "model": "iPhone 14 Pro Max",
+      "exposureTime": "1/380",
+      "aperture": "1.8",
+      "focalLength": "24 mm",
+      "iso": "80",
+      "lensModel": "iPhone 14 Pro Max back triple camera 6.86mm f/1.78"
+    }
+  },
+  {
+    "id": "58e42a71d23c8c01a2c809cc90367529",
+    "publicId": "shed6ruaal6dim2lpwzn",
+    "width": 6048,
+    "height": 8064,
+    "metadata": {
+      "dateTaken": "2023:06:26 16:35:04",
+      "model": "iPhone 14 Pro Max",
+      "exposureTime": "1/50",
+      "aperture": "1.8",
+      "focalLength": "24 mm",
+      "iso": "320",
+      "lensModel": "iPhone 14 Pro Max back triple camera 6.86mm f/1.78"
+    }
   }
 ]
 };
