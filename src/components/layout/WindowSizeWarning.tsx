@@ -24,6 +24,16 @@ export const WindowSizeWarning: FC = () => {
 
   const needsWidth = dimensions.width < MIN_WIDTH
   const needsHeight = dimensions.height < MIN_HEIGHT
+  
+  // Calculate scale factor based on how far we are from min dimensions
+  const getScaleFactor = () => {
+    const widthRatio = Math.min(dimensions.width / MIN_WIDTH, 1)
+    const heightRatio = Math.min(dimensions.height / MIN_HEIGHT, 1)
+    // Use the smaller ratio to ensure text stays readable
+    const scale = Math.max(Math.min(widthRatio, heightRatio), 0.5)
+    return scale
+  }
+  const scaleFactor = getScaleFactor()
 
   const getDirectionMessage = () => {
     if (needsWidth && needsHeight) return 'both wider and taller'
@@ -35,24 +45,27 @@ export const WindowSizeWarning: FC = () => {
   return (
     <div 
       className="window-size-warning"
-      style={{ backgroundColor: COLORS.beige, border: `4px solid ${COLORS.coral}` }}
+      style={{ backgroundColor: COLORS.beige, border: `10px solid ${COLORS.coral}` }}
     >
       <div className="max-w-md mx-auto">
         <h2 
-          className="text-3xl font-bold mb-6"
-          style={{ color: COLORS.coral }}
+          className="font-bold mb-6"
+          style={{ 
+            color: COLORS.coral,
+            fontSize: `${2.5 * scaleFactor}rem`
+          }}
         >
           Screen Size Not Supported
         </h2>
         <p 
-          className="text-xl mb-8"
-          style={{ color: COLORS.dark }}
+          className="mb-8"
+          style={{ color: COLORS.dark, fontSize: `${1.25 * scaleFactor}rem` }}
         >
           This photo gallery requires a minimum screen size of 960x410 pixels.
           Please view on a larger device or resize your window for the best experience.
         </p>
         <div className="space-y-4 text-lg">
-          <p className="font-mono" style={{ color: COLORS.dark }}>
+          <p className="font-mono" style={{ color: COLORS.dark, fontSize: `${1.125 * scaleFactor}rem` }}>
             Current size: 
             <span style={{ color: needsWidth ? COLORS.red : '#22C55E' }}>
               {` ${dimensions.width}px`}
@@ -62,13 +75,13 @@ export const WindowSizeWarning: FC = () => {
               {`${dimensions.height}px`}
             </span>
           </p>
-          <p style={{ color: COLORS.dark }}>
+          <p style={{ color: COLORS.dark, fontSize: `${1.125 * scaleFactor}rem` }}>
             Make your window {getDirectionMessage()} to continue.
           </p>
           {needsWidth && (
             <div 
               className="flex items-center justify-center gap-2"
-              style={{ color: COLORS.red }}
+              style={{ color: COLORS.red, fontSize: `${1.125 * scaleFactor}rem` }}
             >
               <span>←</span>
               <span>Needs {MIN_WIDTH - dimensions.width}px more width</span>
@@ -78,7 +91,7 @@ export const WindowSizeWarning: FC = () => {
           {needsHeight && (
             <div 
               className="flex items-center justify-center gap-2"
-              style={{ color: COLORS.red }}
+              style={{ color: COLORS.red, fontSize: `${1.125 * scaleFactor}rem` }}
             >
               <span>↑</span>
               <span>Needs {MIN_HEIGHT - dimensions.height}px more height</span>
