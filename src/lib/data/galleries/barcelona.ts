@@ -4,12 +4,12 @@ export const barcelona: CityGallery = {
   city: "Barcelona",
   images: [
   {
-    "id": "daa43a9e887d12f3f9e0396d6f727670",
-    "publicId": "qw8hy60suhtymj9evokf",
+    "id": "30547980e04e57d101709a7140843cfe",
+    "publicId": "kaoht1tpkpkhzmb9dbto",
     "width": 3712,
     "height": 5568,
     "metadata": {
-      "dateTaken": "2024:12:25 22:12:46",
+      "dateTaken": "2024:12:25 14:12:46",
       "model": "NIKON D7500",
       "gpsLatitude": "41 deg 24' 12.96\" N",
       "gpsLongitude": "2 deg 10' 27.59\" E",
@@ -17,17 +17,16 @@ export const barcelona: CityGallery = {
       "aperture": "5.6",
       "focalLength": "210 mm",
       "iso": "100",
-      "lensModel": "Nikon AF-S DX Nikkor 18-140mm f/3.5-5.6G ED VR",
-      "caption": "Sagrada Família Tower"
+      "lensModel": "Nikon AF-S DX Nikkor 18-140mm f/3.5-5.6G ED VR"
     }
   },
   {
-    "id": "fea6e450425cfd204e7480168db4f9f6",
-    "publicId": "dpljwmnxsiyu7i99jyru",
+    "id": "7046929af0c1c0a7584485868f0a12e5",
+    "publicId": "fqrrenufh6k4q97crzgy",
     "width": 2296,
     "height": 3923,
     "metadata": {
-      "dateTaken": "2024:12:25 22:33:42",
+      "dateTaken": "2024:12:25 14:33:42",
       "model": "NIKON D7500",
       "gpsLatitude": "41 deg 24' 12.96\" N",
       "gpsLongitude": "2 deg 10' 27.59\" E",
@@ -39,12 +38,12 @@ export const barcelona: CityGallery = {
     }
   },
   {
-    "id": "3cd3af2d5f55c173c06094325353bf9c",
-    "publicId": "al5fbevvjroic2d00swe",
+    "id": "ec28b3483f96d402c2f2f53d9b1da5f2",
+    "publicId": "zuie0e3xxtr32mspkq77",
     "width": 3433,
     "height": 5149,
     "metadata": {
-      "dateTaken": "2024:12:25 22:35:28",
+      "dateTaken": "2024:12:25 14:35:28",
       "model": "NIKON D7500",
       "gpsLatitude": "41 deg 24' 12.96\" N",
       "gpsLongitude": "2 deg 10' 27.59\" E",

@@ -184,7 +184,10 @@ export const ImageModal = memo(({ image, onClose, city }: ImageModalProps) => {
                 onClick={(e) => e.stopPropagation()}
               >
                 <img
-                  src={getCloudinaryUrl(encodeURIComponent(image.publicId))}
+                  src={getCloudinaryUrl(encodeURIComponent(image.publicId), {
+                    width: 2048,
+                    priority: true
+                  })}
                   alt={image.metadata?.caption || `Photo from ${city}`}
                   className="max-w-[calc(100vw-4rem)] max-h-[calc(100vh-14rem)] w-auto h-auto object-contain select-none"
                   onClick={handleImageClick}
