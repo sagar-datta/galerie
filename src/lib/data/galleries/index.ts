@@ -1,11 +1,22 @@
-import { barcelona } from "./barcelona";
-import { paris } from "./paris";
 import { CityGallery } from "../../../features/gallery/types/gallery.types";
 
-export const cityGalleries: Record<string, CityGallery> = {
-  Barcelona: barcelona,
-  Paris: paris,
-};
+// Import individual gallery files
+import { barcelona } from "./barcelona";
+import { london } from "./london";
+import { melbourne } from "./melbourne";
+import { newyork } from "./new-york";
+import { paris } from "./paris";
+import { tokyo } from "./tokyo";
 
-// Export individual cities for direct access if needed
-export { barcelona, paris };
+// Export individual galleries
+export { barcelona, london, melbourne, newyork, paris, tokyo };
+
+// Export cityGalleries map
+export const cityGalleries: Record<string, CityGallery> = {
+  BARCELONA: barcelona,
+  LONDON: london,
+  MELBOURNE: melbourne,
+  NEW_YORK: newyork,
+  PARIS: paris,
+  TOKYO: tokyo,
+};
