@@ -42,36 +42,36 @@ This inspiration ties the gallery to the rich history of Swiss typography while 
 
 ```
 src/
-├── assets/                     # Static assets and styles
+├── assets/                  # Static assets and styles
 │   └── styles/                 
-│       ├── animations/         # Keyframe animations
-│       ├── base/              # Reset, variables, window-size
-│       └── components/        # Component-specific styles
-├── components/                 # Shared components
-│   └── layout/                # Layout components
-├── features/                   # Feature-based modules
-│   ├── cities/                # Cities feature
-│   │   ├── components/        # CitiesTicker, SelectedCity
-│   │   ├── constants/         # Ticker and UI constants
-│   │   ├── hooks/            # Animation and responsive hooks
-│   │   ├── types/            # Type definitions
-│   │   └── utils/            # Coordinates, formatting, image
-│   └── gallery/              # Gallery feature
-│       ├── components/        # ImageGallery, ImageModal
-│       ├── constants/         # Gallery constants
-│       ├── hooks/            # Gallery and image hooks
-│       ├── types/            # Gallery types
-│       └── utils/            # Layout, date, and image utils
-├── lib/                       # Shared libraries
-│   ├── cloudinary/           # Cloudinary integration
-│   ├── data/                 # Application data
-│   │   ├── galleries/        # City-specific galleries
-│   │   └── metadata/         # Cities metadata
-│   └── maps/                 # Maps integration
-└── scripts/                  # Utility scripts
-    ├── fetch-metadata.js     # Main metadata fetching script
-    └── utils/                # Script utilities
-        ├── cloudinary.js     # Cloudinary configuration
+│       ├── animations/      # Keyframe animations
+│       ├── base/            # Reset, variables, window-size
+│       └── components/      # Component-specific styles
+├── components/              # Shared components
+│   └── layout/              # Layout components
+├── features/                # Feature-based modules
+│   ├── cities/              # Cities feature
+│   │   ├── components/      # CitiesTicker, SelectedCity
+│   │   ├── constants/       # Ticker and UI constants
+│   │   ├── hooks/           # Animation and responsive hooks
+│   │   ├── types/           # Type definitions
+│   │   └── utils/           # Coordinates, formatting, image
+│   └── gallery/             # Gallery feature
+│       ├── components/      # ImageGallery, ImageModal
+│       ├── constants/       # Gallery constants
+│       ├── hooks/           # Gallery and image hooks
+│       ├── types/           # Gallery types
+│       └── utils/           # Layout, date, and image utils
+├── lib/                     # Shared libraries
+│   ├── cloudinary/          # Cloudinary integration
+│   ├── data/                # Application data
+│   │   ├── galleries/       # City-specific galleries
+│   │   └── metadata/        # Cities metadata
+│   └── maps/                # Maps integration
+└── scripts/                 # Utility scripts
+    ├── fetch-metadata.js    # Main metadata fetching script
+    └── utils/               # Script utilities
+        ├── cloudinary.js    # Cloudinary configuration
         ├── files.js         # File system operations
         ├── formatting.js    # City name formatting
         ├── metadata.js      # Metadata processing
